@@ -21,15 +21,15 @@ fi
 # desktop
 desktop="xfce gnome mate cinnamon plasma"
 if [ "$3" = "xfce" ] ; then
-    packagelist="$packagelist xfce4 xfce4-goodies firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist xfce4 xfce4-goodies firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gnome firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist gnome firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "mate" ] ; then
-    packagelist="$packagelist mate mate-extra firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist mate mate-extra firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "cinnamon" ] ; then
-    packagelist="$packagelist cinnamon firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist cinnamon firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "plasma" ] ; then
-    packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 fi
 
 loadkeys jp106
