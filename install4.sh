@@ -4,7 +4,7 @@ packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo 
 
 if [ $# -lt 5 ] ; then
     echo 'Usage:'
-    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|plasma> <HostName> <UserName>'
+    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|kde> <HostName> <UserName>'
     exit
 fi
 
@@ -19,16 +19,19 @@ elif [ "$2" = "amd" ] ; then
 fi
 
 # desktop
-desktop="xfce gnome mate cinnamon plasma"
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist xfce4 xfce4-goodies firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-elif [ "$3" = "gnome" ] ; then
+fi
+if [ "$3" = "gnome" ] ; then
     packagelist="$packagelist gnome firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-elif [ "$3" = "mate" ] ; then
+fi
+if [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-elif [ "$3" = "cinnamon" ] ; then
+fi
+if [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-elif [ "$3" = "plasma" ] ; then
+fi
+if [ "$3" = "kde" ] ; then
     packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 fi
 
@@ -97,7 +100,7 @@ fi
 if [ $3 = "cinnamon" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 fi
-if [ $3 = "plasma" ] ; then
+if [ $3 = "kde" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 fi
 
