@@ -65,8 +65,10 @@ echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $4 > /mnt/etc/hostname
 arch-chroot /mnt systemctl enable dhcpcd
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
+echo ------------------------------------------------------------------
 arch-chroot /mnt passwd
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
+echo ------------------------------------------------------------------
 arch-chroot /mnt passwd $5
 
 arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
@@ -101,7 +103,7 @@ fi
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 arch-chroot /mnt mkdir /boot/EFI/boot
 arch-chroot /mnt cp /boot/EFI/arch/grubx64.efi  /boot/EFI/boot/bootx64.efi
-arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+#arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 
