@@ -21,17 +21,13 @@ fi
 # desktop
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist xfce4 xfce4-goodies firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-fi
-if [ "$3" = "gnome" ] ; then
+elif [ "$3" = "gnome" ] ; then
     packagelist="$packagelist gnome firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-fi
-if [ "$3" = "mate" ] ; then
+elif [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-fi
-if [ "$3" = "cinnamon" ] ; then
+elif [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
-fi
-if [ "$3" = "kde" ] ; then
+elif [ "$3" = "kde" ] ; then
     packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 fi
 
@@ -90,17 +86,13 @@ arch-chroot /mnt sudo -u $5 xmodmap /home/$5/.Xmodmap
 
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-fi
-if [ $3 = "gnome" ] ; then
+elif [ $3 = "gnome" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-fi
-if [ $3 = "mate" ] ; then
+elif [ $3 = "mate" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-fi
-if [ $3 = "cinnamon" ] ; then
+elif [ $3 = "cinnamon" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-fi
-if [ $3 = "kde" ] ; then
+elif [ $3 = "kde" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 fi
 
