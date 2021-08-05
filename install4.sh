@@ -63,6 +63,7 @@ arch-chroot /mnt locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $4 > /mnt/etc/hostname
+arch-chroot /mnt systemctl enable dhcpcd
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
 arch-chroot /mnt passwd
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
@@ -73,9 +74,11 @@ arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://gith
 arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
 
 echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" > /mnt/home/$5/.Xmodmap
+arch-chroot /mnt chown $5:users /home/$5/.Xmodmap
+arch-chroot /mnt chmod 644 /home/$5/.Xmodmap
 
 
-echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" | arch-chroot /mnt sudo -u $5 tee /home/$5/.Xmodmap
+#echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" | arch-chroot /mnt sudo -u $5 tee /home/$5/.Xmodmap
 
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
