@@ -1,6 +1,6 @@
 #!/bin/bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo intel-ucode grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man dhcpcd os-prober'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man dhcpcd os-prober'
 
 if [ $# -lt 5 ] ; then
     echo 'Usage:'
