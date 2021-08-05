@@ -4,7 +4,7 @@ packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo 
 
 if [ $# -lt 5 ] ; then
     echo 'Usage:'
-#    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|plasma> <HostName> <UserName>'
+    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|plasma> <HostName> <UserName>'
     exit
 fi
 
