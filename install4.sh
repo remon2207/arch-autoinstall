@@ -2,7 +2,7 @@
 
 packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo intel-ucode grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man dhcpcd os-prober'
 
-if [ $# -lt 4 ] ; then
+if [ $# -lt 5 ] ; then
     echo 'Usage:'
 #    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|plasma> <HostName> <UserName>'
     exit
