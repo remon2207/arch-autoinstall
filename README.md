@@ -1,1 +1,1 @@
-# arch_autoinstall
+# arch-autoinstall
