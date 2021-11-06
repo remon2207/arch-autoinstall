@@ -35,12 +35,12 @@ loadkeys jp106
 timedatectl set-ntp true
 
 # partitioning
-sgdisk -Z $1
-sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
+# sgdisk -Z $1
+# sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
 sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" $1
 
 # format
-mkfs.vfat -F32 ${1}1
+# mkfs.vfat -F32 ${1}1
 mkfs.ext4 ${1}2
 
 # mount
