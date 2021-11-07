@@ -31,7 +31,7 @@ elif [ "$3" = "cinnamon" ] ; then
 elif [ "$3" = "plasma" ] ; then
     packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "i3" ] ; then
-    packagelist="$packagelist i3-gaps i3blocks i3lock i3status firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter "
+    packagelist="$packagelist i3-gaps i3blocks i3lock i3status dmenu rxvt-unicode firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter "
 fi
 
 loadkeys jp106
@@ -114,6 +114,8 @@ fi
 if [ $3 = "plasma" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 fi
+if [ $3 = "i3" ] ; then
+    arch-chroot /mnt systemctl enable ligntdm
 
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 # arch-chroot /mnt mkdir /boot/EFI/boot
