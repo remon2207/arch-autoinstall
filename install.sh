@@ -4,7 +4,7 @@ packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo 
 
 if [ $# -lt 5 ] ; then
     echo 'Usage:'
-    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|plasma> <HostName> <UserName>'
+    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|plasma|i3> <HostName> <UserName>'
     exit
 fi
 
@@ -30,31 +30,33 @@ elif [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "plasma" ] ; then
     packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+elif [ "$3" = "i3" ] ; then
+    packagelist="$packagelist i3-gaps i3blocks i3lock i3status firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter "
 fi
 
 loadkeys jp106
 timedatectl set-ntp true
 
 # partitioning
-sgdisk -Z $1
-sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
-sgdisk -n 0::+128G -t 0:8300 -c 0:"Linux filesystem" $1
-sgdisk -n 0::+128G -t 0:8300 -c 0:"Linux filesystem" $1
-sgdisk -n 0::+16G -t 0:8200 -c 0:"Linux swap" $1
+# sgdisk -Z $1
+# sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
+sgdisk -n 0::+232G -t 0:8300 -c 0:"Linux filesystem" $1
+sgdisk -n 0::+232G -t 0:8300 -c 0:"Linux filesystem" $1
+# sgdisk -n 0::+16G -t 0:8200 -c 0:"Linux swap" $1
 
 # format
-mkfs.vfat -F32 ${1}1
+# mkfs.vfat -F32 ${1}1
 mkfs.ext4 ${1}2
-mkswap ${1}3
-swapon ${1}3
-mkfs.ext4 ${1}4
+# mkswap ${1}3
+# swapon ${1}3
+mkfs.ext4 ${1}3
 
 # mount
 mount ${1}2 /mnt
 mkdir -p /mnt/boot
 mount ${1}1 /mnt/boot
 mkdir /mnt/home
-mount ${1}4 /mnt/home
+mount ${1}3 /mnt/home
 
 # installing
 reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
@@ -114,8 +116,8 @@ if [ $3 = "plasma" ] ; then
 fi
 
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
-arch-chroot /mnt mkdir /boot/EFI/boot
-arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi  /boot/EFI/boot/bootx64.efi
+# arch-chroot /mnt mkdir /boot/EFI/boot
+arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi  /boot/EFI/Boot/bootx64.efi
 arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
