@@ -134,5 +134,5 @@ arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/local
 arch-chroot /mnt locale-gen
 echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 
-umount -R /mnt
-systemctl reboot
+# umount -R /mnt
+# systemctl reboot
