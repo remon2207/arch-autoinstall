@@ -1,6 +1,6 @@
 #!/bin/bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi vim sudo grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g'
 
 if [ $# -lt 5 ] ; then
     echo 'Usage:'
