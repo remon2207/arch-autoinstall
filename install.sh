@@ -62,6 +62,7 @@ mount ${1}3 /mnt/home
 
 # installing
 reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
+pacstrap /mnt base
 pacstrap /mnt $packagelist
 
 # configure
