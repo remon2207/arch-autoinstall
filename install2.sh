@@ -2,9 +2,9 @@
 
 packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man dhcpcd os-prober ntfs-3g'
 
-if [ $# -lt 5 ] ; then
+if [ $# -lt 7 ] ; then
     echo 'Usage:'
-    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|kde|i3> <HostName> <UserName>'
+    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|kde|i3> <HostName> <UserName> <userPasword> <rootPassword>'
     exit
 fi
 
@@ -69,23 +69,37 @@ arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
 # sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
 echo ------------------------------------------------------------------
 echo "Password for root"
-arch-chroot /mnt passwd
+# arch-chroot /mnt passwd
+echo "root:$7" | chpasswd
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
 echo ------------------------------------------------------------------
-echo "Password for $5"
-arch-chroot /mnt passwd $5
+# echo "Password for $5"
+# arch-chroot /mnt passwd $5
+echo "$5:$6" | arch-chroot /mnt chpasswd
 
-arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
-arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
+# arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
+# arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
+# arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
 
 echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" > /mnt/home/$5/.Xmodmap
 arch-chroot /mnt chown $5:users /home/$5/.Xmodmap
 arch-chroot /mnt chmod 644 /home/$5/.Xmodmap
 arch-chroot /mnt sudo -u $5 xmodmap /home/$5/.Xmodmap
 
+echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
+arch-chroot /mnt chown $5:users /home/$5/.xprofile
+arch-chroot /mnt chmod 644 /home/$5/.xprofile
 
-#echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" | arch-chroot /mnt sudo -u $5 tee /home/$5/.Xmodmap
+arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
+arch-chroot /mnt locale-gen
+echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
+arch-chroot /mnt mkdir /home/$5/Desktop /home/$5/Documents /home/$5/Downloads /home/$5/Music /home/$5/Pictures /home/$5/Public /home/$5/Templates /home/$5/Videos
+arch-chroot /mnt chown $5:users /home/$5/Desktop /home/$5/Documents /home/$5/Downloads /home/$5/Music /home/$5/Pictures /home/$5/Public /home/$5/Templates /home/$5/Videos
+arch-chroot /mnt chmod 755 /home/$5/Desktop /home/$5/Documents /home/$5/Downloads /home/$5/Music /home/$5/Pictures /home/$5/Public /home/$5/Templates
+
+
+# arch-chroot /mnt git clone https://github
+
 
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
@@ -107,14 +121,6 @@ arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi  /boot/EFI/boot/bootx64.efi
 #arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 # arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-
-echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
-arch-chroot /mnt chown $5:users /home/$5/.xprofile
-arch-chroot /mnt chmod 644 /home/$5/.xprofile
-
-# arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
-# arch-chroot /mnt locale-gen
-# echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 
 umount -R /mnt
 systemctl reboot
