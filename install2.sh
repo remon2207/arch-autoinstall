@@ -112,9 +112,9 @@ echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIER
 arch-chroot /mnt chown $5:users /home/$5/.xprofile
 arch-chroot /mnt chmod 644 /home/$5/.xprofile
 
-arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
-arch-chroot /mnt locale-gen
-echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
+# arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
+# arch-chroot /mnt locale-gen
+# echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 
-#umount -R /mnt
-#systemctl reboot
+umount -R /mnt
+systemctl reboot
