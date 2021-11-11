@@ -66,7 +66,6 @@ echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $4 > /mnt/etc/hostname
 arch-chroot /mnt systemctl enable dhcpcd
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
-# sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
 
 echo "Password for root"
 # arch-chroot /mnt passwd
@@ -89,13 +88,12 @@ arch-chroot /mnt sudo -u $5 xmodmap /home/$5/.Xmodmap
 echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
 arch-chroot /mnt chown $5:users /home/$5/.xprofile
 arch-chroot /mnt chmod 644 /home/$5/.xprofile
-arch-chroot /mnt LC_ALL=C xdg-user-dirs-update --force
 arch-chroot /mnt mkdir /home/$5/git
 arch-chroot /mnt chown $5:users /home/$5/git
 arch-chroot /mnt chmod 755 /home/$5/git
-# arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
-# arch-chroot /mnt locale-gen
-# echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
+arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
+arch-chroot /mnt locale-gen
+echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 
 
 # arch-chroot /mnt git clone https://github
