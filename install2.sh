@@ -96,7 +96,7 @@ arch-chroot /mnt locale-gen
 echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 git clone https://github.com/remon2207/dotfiles.git /mnt/home/$5/git/dotfiles
 arch-chroot /mnt chown -R $5:users /home/$5/git/dotfiles
-# arch-chroot /mnt sudo -u $5 ./home/$5/git/dotfiles/arch_setup.sh
+arch-chroot /mnt sudo -u $5 ./home/$5/git/dotfiles/arch_setup.sh
 
 
 if [ $3 = "xfce" ] ; then
