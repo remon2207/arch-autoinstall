@@ -77,9 +77,9 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
 # arch-chroot /mnt passwd $5
 echo "$5:$6" | arch-chroot /mnt chpasswd
 
-# arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
-# arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-# arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
+arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
+arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
+arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
 
 echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" > /mnt/home/$5/.Xmodmap
 arch-chroot /mnt chown $5:users /home/$5/.Xmodmap
