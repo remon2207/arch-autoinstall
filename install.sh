@@ -1,6 +1,6 @@
 #!/bin/bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi vim sudo grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g'
 
 if [ $# -lt 5 ] ; then
     echo 'Usage:'
@@ -31,7 +31,7 @@ elif [ "$3" = "cinnamon" ] ; then
 elif [ "$3" = "plasma" ] ; then
     packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 elif [ "$3" = "i3" ] ; then
-    packagelist="$packagelist i3-gaps i3blocks i3lock i3status dmenu rxvt-unicode firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom xterm firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool nvidia-dkms nvidia-settings xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
 fi
 
 loadkeys jp106
@@ -62,7 +62,7 @@ mount ${1}3 /mnt/home
 
 # installing
 reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
-pacstrap /mnt base
+# pacstrap /mnt base
 pacstrap /mnt $packagelist
 
 # configure
@@ -85,6 +85,7 @@ arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=
 arch-chroot /mnt netctl enable enp6s0
 
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
+sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
 echo ------------------------------------------------------------------
 echo "Password for root"
 arch-chroot /mnt passwd
@@ -122,7 +123,7 @@ if [ $3 = "i3" ] ; then
 
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 # arch-chroot /mnt mkdir /boot/EFI/boot
-arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi  /boot/EFI/Boot/bootx64.efi
+arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
 arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
