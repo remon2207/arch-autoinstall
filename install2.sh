@@ -65,8 +65,8 @@ echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $4 > /mnt/etc/hostname
 arch-chroot /mnt systemctl enable dhcpcd
-# arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
-sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
+arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
+# sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
 echo ------------------------------------------------------------------
 echo "Password for root"
 arch-chroot /mnt passwd
