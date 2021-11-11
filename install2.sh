@@ -1,6 +1,6 @@
 #!/bin/bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man dhcpcd os-prober ntfs-3g'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man dhcpcd os-prober ntfs-3g firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter'
 
 if [ $# -lt 7 ] ; then
     echo 'Usage:'
@@ -20,17 +20,17 @@ fi
 
 # desktop
 if [ "$3" = "xfce" ] ; then
-    packagelist="$packagelist xfce4 xfce4-goodies firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gnome firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist gnome xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
 elif [ "$3" = "mate" ] ; then
-    packagelist="$packagelist mate mate-extra firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist mate mate-extra xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
 elif [ "$3" = "cinnamon" ] ; then
-    packagelist="$packagelist cinnamon firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
 elif [ "$3" = "kde" ] ; then
-    packagelist="$packagelist plasma kde-applications firefox pulseaudio pavucontrol lsd xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist plasma kde-applications xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
 elif [ "$3" = "i3" ] ; then
-    packagelist="$packagelist alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter"
+    packagelist="$packagelist alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom"
 fi
 
 loadkeys jp106
