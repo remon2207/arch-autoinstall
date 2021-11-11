@@ -67,12 +67,12 @@ echo $4 > /mnt/etc/hostname
 arch-chroot /mnt systemctl enable dhcpcd
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
 # sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
-echo ------------------------------------------------------------------
+
 echo "Password for root"
 # arch-chroot /mnt passwd
 echo "root:$7" | chpasswd
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
-echo ------------------------------------------------------------------
+
 # echo "Password for $5"
 # arch-chroot /mnt passwd $5
 echo "$5:$6" | arch-chroot /mnt chpasswd
