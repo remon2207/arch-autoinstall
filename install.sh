@@ -1,6 +1,6 @@
 #!/bin/bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man dhcpcd os-prober ntfs-3g firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter'
 
 if [ $# -lt 7 ] ; then
     echo 'Usage:'
@@ -37,27 +37,18 @@ loadkeys jp106
 timedatectl set-ntp true
 
 # partitioning
-# sgdisk -Z $1
-# sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
-sgdisk -d 3 $1
-sgdisk -d 2 $1
-sgdisk -n 0::+232G -t 0:8300 -c 0:"Linux filesystem" $1
-sgdisk -n 0::+232G -t 0:8300 -c 0:"Linux filesystem" $1
-# sgdisk -n 0::+16G -t 0:8200 -c 0:"Linux swap" $1
+sgdisk -Z $1
+sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
+sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" $1
 
 # format
-# mkfs.vfat -F32 ${1}1
+mkfs.vfat -F32 ${1}1
 mkfs.ext4 ${1}2
-# mkswap ${1}3
-# swapon ${1}3
-mkfs.ext4 ${1}3
 
 # mount
 mount ${1}2 /mnt
 mkdir -p /mnt/boot
 mount ${1}1 /mnt/boot
-mkdir /mnt/home
-mount ${1}3 /mnt/home
 
 # installing
 reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
@@ -73,19 +64,9 @@ arch-chroot /mnt locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $4 > /mnt/etc/hostname
+arch-chroot /mnt systemctl enable dhcpcd
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
 
-ip_address=$(ip -4 a show enp6s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
-echo -e "127.0.0.1       localhost\n::1             localhost\n${ip_address}    $4.localdomain        $4" >> /mnt/etc/hosts
-arch-chroot /mnt cp /etc/netctl/examples/ethernet-static /etc/netctl/enp6s0
-dns="'8.8.8.8' '8.8.4.4'"
-google_dns="$dns"
-arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
-arch-chroot /mnt netctl enable enp6s0
-
-arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
-sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
-echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
 echo "root:$7" | chpasswd
@@ -135,14 +116,14 @@ elif [ $3 = "kde" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "i3" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-elif [ $3 = "i3" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
 fi
 
 arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
 arch-chroot /mnt mkdir /boot/EFI/boot
-arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
-arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi  /boot/EFI/boot/bootx64.efi
+#arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+arch-chroot /mnt sed -i -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+# arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 umount -R /mnt
