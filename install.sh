@@ -1,10 +1,10 @@
 #!/bin/bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps lightdm lightdm-gtk-greeter'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps neovim'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
-    echo 'install.sh <DISK> <microcode:intel|amd> <DE:xfce|gnome|mate|cinnamon|kde|i3> <GPU:NVIDIA|AMD> <HostName> <UserName> <userPasword> <rootPassword>'
+    echo 'install.sh <DISK> <microcode:intel|amd|-> <DE:xfce|gnome|mate|cinnamon|kde|i3> <GPU:NVIDIA|AMD> <HostName> <UserName> <userPasword> <rootPassword>'
     exit
 fi
 
@@ -16,21 +16,23 @@ if [ "$2" = "intel" ] ; then
     packagelist="$packagelist intel-ucode"
 elif [ "$2" = "amd" ] ; then
     packagelist="$packagelist amd-ucode"
+elif [ "$2" = "-" ] ; then
+    packagelist="$packagelist"
 fi
 
 # desktop
 if [ "$3" = "xfce" ] ; then
-    packagelist="$packagelist xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
+    packagelist="$packagelist lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gnome xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
+    packagelist="$packagelist gdm gnome xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "mate" ] ; then
-    packagelist="$packagelist mate mate-extra xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
+    packagelist="$packagelist mate mate-extra xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "cinnamon" ] ; then
-    packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
+    packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "kde" ] ; then
-    packagelist="$packagelist plasma kde-applications xarchiver arc-gtk-theme papirus-icon-theme wmctrl xdotool"
+    packagelist="$packagelist sddm plasma kde-applications xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "i3" ] ; then
-    packagelist="$packagelist alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom"
+    packagelist="$packagelist lightdm lightdm-gtk-greeter alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom"
 fi
 
 if [ "$4" = "nvidia" ] ; then
@@ -90,7 +92,7 @@ arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=
 arch-chroot /mnt netctl enable enp6s0
 
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
-sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
+#sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
 echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
@@ -102,8 +104,8 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
 echo "$5:$6" | arch-chroot /mnt chpasswd
 
 arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
-arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
+#arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
+#arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
 
 echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" > /mnt/home/$5/.Xmodmap
 arch-chroot /mnt chown $5:users /home/$5/.Xmodmap
@@ -132,15 +134,13 @@ arch-chroot /mnt sudo -u $5 ./home/$5/git/polybar-themes/setup.sh
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "gnome" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
+    arch-chroot /mnt systemctl enable gdm
 elif [ $3 = "mate" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "cinnamon" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "kde" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
-elif [ $3 = "i3" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
+    arch-chroot /mnt systemctl enable sddm
 elif [ $3 = "i3" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 fi
