@@ -81,7 +81,7 @@ arch-chroot /mnt locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $4 > /mnt/etc/hostname
-arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
+# arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
 
 ip_address=$(ip -4 a show enp6s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 echo -e "127.0.0.1       localhost\n::1             localhost\n${ip_address}    $4.localdomain        $4" >> /mnt/etc/hosts
@@ -91,7 +91,7 @@ google_dns="$dns"
 arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
 arch-chroot /mnt netctl enable enp6s0
 
-arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
+# arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
 #sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
 echo ------------------------------------------------------------------
 echo "Password for root"
@@ -103,23 +103,23 @@ arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $5
 # arch-chroot /mnt passwd $5
 echo "$5:$6" | arch-chroot /mnt chpasswd
 
-arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
-#arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-#arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
+# arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
+# arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
+# arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
 
 echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" > /mnt/home/$5/.Xmodmap
 arch-chroot /mnt chown $5:users /home/$5/.Xmodmap
 arch-chroot /mnt chmod 644 /home/$5/.Xmodmap
 arch-chroot /mnt sudo -u $5 xmodmap /home/$5/.Xmodmap
 
-echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
-arch-chroot /mnt chown $5:users /home/$5/.xprofile
-arch-chroot /mnt chmod 644 /home/$5/.xprofile
+# echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
+# arch-chroot /mnt chown $5:users /home/$5/.xprofile
+# arch-chroot /mnt chmod 644 /home/$5/.xprofile
 arch-chroot /mnt mkdir /home/$5/git
 arch-chroot /mnt chown $5:users /home/$5/git
 arch-chroot /mnt chmod 755 /home/$5/git
-arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
-arch-chroot /mnt locale-gen
+# arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
+# arch-chroot /mnt locale-gen
 echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 git clone https://github.com/remon2207/dotfiles.git /mnt/home/$5/git/dotfiles
 arch-chroot /mnt chown -R $5:users /home/$5/git/dotfiles
