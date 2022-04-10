@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf ufw git cifs-utils openssh htop man netctl os-prober ntfs-3g firefox pulseaudio pavucontrol lsd xdg-user-dirs noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts otf-ipafont fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps neovim'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo grub dosfstools efibootmgr zsh curl wget bat fzf gufw git cifs-utils openssh htop man netctl os-prober ntfs-3g firefox firefox-i18n pulseaudio pavucontrol lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts fcitx-mozc fcitx-im fcitx-configtool xorg-server xorg-xinit xorg-apps neovim'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
@@ -30,7 +30,7 @@ elif [ "$3" = "mate" ] ; then
 elif [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "kde" ] ; then
-    packagelist="$packagelist sddm plasma kde-applications xarchiver arc-gtk-theme papirus-icon-theme"
+    packagelist="$packagelist plasma alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "i3" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom"
 fi
