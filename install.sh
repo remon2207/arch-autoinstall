@@ -151,9 +151,9 @@ fi
 # arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
 # arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
-# arch-chroot /mnt bootctl --path=/boot install
-# echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
-# echo -e "title    Arch Linux\nlinux    /vmlinuz-linux\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux.img\noptions  
+arch-chroot /mnt bootctl --path=/boot install
+echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
+echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions    root= rw loglevel=3 nomodest i915.modeset=0 nouveau.modeset=0" >> /mnt/boot/loader/entries/arch.conf
 
 # umount -R /mnt
 # systemctl reboot
