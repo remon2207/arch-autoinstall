@@ -81,7 +81,7 @@ arch-chroot /mnt locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
 echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
 echo $5 > /mnt/etc/hostname
-# arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL) ALL' | EDITOR='tee -a' visudo"
+arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 
 ip_address=$(ip -4 a show enp6s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 echo -e "127.0.0.1       localhost\n::1             localhost\n${ip_address}    $5.localdomain        $5" >> /mnt/etc/hosts
@@ -90,8 +90,6 @@ dns="'8.8.8.8' '8.8.4.4'"
 google_dns="$dns"
 arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
 arch-chroot /mnt netctl enable enp6s0
-
-echo '%wheel ALL=(ALL:ALL) ALL' | arch-chroot /mnt EDITOR='tee -a' visudo
 
 echo ------------------------------------------------------------------
 echo "Password for root"
