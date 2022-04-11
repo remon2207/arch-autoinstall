@@ -116,16 +116,16 @@ echo "$6:$7" | arch-chroot /mnt chpasswd
 echo -e "GTK_IM_MODULE=fcitx\nQT_IM_MODULE=fcitx\nXMODIFIERS=@im=fcitx" >> /mnt/etc/environment
 # arch-chroot /mnt chown $5:users /home/$5/.xprofile
 # arch-chroot /mnt chmod 644 /home/$5/.xprofile
-arch-chroot /mnt mkdir /home/$6/git
-arch-chroot /mnt chown $6:users /home/$6/git
-arch-chroot /mnt chmod 755 /home/$6/git
+# arch-chroot /mnt mkdir /home/$6/git
+# arch-chroot /mnt chown $6:users /home/$6/git
+# arch-chroot /mnt chmod 755 /home/$6/git
 # arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
 # arch-chroot /mnt locale-gen
 echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
-git clone https://github.com/remon2207/dotfiles.git /mnt/home/$6/git/dotfiles
-arch-chroot /mnt chown -R $6:users /home/$6/git/dotfiles
-arch-chroot /mnt sudo -u $6 ./home/$6/git/dotfiles/arch_setup.sh
-arch-chroot /mnt sudo -u $6 ./home/$6/git/dotfiles/install.sh
+# git clone https://github.com/remon2207/dotfiles.git /mnt/home/$6/git/dotfiles
+# arch-chroot /mnt chown -R $6:users /home/$6/git/dotfiles
+# arch-chroot /mnt sudo -u $6 ./home/$6/git/dotfiles/arch_setup.sh
+# arch-chroot /mnt sudo -u $6 ./home/$6/git/dotfiles/install.sh
 
 arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
 
