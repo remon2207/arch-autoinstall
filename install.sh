@@ -91,7 +91,8 @@ google_dns="$dns"
 arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
 arch-chroot /mnt netctl enable enp6s0
 
-sed -i -e "s/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/" /mnt/etc/sudoers
+echo '%wheel ALL=(ALL:ALL) ALL' | arch-chroot /mnt EDITOR='tee -a' visudo
+
 echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
