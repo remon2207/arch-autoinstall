@@ -24,9 +24,9 @@ fi
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gdm gnome xarchiver arc-gtk-theme papirus-icon-theme"
+    packagelist="$packagelist gnome-shell gnome-control-center arc-gtk-theme papirus-icon-theme lightdm lightdm-gtk-greeter alacritty"
 elif [ "$3" = "mate" ] ; then
-    packagelist="$packagelist mate mate-extra xarchiver arc-gtk-theme papirus-icon-theme"
+    packagelist="$packagelist mate mate-extra xarchiver lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "kde" ] ; then
@@ -130,7 +130,7 @@ arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "gnome" ] ; then
-    arch-chroot /mnt systemctl enable gdm
+    arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "mate" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "cinnamon" ] ; then
