@@ -36,9 +36,9 @@ elif [ "$3" = "i3" ] ; then
 fi
 
 if [ "$4" = "nvidia" ] ; then
-    packagelist=$packagelist nvidia-dkms nvidia-settings
+    packagelist="$packagelist nvidia-dkms nvidia-settings"
 elif [ "$4" = "amd" ] ; then
-    packagelist=$packagelist 
+    packagelist="$packagelist"
 fi
 
 loadkeys jp106
