@@ -94,7 +94,7 @@ arch-chroot /mnt netctl enable enp6s0
 echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
-echo "root:$8" | chpasswd
+echo "root:$8" | arch-chroot /mnt chpasswd
 arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $6
 
 # echo "Password for $6"
