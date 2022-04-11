@@ -1,6 +1,6 @@
 #!/bin/sh
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts fcitx5-im fcitx5-mozc xorg-server xorg-xinit xorg-apps neovim'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts fcitx5-im fcitx5-mozc neovim'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
@@ -30,7 +30,7 @@ elif [ "$3" = "mate" ] ; then
 elif [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "kde" ] ; then
-    packagelist="$packagelist plasma alacritty arc-gtk-theme papirus-icon-theme"
+    packagelist="$packagelist plasma plasma-wayland-session egl-wayland lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "i3" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom"
 fi
@@ -138,7 +138,7 @@ elif [ $3 = "mate" ] ; then
 elif [ $3 = "cinnamon" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "kde" ] ; then
-    arch-chroot /mnt systemctl enable sddm
+    arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "i3" ] ; then
     arch-chroot /mnt systemctl enable lightdm
     git clone --depth=1 https://github.com/adi1090x/polybar-themes.git /mnt/home/$5/git/polybar-themes
