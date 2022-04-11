@@ -153,7 +153,7 @@ fi
 
 arch-chroot /mnt bootctl --path=/boot install
 echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
-echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions    root= rw loglevel=3 nomodest i915.modeset=0 nouveau.modeset=0" >> /mnt/boot/loader/entries/arch.conf
+echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root= rw loglevel=3 nomodest i915.modeset=0 nouveau.modeset=0" >> /mnt/boot/loader/entries/arch.conf
 
 # umount -R /mnt
 # systemctl reboot
