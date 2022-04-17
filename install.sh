@@ -145,17 +145,19 @@ elif [ $3 = "i3" ] ; then
     arch-chroot /mnt sudo -u $6 ./home/$6/git/polybar-themes/setup.sh
 fi
 
-# arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
-# arch-chroot /mnt mkdir /boot/EFI/boot
-# arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
-# arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
-# arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+# grub
+#arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+#arch-chroot /mnt mkdir /boot/EFI/boot
+#arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
+#arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+#arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
+# systemd-boot
 root_uuid="blkid -s UUID -o value ${1}2"
 arch-chroot /mnt bootctl --path=/boot install
 echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=UUID=$root_uuid rw loglevel=3 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 arch-chroot /mnt systemctl enable --now systemd-boot-update.service
 
-# umount -R /mnt
-# systemctl reboot
+#umount -R /mnt
+#systemctl reboot
