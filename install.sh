@@ -30,7 +30,7 @@ elif [ "$3" = "mate" ] ; then
 elif [ "$3" = "cinnamon" ] ; then
     packagelist="$packagelist cinnamon xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "kde" ] ; then
-    packagelist="$packagelist plasma plasma-wayland-session egl-wayland lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
+    packagelist="$packagelist plasma lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "i3" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter alacritty i3-gaps i3blocks i3lock i3status dmenu rofi mpd ncmpcpp ranger feh picom"
 fi
