@@ -24,7 +24,7 @@ fi
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gnome-shell gnome-control-center arc-gtk-theme papirus-icon-theme lightdm lightdm-gtk-greeter alacritty"
+    packagelist="$packagelist gnome arc-gtk-theme papirus-icon-theme lightdm lightdm-gtk-greeter alacritty"
 elif [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra xarchiver lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "cinnamon" ] ; then
