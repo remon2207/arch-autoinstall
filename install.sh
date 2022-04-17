@@ -154,7 +154,7 @@ fi
 root_uuid="blkid -s UUID -o value ${1}2"
 arch-chroot /mnt bootctl --path=/boot install
 echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
-echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=UUID=$root_uuid rw loglevel=3 nomodest i915.modeset=0 nouveau.modeset=0" >> /mnt/boot/loader/entries/arch.conf
+echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=UUID=$root_uuid rw loglevel=3 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 arch-chroot /mnt systemctl enable --now systemd-boot-update.service
 
 # umount -R /mnt
