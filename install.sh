@@ -153,15 +153,18 @@ fi
 #arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 # systemd-boot
+efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
 root_partuuid=`blkid -s PARTUUID -o value ${1}2`
+home_partuuid=`blkid -s PARTUUID -o value ${1}3`
+
 arch-chroot /mnt bootctl --path=/boot install
 echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=PARTUUID=$root_partuuid rw loglevel=3 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 arch-chroot /mnt systemctl enable --now systemd-boot-update.service
 
-efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
-
 arch-chroot /mnt sed -i -e 's/\${1}1/${efi_partuuid}' /etc/fstab
+arch-chroot /mnt sed -i -e 's/\${1}2/${root_partuuid}' /etc/fstab
+arch-chroot /mnt sed -i -e 's/\${1}3/${home_partuuid}' /etc/fstab
 
 #umount -R /mnt
 #systemctl reboot
