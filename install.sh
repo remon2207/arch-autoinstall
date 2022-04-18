@@ -167,9 +167,9 @@ echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mn
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=PARTUUID=$root_partuuid rw loglevel=3 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 arch-chroot /mnt systemctl enable --now systemd-boot-update.service
 
-arch-chroot /mnt sed -i -e 's/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}' /etc/fstab
-arch-chroot /mnt sed -i -e 's/UUID=${root_uuid}/PARTUUID=${root_partuuid}' /etc/fstab
-arch-chroot /mnt sed -i -e 's/UUID=${home_uuid}/PARTUUID=${home_partuuid}' /etc/fstab
+arch-chroot /mnt sed -i -e 's/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/g' /etc/fstab
+arch-chroot /mnt sed -i -e 's/UUID=${root_uuid}/PARTUUID=${root_partuuid}/g' /etc/fstab
+arch-chroot /mnt sed -i -e 's/UUID=${home_uuid}/PARTUUID=${home_partuuid}/g' /etc/fstab
 
 #umount -R /mnt
 #systemctl reboot
