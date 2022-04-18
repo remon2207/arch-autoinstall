@@ -168,9 +168,9 @@ efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
 root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 home_partuuid=`blkid -s PARTUUID -o value ${1}3`
 
-arch-chroot /mnt sed -i -e "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}" /etc/fstab
-arch-chroot /mnt sed -i -e "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}" /etc/fstab
-arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}" /etc/fstab
+arch-chroot /mnt sed -i -e "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i -e "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
 
 #umount -R /mnt
 #systemctl reboot
