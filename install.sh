@@ -41,7 +41,7 @@ elif [ "$4" = "amd" ] ; then
     packagelist="$packagelist"
 fi
 
-loadkeys jp106
+# loadkeys jp106
 timedatectl set-ntp true
 
 # partitioning
@@ -79,7 +79,7 @@ arch-chroot /mnt hwclock --systohc --utc
 arch-chroot /mnt sed -i -e 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' -e 's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/g' /etc/locale.gen
 arch-chroot /mnt locale-gen
 echo LANG=en_US.UTF-8 > /mnt/etc/locale.conf
-echo KEYMAP=jp106 > /mnt/etc/vconsole.conf
+echo KEYMAP=us > /mnt/etc/vconsole.conf
 echo $5 > /mnt/etc/hostname
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 
