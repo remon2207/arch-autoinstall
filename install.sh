@@ -139,10 +139,10 @@ elif [ $3 = "kde" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "i3" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-    git clone --depth=1 https://github.com/adi1090x/polybar-themes.git /mnt/home/$6/git/polybar-themes
-    arch-chroot /mnt chown -R $6:users /home/$6/git/polybar-themes
-    arch-chroot /mnt chmod +x /home/$6/git/polybar-themes/setup.sh
-    arch-chroot /mnt sudo -u $6 ./home/$6/git/polybar-themes/setup.sh
+#    git clone --depth=1 https://github.com/adi1090x/polybar-themes.git /mnt/home/$6/git/polybar-themes
+#    arch-chroot /mnt chown -R $6:users /home/$6/git/polybar-themes
+#    arch-chroot /mnt chmod +x /home/$6/git/polybar-themes/setup.sh
+#    arch-chroot /mnt sudo -u $6 ./home/$6/git/polybar-themes/setup.sh
 fi
 
 # grub
