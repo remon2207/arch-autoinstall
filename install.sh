@@ -171,5 +171,5 @@ arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc
 
 arch-chroot /mnt systemctl enable --now systemd-boot-update.service
 
-umount -R /mnt
-systemctl reboot
+# umount -R /mnt
+# systemctl reboot
