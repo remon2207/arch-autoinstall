@@ -1,6 +1,6 @@
 #!/bin/sh
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra adobe-source-han-sans-jp-fonts fcitx5-im fcitx5-mozc neovim'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts-emoji otf-ipafont fcitx5-im fcitx5-mozc neovim'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
