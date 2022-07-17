@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf fd ripgrep sd starship tealdeer zip unzip xclip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc neovim'
 
@@ -142,5 +142,8 @@ arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc
 
 arch-chroot /mnt systemctl enable systemd-boot-update.service
 
-# umount -R /mnt
-# systemctl reboot
+echo ''
+echo '==================================='
+echo 'Change UUID in /etc/fstab to PARTUUID'
+echo '==================================='
+echo ''
