@@ -54,7 +54,7 @@ sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" $1
 # sgdisk -n 0::+16G -t 0:8200 -c 0:"Linux swap" $1
 
 # format
-mkfs.vfat -F 32 ${1}1
+mkfs.fat -F 32 ${1}1
 mkfs.ext4 ${1}2
 # mkswap ${1}3
 # swapon ${1}3
@@ -95,7 +95,8 @@ echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
 echo "root:$8" | arch-chroot /mnt chpasswd
-arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $6
+# arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $6
+arch-chroot /mnt useradd -m -G wheel -s /bin/bash $6
 
 # echo "Password for $6"
 # arch-chroot /mnt passwd $6
@@ -111,7 +112,7 @@ echo "$6:$7" | arch-chroot /mnt chpasswd
 # arch-chroot /mnt sudo -u $5 xmodmap /home/$5/.Xmodmap
 
 # echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
-echo -e "GTK_IM_MODULE=fcitx\nQT_IM_MODULE=fcitx\nXMODIFIERS=@im=fcitx" >> /mnt/etc/environment
+echo -e "GTK_IM_MODULE=fcitx5\nQT_IM_MODULE=fcitx5\nXMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
 # arch-chroot /mnt chown $5:users /home/$5/.xprofile
 # arch-chroot /mnt chmod 644 /home/$5/.xprofile
 # arch-chroot /mnt mkdir /home/$6/git
@@ -169,7 +170,7 @@ arch-chroot /mnt sed -i -e "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/f
 arch-chroot /mnt sed -i -e "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
 
-arch-chroot /mnt systemctl enable --now systemd-boot-update.service
+arch-chroot /mnt systemctl enable systemd-boot-update.service
 
 # umount -R /mnt
 # systemctl reboot
