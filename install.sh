@@ -1,15 +1,12 @@
 #!/bin/sh
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc neovim'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf fd ripgrep sd starship tealdeer zip unzip xclip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc neovim'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
     echo 'install.sh <DISK> <microcode:intel|amd|-> <DE:xfce|gnome|mate|cinnamon|kde|i3> <GPU:NVIDIA|AMD> <HostName> <UserName> <userPasword> <rootPassword>'
     exit
 fi
-
-
-
 
 # intel-ucode or amd-ucode
 if [ "$2" = "intel" ] ; then
@@ -95,36 +92,13 @@ echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
 echo "root:$8" | arch-chroot /mnt chpasswd
-# arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash $6
 arch-chroot /mnt useradd -m -G wheel -s /bin/bash $6
 
-# echo "Password for $6"
-# arch-chroot /mnt passwd $6
+echo "Password for ${6}"
 echo "$6:$7" | arch-chroot /mnt chpasswd
 
-# arch-chroot /mnt sudo -u $5 mkdir /home/$5/appimage
-# arch-chroot /mnt sudo -u $5 wget -O /home/$5/appimage/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
-# arch-chroot /mnt sudo -u $5 chmod u+x /home/$5/appimage/nvim.appimage
-
-# echo -e "clear lock\nclear control\nkeycode 66 = Control_L\nadd control = Control_L Control_R" > /mnt/home/$6/.Xmodmap
-# arch-chroot /mnt chown $5:users /home/$5/.Xmodmap
-# arch-chroot /mnt chmod 644 /home/$5/.Xmodmap
-# arch-chroot /mnt sudo -u $5 xmodmap /home/$5/.Xmodmap
-
-# echo -e "export GTK_IM_MODULE=fcitx\nexport QT_IM_MODULE=fcitx\nexport XMODIFIERS=@im=fcitx" > /mnt/home/$5/.xprofile
 echo -e "GTK_IM_MODULE=fcitx5\nQT_IM_MODULE=fcitx5\nXMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
-# arch-chroot /mnt chown $5:users /home/$5/.xprofile
-# arch-chroot /mnt chmod 644 /home/$5/.xprofile
-# arch-chroot /mnt mkdir /home/$6/git
-# arch-chroot /mnt chown $6:users /home/$6/git
-# arch-chroot /mnt chmod 755 /home/$6/git
-# arch-chroot /mnt sed -i -e 's/en_US.UTF-8 UTF-8/#en_US.UTF-8 UTF-8/g' /etc/locale.gen
-# arch-chroot /mnt locale-gen
 echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
-# git clone https://github.com/remon2207/dotfiles.git /mnt/home/$6/git/dotfiles
-# arch-chroot /mnt chown -R $6:users /home/$6/git/dotfiles
-# arch-chroot /mnt sudo -u $6 ./home/$6/git/dotfiles/arch_setup.sh
-# arch-chroot /mnt sudo -u $6 ./home/$6/git/dotfiles/install.sh
 
 arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
 
@@ -140,10 +114,6 @@ elif [ $3 = "kde" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "i3" ] ; then
     arch-chroot /mnt systemctl enable lightdm
-#    git clone --depth=1 https://github.com/adi1090x/polybar-themes.git /mnt/home/$6/git/polybar-themes
-#    arch-chroot /mnt chown -R $6:users /home/$6/git/polybar-themes
-#    arch-chroot /mnt chmod +x /home/$6/git/polybar-themes/setup.sh
-#    arch-chroot /mnt sudo -u $6 ./home/$6/git/polybar-themes/setup.sh
 fi
 
 # grub
