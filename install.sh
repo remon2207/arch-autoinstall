@@ -21,8 +21,7 @@ fi
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist evince gdm gnome-control-center gnome-shell gnome-terminal gvfs gvfs-smb mutter nautilus dconf-editor gnome-tweaks audacious"
-    # packagelist="$packagelist gdm gnome-shell mutter"
+    packagelist="$packagelist evince gdm gnome-control-center gnome-shell gnome-terminal gvfs gvfs-smb mutter nautilus dconf-editor gnome-tweaks audacious networkmanager"
     packagelist="$packagelist"
 elif [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra xarchiver lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
