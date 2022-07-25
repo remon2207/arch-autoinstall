@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
@@ -84,11 +84,22 @@ arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo
 
 ip_address=$(ip -4 a show enp6s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 echo -e "127.0.0.1       localhost\n::1             localhost\n${ip_address}    $5.localdomain        $5" >> /mnt/etc/hosts
-arch-chroot /mnt cp /etc/netctl/examples/ethernet-static /etc/netctl/enp6s0
-dns="'8.8.8.8' '8.8.4.4'"
-google_dns="$dns"
-arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
-arch-chroot /mnt netctl enable enp6s0
+
+arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
+echo -e "[Match]\n\
+Name=enp6s0\n\
+\n\
+[Network]\n\
+Address=${ip_address}\n\
+Gateway=192.168.1.1\n\
+DNS=8.8.8.8\n\
+DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
+
+ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+
+# arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
+# arch-chroot /mnt netctl enable enp6s0
+
 
 echo ------------------------------------------------------------------
 echo "Password for root"
