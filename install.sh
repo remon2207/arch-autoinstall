@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi sudo zsh curl wget bat fzf fd ripgrep sd starship tealdeer zip unzip xclip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pipewire-pulse lsd xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc neovim gnome-keyring'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
@@ -21,7 +21,7 @@ fi
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gnome gnome-tweaks gdm arc-gtk-theme papirus-icon-theme lightdm lightdm-gtk-greeter alacritty"
+    packagelist="$packagelist gnome gnome-tweaks lightdm lightdm-gtk-greeter"
 elif [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra xarchiver lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "cinnamon" ] ; then
@@ -48,13 +48,13 @@ sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
 #sgdisk -d 2 $1
 sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" $1
 sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" $1
-# sgdisk -n 0::+16G -t 0:8200 -c 0:"Linux swap" $1
+sgdisk -n 0::+2G -t 0:8200 -c 0:"Linux swap" $1
 
 # format
 mkfs.fat -F 32 ${1}1
 mkfs.ext4 ${1}2
-# mkswap ${1}3
-# swapon ${1}3
+mkswap ${1}4
+swapon ${1}4
 mkfs.ext4 ${1}3
 
 # mount
@@ -132,13 +132,17 @@ echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode
 efi_uuid=`blkid -s UUID -o value ${1}1`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
+swap_uuid=`blkid -s UUID -o value ${1}4`
 
 efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
+root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 home_partuuid=`blkid -s PARTUUID -o value ${1}3`
+swap_partuuid=`blkid -s PARTUUID -o value ${1}4`
 
 arch-chroot /mnt sed -i -e "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i -e "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i -e "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
 
 arch-chroot /mnt systemctl enable systemd-boot-update.service
 
