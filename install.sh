@@ -89,7 +89,7 @@ echo -e "[Match]\n\
 Name=enp6s0\n\
 \n\
 [Network]\n\
-Address=${ip_address}\n\
+Address=${ip_address}/24\n\
 Gateway=192.168.1.1\n\
 DNS=8.8.8.8\n\
 DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
