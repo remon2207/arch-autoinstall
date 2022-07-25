@@ -94,11 +94,7 @@ Gateway=192.168.1.1\n\
 DNS=8.8.8.8\n\
 DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
 
-ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
-
-# arch-chroot /mnt sed -i -e "/^Interface/s/eth0/enp6s0/" -e "/^Address/c\Address=('${ip_address}/24')" -e "/^DNS/c\DNS=(${google_dns})" /etc/netctl/enp6s0
-# arch-chroot /mnt netctl enable enp6s0
-
+arch-chroot /mnt ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 echo ------------------------------------------------------------------
 echo "Password for root"
