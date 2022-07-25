@@ -46,8 +46,8 @@ sgdisk -Z $1
 sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
 #sgdisk -d 3 $1
 #sgdisk -d 2 $1
-sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" $1
-sgdisk -n 0::+148G -t 0:8300 -c 0:"Linux filesystem" $1
+sgdisk -n 0::+280G -t 0:8300 -c 0:"Linux filesystem" $1
+sgdisk -n 0::+183G -t 0:8300 -c 0:"Linux filesystem" $1
 sgdisk -n 0:: -t 0:8200 -c 0:"Linux swap" $1
 
 # format
