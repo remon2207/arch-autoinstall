@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man netctl ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
@@ -107,7 +107,7 @@ arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "gnome" ] ; then
-    arch-chroot /mnt pacman -S --noconfirm evince gdm gnome-control-center gnome-shell gnome-terminal gvfs gvfs-smb mutter nautilus dconf-editor gnome-tweaks audacious"
+    arch-chroot /mnt pacman -S --noconfirm evince gdm gnome-control-center gnome-shell gnome-terminal gvfs gvfs-smb mutter nautilus dconf-editor gnome-tweaks gnome-keyring audacious
     arch-chroot /mnt systemctl enable gdm
 elif [ $3 = "mate" ] ; then
     arch-chroot /mnt systemctl enable lightdm
