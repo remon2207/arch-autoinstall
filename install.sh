@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano nano-syntax-highlighting sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pavucontrol rustup xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring qt5ct kvantum docker docker-compose evince gvfs github-cli'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
-    echo 'install.sh <DISK> <microcode:intel|amd|-> <DE:xfce|gnome|mate|cinnamon|kde|i3> <GPU:NVIDIA|AMD> <HostName> <UserName> <userPasword> <rootPassword>'
+    echo 'install.sh <DISK> <microcode: intel | amd> <DE: xfce | gnome | mate | cinnamon | kde | i3> <GPU: NVIDIA | AMD> <HostName> <UserName> <userPasword> <rootPassword>'
     exit
 fi
 
@@ -13,13 +13,11 @@ if [ "$2" = "intel" ] ; then
     packagelist="$packagelist intel-ucode"
 elif [ "$2" = "amd" ] ; then
     packagelist="$packagelist amd-ucode"
-elif [ "$2" = "-" ] ; then
-    packagelist="$packagelist"
 fi
 
 # desktop
 if [ "$3" = "xfce" ] ; then
-    packagelist="$packagelist lightdm lightdm-gtk-greeter xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
+    packagelist="$packagelist lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
     packagelist="$packagelist evince gdm gnome-control-center gnome-shell gnome-terminal gvfs gvfs-smb mutter nautilus dconf-editor gnome-tweaks audacious"
 elif [ "$3" = "mate" ] ; then
@@ -34,8 +32,12 @@ fi
 
 if [ "$4" = "nvidia" ] ; then
     packagelist="$packagelist nvidia-dkms nvidia-settings"
-elif [ "$4" = "amd" ] ; then
-    packagelist="$packagelist"
+elif [ "$4" = "amd-dgpu" ] ; then
+    packagelist="$packagelist vulkan-radeon"
+elif [ "$4" = "intel" ] ; then
+    packagelist="$packagelist xorg-server xorg-apps"
+elif [ "$4" = "amd-igpu" ] ; then
+    packagelist="$packagelist xf86-video-amdgpu"
 fi
 
 # loadkeys jp106
@@ -100,7 +102,7 @@ echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
 echo "root:$8" | arch-chroot /mnt chpasswd
-arch-chroot /mnt useradd -m -G wheel -s /bin/bash $6
+arch-chroot /mnt useradd -m -G wheel -s $(which bash) $6
 
 echo "Password for ${6}"
 echo "$6:$7" | arch-chroot /mnt chpasswd
@@ -109,6 +111,11 @@ echo -e "GTK_IM_MODULE=fcitx5\nQT_IM_MODULE=fcitx5\nXMODIFIERS=@im=fcitx5" >> /m
 echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 
 arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
+
+arch-chroot /mnt usermod -aG docker $6
+arch-chroot /mnt systemctl enable docker.service
+
+arch-chroot /mnt systemctl enable fstrim.timer
 
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
