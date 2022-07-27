@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano nano-syntax-highlighting sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pavucontrol rustup xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring qt5ct kvantum docker docker-compose evince gvfs github-cli'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano nano-syntax-highlighting sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pavucontrol rustup xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring qt5ct kvantum docker docker-compose evince gvfs github-cli xarchiver discord neofetch xarchiver'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
@@ -19,7 +19,7 @@ fi
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist evince gdm gnome-control-center gnome-shell gnome-terminal gvfs gvfs-smb mutter nautilus dconf-editor gnome-tweaks audacious"
+    packagelist="$packagelist gdm gnome-control-center gnome-shell gnome-terminal mutter nautilus dconf-editor gnome-tweaks audacious"
 elif [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra xarchiver lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "cinnamon" ] ; then
@@ -96,7 +96,7 @@ Gateway=192.168.1.1\n\
 DNS=8.8.8.8\n\
 DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
 
-arch-chroot /mnt ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
 echo ------------------------------------------------------------------
 echo "Password for root"
@@ -144,7 +144,8 @@ echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mn
 root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 
-efi_uuid=`blkid -s UUID -o value ${1}1`
+# efi_uuid=`blkid -s UUID -o value ${1}1`
+efi_uuid=`cat /mnt/etc/fstab | grep 'UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
 swap_uuid=`blkid -s UUID -o value ${1}4`
