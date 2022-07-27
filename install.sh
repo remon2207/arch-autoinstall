@@ -69,6 +69,7 @@ mount ${1}3 /mnt/home
 # installing
 reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
 # pacman -Sy --noconfirm archlinux-keyring && pacman -Su --noconfirm
+pacman -Sy --noconfirm archlinux-keyring
 pacstrap /mnt $packagelist
 
 # configure
@@ -145,7 +146,7 @@ root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 
 # efi_uuid=`blkid -s UUID -o value ${1}1`
-efi_uuid=`cat /mnt/etc/fstab | grep 'UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
+efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
 swap_uuid=`blkid -s UUID -o value ${1}4`
