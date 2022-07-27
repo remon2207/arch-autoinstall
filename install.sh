@@ -156,10 +156,10 @@ root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 home_partuuid=`blkid -s PARTUUID -o value ${1}3`
 swap_partuuid=`blkid -s PARTUUID -o value ${1}4`
 
-arch-chroot /mnt sed -i -e "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
-arch-chroot /mnt sed -i -e "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
-arch-chroot /mnt sed -i -e "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
-arch-chroot /mnt sed -i -e "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
+arch-chroot /mnt sed -i "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
 
 arch-chroot /mnt systemctl enable systemd-boot-update.service
 
