@@ -119,6 +119,10 @@ arch-chroot /mnt systemctl enable docker.service
 
 arch-chroot /mnt systemctl enable fstrim.timer
 
+arch-chroot /mnt sed -i "s/^#NTP=/NTP=0.asia.pool.ntp.org 1.asia.pool.ntp.org 2.asia.pool.ntp.org 3.asia.pool.ntp.org/" /etc/systemd/timesyncd.conf
+arch-chroot /mnt sed -i "s/^#FallbackNTP/FallbackNTP/" /etc/systemd/timesyncd.conf
+arch-chroot /mnt timedatectl set-ntp true
+
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ $3 = "gnome" ] ; then
@@ -147,8 +151,8 @@ root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 arch-chroot /mnt systemctl enable systemd-boot-update.service
 
-efi_uuid=`blkid -s UUID -o value ${1}1`
-# efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
+# efi_uuid=`blkid -s UUID -o value ${1}1`
+efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
 swap_uuid=`blkid -s UUID -o value ${1}4`
