@@ -144,9 +144,10 @@ arch-chroot /mnt bootctl --path=/boot install
 echo -e "default    arch\ntimeout    10\nconsole-mode max\neditor     no" >> /mnt/boot/loader/loader.conf
 root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode.img\ninitrd   /initramfs-linux-zen.img\noptions  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
+arch-chroot /mnt systemctl enable systemd-boot-update.service
 
-# efi_uuid=`blkid -s UUID -o value ${1}1`
-efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
+efi_uuid=`blkid -s UUID -o value ${1}1`
+# efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
 swap_uuid=`blkid -s UUID -o value ${1}4`
@@ -161,7 +162,6 @@ arch-chroot /mnt sed -i "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fs
 arch-chroot /mnt sed -i "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
 
-arch-chroot /mnt systemctl enable systemd-boot-update.service
 
 echo ''
 echo '==================================='
