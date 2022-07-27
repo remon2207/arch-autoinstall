@@ -102,7 +102,7 @@ echo ------------------------------------------------------------------
 echo "Password for root"
 # arch-chroot /mnt passwd
 echo "root:$8" | arch-chroot /mnt chpasswd
-arch-chroot /mnt useradd -m -G wheel -s $(which bash) $6
+arch-chroot /mnt useradd -m -G wheel -s /bin/bash $6
 
 echo "Password for ${6}"
 echo "$6:$7" | arch-chroot /mnt chpasswd
@@ -112,7 +112,7 @@ echo LANG=ja_JP.UTF-8 > /mnt/etc/locale.conf
 
 arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
 
-# arch-chroot /mnt usermod -aG docker $6
+arch-chroot /mnt usermod -aG docker $6
 arch-chroot /mnt systemctl enable docker.service
 
 arch-chroot /mnt systemctl enable fstrim.timer
