@@ -68,7 +68,7 @@ mount ${1}3 /mnt/home
 
 # installing
 reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
-pacman -Sy --noconfirm archlinux-keyring && pacman -Su --noconfirm
+# pacman -Sy --noconfirm archlinux-keyring && pacman -Su --noconfirm
 pacstrap /mnt $packagelist
 
 # configure
