@@ -19,7 +19,7 @@ fi
 if [ "$3" = "xfce" ] ; then
     packagelist="$packagelist lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings xfce4 xfce4-goodies xarchiver arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "gnome" ] ; then
-    packagelist="$packagelist gdm gnome-control-center gnome-shell gnome-terminal mutter nautilus dconf-editor gnome-tweaks audacious"
+    packagelist="$packagelist gdm gnome-control-center gnome-shell gnome-terminal mutter nautilus dconf-editor gnome-tweaks audacious gnome-themes-extra"
 elif [ "$3" = "mate" ] ; then
     packagelist="$packagelist mate mate-extra xarchiver lightdm lightdm-gtk-greeter alacritty arc-gtk-theme papirus-icon-theme"
 elif [ "$3" = "cinnamon" ] ; then
@@ -151,17 +151,17 @@ echo -e "title    Arch Linux\nlinux    /vmlinuz-linux-zen\ninitrd   /intel-ucode
 arch-chroot /mnt systemctl enable systemd-boot-update.service
 
 # efi_uuid=`blkid -s UUID -o value ${1}1`
-efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
+# efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
 # swap_uuid=`blkid -s UUID -o value ${1}4`
 
-efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
+# efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
 root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 home_partuuid=`blkid -s PARTUUID -o value ${1}3`
 # swap_partuuid=`blkid -s PARTUUID -o value ${1}4`
 
-arch-chroot /mnt sed -i "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
+# arch-chroot /mnt sed -i "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
 # arch-chroot /mnt sed -i "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
