@@ -48,15 +48,15 @@ sgdisk -Z $1
 sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" $1
 #sgdisk -d 3 $1
 #sgdisk -d 2 $1
-sgdisk -n 0::+280G -t 0:8300 -c 0:"Linux filesystem" $1
-sgdisk -n 0::+183G -t 0:8300 -c 0:"Linux filesystem" $1
-sgdisk -n 0:: -t 0:8200 -c 0:"Linux swap" $1
+sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" $1
+sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" $1
+# sgdisk -n 0:: -t 0:8200 -c 0:"Linux swap" $1
 
 # format
 mkfs.fat -F 32 ${1}1
 mkfs.ext4 ${1}2
-mkswap ${1}4
-swapon ${1}4
+# mkswap ${1}4
+# swapon ${1}4
 mkfs.ext4 ${1}3
 
 # mount
@@ -155,17 +155,17 @@ arch-chroot /mnt systemctl enable systemd-boot-update.service
 efi_uuid=`cat /mnt/etc/fstab | grep -E '^UUID' | awk -F '=' '{print $2}' | awk -F ' ' '{print $1}'`
 root_uuid=`blkid -s UUID -o value ${1}2`
 home_uuid=`blkid -s UUID -o value ${1}3`
-swap_uuid=`blkid -s UUID -o value ${1}4`
+# swap_uuid=`blkid -s UUID -o value ${1}4`
 
 efi_partuuid=`blkid -s PARTUUID -o value ${1}1`
 root_partuuid=`blkid -s PARTUUID -o value ${1}2`
 home_partuuid=`blkid -s PARTUUID -o value ${1}3`
-swap_partuuid=`blkid -s PARTUUID -o value ${1}4`
+# swap_partuuid=`blkid -s PARTUUID -o value ${1}4`
 
 arch-chroot /mnt sed -i "s/UUID=${efi_uuid}/PARTUUID=${efi_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i "s/UUID=${root_uuid}/PARTUUID=${root_partuuid}/" /etc/fstab
 arch-chroot /mnt sed -i "s/UUID=${home_uuid}/PARTUUID=${home_partuuid}/" /etc/fstab
-arch-chroot /mnt sed -i "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
+# arch-chroot /mnt sed -i "s/UUID=${swap_uuid}/PARTUUID=${swap_partuuid}/" /etc/fstab
 
 
 echo ''
