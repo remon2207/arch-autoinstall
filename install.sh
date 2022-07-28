@@ -121,7 +121,6 @@ arch-chroot /mnt systemctl enable fstrim.timer
 
 arch-chroot /mnt sed -i "s/^#NTP=/NTP=0.asia.pool.ntp.org 1.asia.pool.ntp.org 2.asia.pool.ntp.org 3.asia.pool.ntp.org/" /etc/systemd/timesyncd.conf
 arch-chroot /mnt sed -i "s/^#FallbackNTP/FallbackNTP/" /etc/systemd/timesyncd.conf
-arch-chroot /mnt timedatectl set-ntp true
 
 if [ $3 = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
