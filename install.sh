@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano nano-syntax-highlighting sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pavucontrol rustup xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring qt5ct kvantum docker docker-compose evince gvfs github-cli xarchiver discord neofetch xarchiver'
+packagelist='base base-devel linux-zen linux-zen-headers linux-firmware vi nano nano-syntax-highlighting sudo zsh curl wget fzf zip unzip gufw git cifs-utils openssh htop man ntfs-3g exfat-utils firefox firefox-i18n-ja wireplumber pipewire pipewire-pulse pavucontrol rustup xdg-user-dirs-gtk noto-fonts noto-fonts-cjk noto-fonts-emoji fcitx5 fcitx5-im fcitx5-mozc gnome-keyring qt5ct kvantum docker docker-compose evince gvfs github-cli xarchiver discord neofetch xarchiver'
 
 if [ $# -lt 8 ] ; then
     echo 'Usage:'
