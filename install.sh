@@ -216,6 +216,7 @@ arch-chroot /mnt sed -i "s/-march=x86-64 -mtune=generic/-march=native/" /etc/mak
 arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"' /etc/makepkg.conf
 arch-chroot /mnt sed -i "s/^#BUILDDIR/BUILDDIR/" /etc/makepkg.conf
 arch-chroot /mnt sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)" /etc/makepkg.conf
+arch-chroot /mnt sed -i "^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s" /etc/systemd/system.conf
 
 if [ ${3} = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
@@ -232,7 +233,7 @@ elif [ ${3} = "i3" ] ; then
 fi
 
 # grub
-#arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+#arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub --recheck
 #arch-chroot /mnt mkdir /boot/EFI/boot
 #arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
 #arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
