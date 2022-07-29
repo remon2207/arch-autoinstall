@@ -48,7 +48,6 @@ github-cli \
 xarchiver \
 discord \
 neofetch \
-xarchiver \
 tree \
 gsmartcontrol"
 
