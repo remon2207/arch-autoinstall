@@ -86,7 +86,9 @@ elif [ ${3} = "gnome" ] ; then
     dconf-editor \
     gnome-tweaks \
     audacious \
-    gnome-themes-extra"
+    gnome-themes-extra \
+    arc-gtk-theme \
+    papirus-icon-theme"
 elif [ ${3} = "kde" ] ; then
     packagelist="${packagelist} \
     plasma \
