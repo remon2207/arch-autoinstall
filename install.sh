@@ -88,8 +88,8 @@ elif [ ${3} = "gnome" ] ; then
     gnome-tweaks \
     audacious \
     gnome-themes-extra \
-    arc-gtk-theme \
-    papirus-icon-theme"
+    eog \
+    gnome-backgrounds"
 elif [ ${3} = "kde" ] ; then
     packagelist="${packagelist} \
     plasma \
