@@ -24,7 +24,7 @@ man \
 ntfs-3g \
 exfat-utils \
 firefox \
-firefox-i18n-ja \
+firefox-i18n-{en-us,ja,ko,zh-cn,zh-tw} \
 wireplumber \
 pipewire \
 pipewire-pulse \
