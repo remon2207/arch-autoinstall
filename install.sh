@@ -73,9 +73,7 @@ if [ ${3} = "xfce" ] ; then
     lightdm-gtk-greeter-settings \
     xfce4 \
     xfce4-goodies \
-    xarchiver \
-    arc-gtk-theme \
-    papirus-icon-theme"
+    xarchiver"
 elif [ ${3} = "gnome" ] ; then
     packagelist="${packagelist} \
     gdm \
@@ -96,9 +94,7 @@ elif [ ${3} = "kde" ] ; then
     lightdm \
     lightdm-gtk-greeter \
     lightdm-gtk-greeter-settings \
-    alacritty \
-    arc-gtk-theme \
-    papirus-icon-theme"
+    alacritty"
 elif [ ${3} = "i3" ] ; then
     packagelist="${packagelist} \
     lightdm \
