@@ -29,7 +29,6 @@ wireplumber \
 pipewire \
 pipewire-pulse \
 pavucontrol \
-rustup \
 xdg-user-dirs-gtk \
 noto-fonts \
 noto-fonts-cjk \
