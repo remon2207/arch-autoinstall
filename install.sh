@@ -86,6 +86,7 @@ elif [ ${3} = "gnome" ] ; then
     audacious \
     gnome-themes-extra \
     eog \
+    gedit \
     gnome-backgrounds"
 elif [ ${3} = "kde" ] ; then
     packagelist="${packagelist} \
