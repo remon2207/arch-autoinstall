@@ -5,7 +5,6 @@ base-devel \
 linux-zen \
 linux-zen-headers \
 linux-firmware \
-vi \
 nano \
 nano-syntax-highlighting \
 sudo \
