@@ -155,6 +155,7 @@ echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
 echo "KEYMAP=us" > /mnt/etc/vconsole.conf
 echo ${5} > /mnt/etc/hostname
 arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
+arch-chroot /mnt sh -c "echo 'Defaults editor=/usr/bin/nano' | EDITOR='tee -a' visudo"
 
 ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
 echo -e "127.0.0.1       localhost\n\
