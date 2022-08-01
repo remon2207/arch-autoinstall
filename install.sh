@@ -50,6 +50,7 @@ tree \
 starship \
 lsd \
 rsync \
+reflector \
 gsmartcontrol"
 
 if [ ${#} -lt 8 ] ; then
