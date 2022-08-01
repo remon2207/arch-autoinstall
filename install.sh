@@ -85,7 +85,6 @@ elif [ ${3} = "gnome" ] ; then
     gnome-control-center \
     gnome-shell \
     gnome-terminal \
-    gnome-shell-extension-appindicator \
     gnome-tweaks \
     gnome-themes-extra \
     gedit \
