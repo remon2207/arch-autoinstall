@@ -71,11 +71,11 @@ fi
 # desktop
 if [ ${3} = "xfce" ] ; then
     packagelist="${packagelist} \
+    xfce4 \
+    xfce4-goodies \
     lightdm \
     lightdm-gtk-greeter \
     lightdm-gtk-greeter-settings \
-    xfce4 \
-    xfce4-goodies \
     xarchiver"
 elif [ ${3} = "gnome" ] ; then
     packagelist="${packagelist} \
@@ -189,6 +189,7 @@ XMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
 echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 
 arch-chroot /mnt usermod -aG docker ${6}
+arch-chroot /mnt ufw enable
 
 arch-chroot /mnt systemctl enable docker.service
 arch-chroot /mnt systemctl enable fstrim.timer
