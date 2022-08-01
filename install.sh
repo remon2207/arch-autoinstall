@@ -52,7 +52,7 @@ lsd \
 rsync \
 reflector \
 xorg-server \
-xorg-xinput \
+xorg-xinit \
 lxappearance-gtk3 \
 gsmartcontrol \
 gparted"
