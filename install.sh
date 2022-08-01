@@ -51,6 +51,7 @@ starship \
 lsd \
 rsync \
 reflector \
+xorg-server \
 smartmontools"
 
 if [ ${#} -lt 8 ] ; then
