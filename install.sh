@@ -49,6 +49,7 @@ neofetch \
 tree \
 starship \
 lsd \
+rsync \
 gsmartcontrol"
 
 if [ ${#} -lt 8 ] ; then
