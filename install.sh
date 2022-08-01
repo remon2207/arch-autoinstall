@@ -53,7 +53,6 @@ rsync \
 reflector \
 xorg-server \
 xorg-xinit \
-lxappearance-gtk3 \
 gsmartcontrol \
 gparted"
 
