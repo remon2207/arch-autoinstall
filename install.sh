@@ -45,10 +45,11 @@ docker-compose \
 evince \
 gvfs \
 github-cli \
-xarchiver \
 discord \
 neofetch \
 tree \
+starship \
+lsd \
 gsmartcontrol"
 
 if [ ${#} -lt 8 ] ; then
@@ -87,6 +88,7 @@ elif [ ${3} = "gnome" ] ; then
     gnome-themes-extra \
     eog \
     gedit \
+    file-roller \
     gnome-backgrounds"
 elif [ ${3} = "kde" ] ; then
     packagelist="${packagelist} \
