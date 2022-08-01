@@ -216,7 +216,7 @@ arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /et
 arch-chroot /mnt sed -i "s/^#BUILDDIR/BUILDDIR/" /etc/makepkg.conf
 arch-chroot /mnt sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/" /etc/makepkg.conf
 arch-chroot /mnt sed -i "s/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/" /etc/systemd/system.conf
-arch-chroot /mnt sed -i "s/^icolor brightnormal/## icolor brightnormal/" /mnt/usr/share/nano-syntax-highlighting/nanorc.nanorc
+arch-chroot /mnt sed -i "s/^icolor brightnormal/## icolor brightnormal/" /usr/share/nano-syntax-highlighting/nanorc.nanorc
 
 
 if [ ${3} = "xfce" ] ; then
