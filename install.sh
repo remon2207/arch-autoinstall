@@ -79,14 +79,15 @@ elif [ ${3} = "gnome" ] ; then
     gnome-control-center \
     gnome-shell \
     gnome-terminal \
+    gnome-shell-extension-appindicator \
+    gnome-tweaks \
+    gnome-themes-extra \
+    gedit \
     mutter \
     nautilus \
     dconf-editor \
-    gnome-tweaks \
     audacious \
-    gnome-themes-extra \
     eog \
-    gedit \
     file-roller \
     gnome-backgrounds"
 elif [ ${3} = "kde" ] ; then
