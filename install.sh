@@ -51,11 +51,11 @@ starship \
 lsd \
 rsync \
 reflector \
-gsmartcontrol"
+smartmontools"
 
 if [ ${#} -lt 8 ] ; then
     echo "Usage:"
-    echo "install.sh <disk> <microcode: intel | amd> <DE: xfce | gnome | kde | i3> <GPU: nvidia | amd-dgpu | intel | amd-igpu> <HostName> <UserName> <userPasword> <rootPassword>"
+    echo "install.sh <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> <GPU: nvidia | amd-dgpu | intel | amd-igpu> <HostName> <UserName> <userPasword> <rootPassword>"
     exit
 fi
 
@@ -98,23 +98,6 @@ elif [ ${3} = "kde" ] ; then
     lightdm \
     lightdm-gtk-greeter \
     lightdm-gtk-greeter-settings"
-elif [ ${3} = "i3" ] ; then
-    packagelist="${packagelist} \
-    lightdm \
-    lightdm-gtk-greeter \
-    lightdm-gtk-greeter-settings\
-    alacritty \
-    i3-gaps \
-    i3blocks \
-    i3lock \
-    i3status \
-    dmenu \
-    rofi \
-    mpd \
-    ncmpcpp \
-    ranger \
-    feh \
-    picom"
 fi
 
 if [ ${4} = "nvidia" ] ; then
@@ -222,13 +205,7 @@ if [ ${3} = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 elif [ ${3} = "gnome" ] ; then
     arch-chroot /mnt systemctl enable gdm
-elif [ ${3} = "mate" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
-elif [ ${3} = "cinnamon" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
 elif [ ${3} = "kde" ] ; then
-    arch-chroot /mnt systemctl enable lightdm
-elif [ ${3} = "i3" ] ; then
     arch-chroot /mnt systemctl enable lightdm
 fi
 
