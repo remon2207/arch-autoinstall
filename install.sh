@@ -94,11 +94,10 @@ elif [ ${3} = "gnome" ] ; then
     gnome-backgrounds"
 elif [ ${3} = "kde" ] ; then
     packagelist="${packagelist} \
-    plasma \
+    plasma-meta \
     lightdm \
     lightdm-gtk-greeter \
-    lightdm-gtk-greeter-settings \
-    alacritty"
+    lightdm-gtk-greeter-settings"
 elif [ ${3} = "i3" ] ; then
     packagelist="${packagelist} \
     lightdm \
