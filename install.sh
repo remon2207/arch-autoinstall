@@ -52,7 +52,8 @@ lsd \
 rsync \
 reflector \
 xorg-server \
-smartmontools"
+gsmartcontrol \
+gparted"
 
 if [ ${#} -lt 8 ] ; then
     echo "Usage:"
