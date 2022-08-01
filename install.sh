@@ -192,6 +192,7 @@ arch-chroot /mnt usermod -aG docker ${6}
 
 arch-chroot /mnt systemctl enable docker.service
 arch-chroot /mnt systemctl enable fstrim.timer
+arch-chroot /mnt systemctl enable ufw.service
 
 arch-chroot /mnt sed -i "s/^#NTP=/NTP=0.asia.pool.ntp.org 1.asia.pool.ntp.org 2.asia.pool.ntp.org 3.asia.pool.ntp.org/" /etc/systemd/timesyncd.conf
 arch-chroot /mnt sed -i "s/^#FallbackNTP/FallbackNTP/" /etc/systemd/timesyncd.conf
