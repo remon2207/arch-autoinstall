@@ -257,9 +257,3 @@ initrd   /initramfs-linux-zen.img\n\
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
 
 arch-chroot /mnt systemctl enable systemd-boot-update.service
-
-echo ""
-echo "==================================="
-echo "Change UUID in /etc/fstab to PARTUUID"
-echo "==================================="
-echo ""
