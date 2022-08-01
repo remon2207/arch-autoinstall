@@ -204,8 +204,6 @@ QT_IM_MODULE=fcitx5\n\
 XMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
 echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 
-arch-chroot /mnt cp -r /usr/share/pipewire /etc/pipewire
-
 arch-chroot /mnt usermod -aG docker ${6}
 arch-chroot /mnt systemctl enable docker.service
 
