@@ -46,6 +46,9 @@ github-cli \
 discord \
 neofetch \
 tree \
+virtualbox \
+virtualbox-host-dkms \
+virtualbox-guest-iso \
 starship \
 lsd \
 rsync \
@@ -191,6 +194,7 @@ XMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
 echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 
 arch-chroot /mnt usermod -aG docker ${6}
+arch-chroot /mnt gpasswd -a ${6} vboxusers
 
 arch-chroot /mnt systemctl enable docker.service
 arch-chroot /mnt systemctl enable fstrim.timer
@@ -204,7 +208,6 @@ arch-chroot /mnt sed -i "s/^#BUILDDIR/BUILDDIR/" /etc/makepkg.conf
 arch-chroot /mnt sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/" /etc/makepkg.conf
 arch-chroot /mnt sed -i "s/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/" /etc/systemd/system.conf
 arch-chroot /mnt sed -i "s/^icolor brightnormal/## icolor brightnormal/" /usr/share/nano-syntax-highlighting/nanorc.nanorc
-
 
 if [ ${3} = "xfce" ] ; then
     arch-chroot /mnt systemctl enable lightdm
