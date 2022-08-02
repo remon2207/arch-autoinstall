@@ -73,6 +73,8 @@ if [ ${3} = "xfce" ] ; then
     packagelist="${packagelist} \
     xfce4 \
     xfce4-goodies \
+    arc-gtk-theme \
+    papirus-icon-theme \
     lightdm \
     lightdm-gtk-greeter \
     lightdm-gtk-greeter-settings \
