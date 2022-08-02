@@ -49,6 +49,7 @@ tree \
 virtualbox \
 virtualbox-host-dkms \
 virtualbox-guest-iso \
+lxappearance-gtk3 \
 starship \
 lsd \
 rsync \
