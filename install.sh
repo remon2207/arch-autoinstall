@@ -385,7 +385,7 @@ enable_services() {
     fi
 }
 
-check_variables
+# check_variables
 selection_arguments
 time_setting
 partitioning
