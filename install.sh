@@ -99,7 +99,6 @@ selection_arguments() {
         packagelist="${packagelist} amd-ucode"
     else
         echo "error in selection_arguments function"
-        exit 1
     fi
 
     # desktop
@@ -141,7 +140,6 @@ selection_arguments() {
             lightdm-gtk-greeter-settings"
     else
         echo "error in selection_arguments function"
-        exit 1
     fi
 
     if [ "${4}" = "nvidia" ]; then
@@ -152,7 +150,6 @@ selection_arguments() {
         echo "Already declared."
     else
         echo "error in selection_arguments function"
-        exit 1
     fi
 
     if [ "${11}" = "dhcp" ]; then
