@@ -58,7 +58,12 @@ packagelist="base \
     xorg-server \
     xorg-apps \
     xorg-xinit \
+    xarchiver \
     gsmartcontrol \
+    evince \
+    feh \
+    vlc \
+    pcmanfm-gtk3 \
     gparted"
 
 if [ ${#} -lt 12 ]; then
@@ -124,9 +129,7 @@ selection_arguments() {
             lightdm \
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings \
-            lxappearance-gtk3 \
-            epdfview \
-            xarchiver"
+            lxappearance-gtk3"
     elif [ "${de}" = "gnome" ]; then
         packagelist="${packagelist} \
             gdm \
@@ -135,15 +138,9 @@ selection_arguments() {
             gnome-terminal \
             gnome-tweaks \
             gnome-themes-extra \
-            gedit \
             mutter \
-            nautilus \
             dconf-editor \
             papirus-icon-theme \
-            eog \
-            totem \
-            file-roller \
-            evince \
             gnome-backgrounds"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
