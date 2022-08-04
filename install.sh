@@ -109,9 +109,6 @@ selection_arguments() {
         packagelist="${packagelist} intel-ucode"
     elif [ "${microcode}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
-    else
-        echo "error in selection_arguments function"
-        exit 1
     fi
 
     # desktop
@@ -159,6 +156,10 @@ selection_arguments() {
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     elif [ "${gpu}" = "intel" ]; then
         echo "Already declared."
+    fi
+
+    if [ "${boot_loader}" = "grub" ]; then
+        packagelist="${packagelist} grub efibootmgr dosfstools"
     fi
 
     if [ "${network}" = "dhcp" ]; then
@@ -318,7 +319,7 @@ boot_loader() {
         arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
         arch-chroot /mnt sed -i '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=10' /etc/default/grub
         if [ ${gpu} = "nvidia" ]; then
-        arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1"' /etc/default/grub
+            arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1"' /etc/default/grub
         elif [ ${gpu} = "amd" ]; then
             arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
         elif [ ${gpu} = "intel" ]; then
@@ -401,7 +402,7 @@ enable_services() {
 }
 
 # check_variables
-selection_arguments "${ucode}" "${de}" "${gpu}" "${network}"
+selection_arguments "${ucode}" "${de}" "${gpu}" "${boot_loader}" "${network}"
 time_setting
 partitioning "${disk}" "${partition_table}"
 installation
