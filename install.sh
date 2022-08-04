@@ -63,6 +63,7 @@ packagelist="base \
     evince \
     feh \
     vlc \
+    konsole \
     pcmanfm-gtk3 \
     gparted"
 
@@ -132,7 +133,6 @@ selection_arguments() {
             lxappearance-gtk3"
     elif [ "${de}" = "gnome" ]; then
         packagelist="${packagelist} \
-            gdm \
             gnome-control-center \
             gnome-shell \
             gnome-terminal \
@@ -140,6 +140,9 @@ selection_arguments() {
             gnome-themes-extra \
             mutter \
             dconf-editor \
+            lightdm \
+            lightdm-gtk-greeter \
+            lightdm-gtk-greeter-settings \
             papirus-icon-theme \
             gnome-backgrounds"
     elif [ "${de}" = "kde" ]; then
@@ -395,11 +398,11 @@ enable_services() {
     arch-chroot /mnt systemctl enable ufw.service
 
     if [ ${de} = "xfce" ]; then
-        arch-chroot /mnt systemctl enable lightdm
+        arch-chroot /mnt systemctl enable lightdm.service
     elif [ ${de} = "gnome" ]; then
-        arch-chroot /mnt systemctl enable gdm
+        arch-chroot /mnt systemctl enable lightdm.service
     elif [ ${de} = "kde" ]; then
-        arch-chroot /mnt systemctl enable lightdm
+        arch-chroot /mnt systemctl enable lightdm.service
     fi
 }
 
