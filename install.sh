@@ -93,9 +93,9 @@ check_variables() {
 
 selection_arguments() {
     # intel-ucode or amd-ucode
-    if [ ${2} = "intel" ]; then
+    if [ ${2} == "intel" ]; then
         packagelist="${packagelist} intel-ucode"
-    elif [ ${2} = "amd" ]; then
+    elif [ ${2} == "amd" ]; then
         packagelist="${packagelist} amd-ucode"
     fi
 
