@@ -97,9 +97,6 @@ selection_arguments() {
         packagelist="${packagelist} intel-ucode"
     elif [ "${2}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
-    else
-        echo "error in selection_arguments function"
-        exit 1
     fi
 
     # desktop
