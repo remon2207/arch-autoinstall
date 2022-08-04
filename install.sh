@@ -156,7 +156,8 @@ selection_arguments() {
     elif [ "${gpu}" = "amd" ]; then
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     elif [ "${gpu}" = "intel" ]; then
-        packagelist="${packagelist} xf86-video-intel"
+        # packagelist="${packagelist} xf86-video-intel"
+	echo "Already declared"
     fi
 
     if [ "${boot_loader}" = "grub" ]; then
