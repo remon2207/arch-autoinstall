@@ -55,6 +55,7 @@ packagelist="base \
     rsync \
     reflector \
     xorg-server \
+    xorg-apps \
     xorg-xinit \
     gsmartcontrol \
     gparted"
@@ -123,7 +124,7 @@ selection_arguments() {
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings \
             lxappearance-gtk3 \
-            evince \
+            epdfview \
             xarchiver"
     elif [ "${de}" = "gnome" ]; then
         packagelist="${packagelist} \
@@ -139,6 +140,7 @@ selection_arguments() {
             dconf-editor \
             papirus-icon-theme \
             eog \
+            totem \
             file-roller \
             evince \
             gnome-backgrounds"
