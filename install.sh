@@ -69,23 +69,35 @@ if [ ${#} -lt 11 ]; then
     exit
 fi
 
+disk="${1}"
+microcode="${2}"
+de="${3}"
+gpu="${4}"
+hostname="${5}"
+username="${6}"
+user_password="${7}"
+root_password="${8}"
+partition_table="${9}"
+boot_loader="${10}"
+network="${11}"
+
 check_variables() {
-    if [ "${2}" != "intel" ] && [ "${2}" != "amd" ]; then
+    if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
         echo "Missing argument or misspelled..."
         return 1
-    elif [ "${3}" != "xfce" ] && [ "${3}" != "gnome" ] && [ "${3}" != "kde" ]; then
+    elif [ "${de}" != "xfce" ] && [ "${de}" != "gnome" ] && [ "${de}" != "kde" ]; then
         echo "Missing argument or misspelled..."
         return 1
-    elif [ "${4}" != "nvidia" ] && [ "${4}" != "amd" ] && [ "${4}" != "intel" ]; then
+    elif [ "${gpu}" != "nvidia" ] && [ "${gpu}" != "amd" ] && [ "${gpu}" != "intel" ]; then
         echo "Missing argument or misspelled..."
         return 1
-    elif [ "${9}" != "yes" ] && [ "${9}" != "no-exclude-efi" ] && [ "${9}" != "no-root-only" ] && [ "${9}" != "skip" ]; then
+    elif [ "${partition_table}" != "yes" ] && [ "${partition_table}" != "no-exclude-efi" ] && [ "${partition_table}" != "no-root-only" ] && [ "${partition_table}" != "skip" ]; then
         echo "Missing argument or misspelled..."
         return 1
-    elif [ "${10}" != "systemd-boot" ] && [ "${10}" != "grub" ]; then
+    elif [ "${boot_loader}" != "systemd-boot" ] && [ "${boot_loader}" != "grub" ]; then
         echo "Missing argument or misspelled..."
         return 1
-    elif [ "${11}" != "static-ip" ] && [ "${11}" != "dhcp" ]; then
+    elif [ "${network}" != "static-ip" ] && [ "${network}" != "dhcp" ]; then
         echo "Missing argument or misspelled..."
         return 1
     fi
@@ -93,9 +105,9 @@ check_variables() {
 
 selection_arguments() {
     # intel-ucode or amd-ucode
-    if [ "${ucode}" = "intel" ]; then
+    if [ "${microcode}" = "intel" ]; then
         packagelist="${packagelist} intel-ucode"
-    elif [ "${ucode}" = "amd" ]; then
+    elif [ "${microcode}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
     else
         echo "error in selection_arguments function"
@@ -159,48 +171,48 @@ time_setting() {
 }
 
 partitioning() {
-    if [ "${9}" = "yes" ]; then
-        sgdisk -Z ${1}
-        sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${1}
-        sgdisk -n 0::+15G -t 0:8300 -c 0:"Linux filesystem" ${1}
-        sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${1}
+    if [ "${partition_table}" = "yes" ]; then
+        sgdisk -Z ${disk}
+        sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${disk}
+        sgdisk -n 0::+15G -t 0:8300 -c 0:"Linux filesystem" ${disk}
+        sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${disk}
 
         # format
-        mkfs.fat -F 32 ${1}1
-        mkfs.ext4 ${1}2
-        mkfs.ext4 ${1}3
-    elif [ "${9}" = "no-exclude-efi" ]; then
-        sgdisk -d 3 $1
-        sgdisk -d 2 $1
-        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
-        sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${1}
+        mkfs.fat -F 32 ${disk}1
+        mkfs.ext4 ${disk}2
+        mkfs.ext4 ${disk}3
+    elif [ "${partition_table}" = "no-exclude-efi" ]; then
+        sgdisk -d 3 ${disk}
+        sgdisk -d 2 ${disk}
+        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${disk}
+        sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${disk}
 
         # format
-        mkfs.ext4 ${1}2
-        mkfs.ext4 ${1}3
-    elif [ "${9}" = "no-root-only" ]; then
+        mkfs.ext4 ${disk}2
+        mkfs.ext4 ${disk}3
+    elif [ "${partition_table}" = "no-root-only" ]; then
         # format
-        mkfs.ext4 ${1}2
-    elif [ "${9}" = "skip" ]; then
+        mkfs.ext4 ${disk}2
+    elif [ "${partition_table}" = "skip" ]; then
         echo "Skip partitioning"
 
         # format
-        mkfs.ext4 ${1}2
-        mkfs.ext4 ${1}3
+        mkfs.ext4 ${disk}2
+        mkfs.ext4 ${disk}3
     else
         echo "Not specified or misspelled..."
         exit 1
     fi
 
     # mount
-    mount ${1}2 /mnt
+    mount ${disk}2 /mnt
     mkdir /mnt/boot
-    mount ${1}1 /mnt/boot
+    mount ${disk}1 /mnt/boot
     mkdir /mnt/home
-    mount ${1}3 /mnt/home
+    mount ${disk}3 /mnt/home
 }
 
-installing() {
+installation() {
     reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Sy --noconfirm archlinux-keyring
     pacstrap /mnt ${packagelist}
@@ -215,13 +227,13 @@ configuration() {
     arch-chroot /mnt locale-gen
     echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
     echo "KEYMAP=us" > /mnt/etc/vconsole.conf
-    echo ${5} > /mnt/etc/hostname
+    echo ${hostname} > /mnt/etc/hostname
     arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
     arch-chroot /mnt sh -c "echo 'Defaults editor=/usr/bin/vim' | EDITOR='tee -a' visudo"
 }
 
-network() {
-        if [ ${11} = "static-ip" ]; then
+networking() {
+        if [ ${network} = "static-ip" ]; then
         ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
         # echo -e "127.0.0.1       localhost\n\
         # ::1             localhost\n\
@@ -230,7 +242,7 @@ network() {
         cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
-${ip_address}    ${5}.localdomain        ${5}
+${ip_address}    ${hostname}.localdomain        ${hostname}
 EOF
 
         arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
@@ -255,7 +267,7 @@ DNS=8.8.4.4
 EOF
 
         ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
-    elif [ ${11} = "dhcp" ]; then
+    elif [ ${network} = "dhcp" ]; then
         arch-chroot /mnt systemctl enable dhcpcd.service
     else
         echo "Not specified or misspelled..."
@@ -264,9 +276,9 @@ EOF
 }
 
 create_user() {
-    echo "root:$8" | arch-chroot /mnt chpasswd
-    arch-chroot /mnt useradd -m -G wheel -s /bin/bash ${6}
-    echo "$6:$7" | arch-chroot /mnt chpasswd
+    echo "root:${root_password}" | arch-chroot /mnt chpasswd
+    arch-chroot /mnt useradd -m -G wheel -s /bin/bash ${username}
+    echo "${username}:${user_password}" | arch-chroot /mnt chpasswd
 }
 
 
@@ -283,8 +295,8 @@ EOF
 }
 
 add_to_group() {
-    arch-chroot /mnt gpasswd -a ${6} docker
-    arch-chroot /mnt gpasswd -a ${6} vboxusers
+    arch-chroot /mnt gpasswd -a ${username} docker
+    arch-chroot /mnt gpasswd -a ${username} vboxusers
 }
 
 replacement() {
@@ -299,17 +311,17 @@ replacement() {
 
 
 boot_loader() {
-    if [ ${10} = "grub" ]; then
+    if [ ${boot_loader} = "grub" ]; then
         # grub
         arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub --recheck
         arch-chroot /mnt mkdir /boot/EFI/boot
         arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
         arch-chroot /mnt sed -i '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=10' /etc/default/grub
-        if [ ${4} = "nvidia" ]; then
+        if [ ${gpu} = "nvidia" ]; then
         arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1"' /etc/default/grub
-        elif [ ${4} = "amd" ]; then
+        elif [ ${gpu} = "amd" ]; then
             arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
-        elif [ ${4} = "intel" ]; then
+        elif [ ${gpu} = "intel" ]; then
             arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
         else
             echo "Missing argument or misspelled..."
@@ -318,7 +330,7 @@ boot_loader() {
         arch-chroot /mnt sed -i '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' /etc/default/grub
         arch-chroot /mnt sed -i '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-    elif [ ${10} = "systemd-boot" ]; then
+    elif [ ${boot_loader} = "systemd-boot" ]; then
         # systemd-boot
         arch-chroot /mnt bootctl --path=/boot install
         # echo -e "default    arch\n\
@@ -332,14 +344,14 @@ console-mode max
 editor       no
 EOF
 
-        root_partuuid=$(blkid -s PARTUUID -o value ${1}2)
+        root_partuuid=$(blkid -s PARTUUID -o value ${disk}2)
 
         # echo -e "title    Arch Linux\n\
         # linux    /vmlinuz-linux-zen\n\
         # initrd   /intel-ucode.img\n\
         # initrd   /initramfs-linux-zen.img\n\
         # options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
-        if [ ${4} = "nvidia" ]; then
+        if [ ${gpu} = "nvidia" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
@@ -347,7 +359,7 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
 EOF
-        elif [ ${4} = "amd" ]; then
+        elif [ ${gpu} = "amd" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
@@ -355,7 +367,7 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-        elif [ ${4} = "intel" ]; then
+        elif [ ${gpu} = "intel" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
@@ -379,30 +391,25 @@ enable_services() {
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
 
-    if [ ${3} = "xfce" ]; then
+    if [ ${de} = "xfce" ]; then
         arch-chroot /mnt systemctl enable lightdm
-    elif [ ${3} = "gnome" ]; then
+    elif [ ${de} = "gnome" ]; then
         arch-chroot /mnt systemctl enable gdm
-    elif [ ${3} = "kde" ]; then
+    elif [ ${de} = "kde" ]; then
         arch-chroot /mnt systemctl enable lightdm
     fi
 }
 
-ucode="${2}"
-de="${3}"
-gpu="${4}"
-network="${11}"
-
 # check_variables
 selection_arguments "${ucode}" "${de}" "${gpu}" "${network}"
 time_setting
-partitioning
+partitioning "${disk}" "${partition_table}"
 installation
-configuration
-networking
-create_user
+configuration "${hostname}"
+networking "${hostname}" "${network}"
+create_user "${username}" "${user_password}" "${root_password}"
 japanese_input
-add_to_group
+add_to_group "${username}"
 replacement
-boot_loader
-enable_services
+boot_loader "${disk}" "${gpu}" "${boot_loader}"
+enable_services "${de}"
