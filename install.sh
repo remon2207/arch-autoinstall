@@ -54,6 +54,7 @@ packagelist="base \
     bat \
     rsync \
     reflector \
+    xorg \
     xorg-server \
     xorg-apps \
     xorg-xinit \
