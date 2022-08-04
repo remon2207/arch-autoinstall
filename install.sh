@@ -93,14 +93,14 @@ check_variables() {
 
 selection_arguments() {
     # intel-ucode or amd-ucode
-    if [ ${2} = "intel" ]; then
+    if [ "${2}" = "intel" ]; then
         packagelist="${packagelist} intel-ucode"
-    elif [ ${2} = "amd" ]; then
+    elif [ "${2}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
     fi
 
     # desktop
-    if [ ${3} = "xfce" ]; then
+    if [ "${3}" = "xfce" ]; then
         packagelist="${packagelist} \
             xfce4 \
             xfce4-goodies \
@@ -112,7 +112,7 @@ selection_arguments() {
             lxappearance-gtk3 \
             evince \
             xarchiver"
-    elif [ ${3} = "gnome" ]; then
+    elif [ "${3}" = "gnome" ]; then
         packagelist="${packagelist} \
             gdm \
             gnome-control-center \
@@ -129,7 +129,7 @@ selection_arguments() {
             file-roller \
             evince \
             gnome-backgrounds"
-    elif [ ${3} = "kde" ]; then
+    elif [ "${3}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
             lxappearance-gtk3 \
@@ -138,15 +138,15 @@ selection_arguments() {
             lightdm-gtk-greeter-settings"
     fi
 
-    if [ ${4} = "nvidia" ]; then
+    if [ "${4}" = "nvidia" ]; then
         packagelist="${packagelist} nvidia-dkms nvidia-settings"
-    elif [ ${4} = "amd" ]; then
+    elif [ "${4}" = "amd" ]; then
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
-    elif [ ${4} = "intel" ]; then
+    elif [ "${4}" = "intel" ]; then
         echo "Already declared."
     fi
 
-    if [ ${11} = "dhcp" ]; then
+    if [ "${11}" = "dhcp" ]; then
         packagelist="${packagelist} dhcpcd"
     fi
 }
@@ -156,7 +156,7 @@ time_setting() {
 }
 
 partitioning() {
-    if [ ${9} = "yes" ]; then
+    if [ "${9}" = "yes" ]; then
         sgdisk -Z ${1}
         sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${1}
         sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
@@ -166,7 +166,7 @@ partitioning() {
         mkfs.fat -F 32 ${1}1
         mkfs.ext4 ${1}2
         mkfs.ext4 ${1}3
-    elif [ ${9} = "no-exclude-efi" ]; then
+    elif [ "${9}" = "no-exclude-efi" ]; then
         sgdisk -d 3 $1
         sgdisk -d 2 $1
         sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
@@ -175,10 +175,10 @@ partitioning() {
         # format
         mkfs.ext4 ${1}2
         mkfs.ext4 ${1}3
-    elif [ ${9} = "no-root-only" ]; then
+    elif [ "${9}" = "no-root-only" ]; then
         # format
         mkfs.ext4 ${1}2
-    elif [ ${9} = "skip" ]; then
+    elif [ "${9}" = "skip" ]; then
         echo "Skip partitioning"
 
         # format
