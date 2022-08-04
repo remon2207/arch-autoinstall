@@ -389,7 +389,7 @@ enable_services() {
 }
 
 # check_variables
-selection_arguments ${2} ${3} ${4} ${11}
+selection_arguments $(2) $(3) $(4) $(11)
 time_setting
 partitioning
 installation
