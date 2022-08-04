@@ -91,12 +91,25 @@ check_variables() {
     fi
 }
 
+    # intel-ucode or amd-ucode
+    if [ "${2}" = "intel" ]; then
+        packagelist="${packagelist} intel-ucode"
+    elif [ "${2}" = "amd" ]; then
+        packagelist="${packagelist} amd-ucode"
+    else
+        echo "error in selection_arguments function"
+        exit 1
+    fi
+
 selection_arguments() {
     # intel-ucode or amd-ucode
     if [ "${2}" = "intel" ]; then
         packagelist="${packagelist} intel-ucode"
     elif [ "${2}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
+    else
+        echo "error in selection_arguments function"
+        exit 1
     fi
 
     # desktop
@@ -386,7 +399,7 @@ enable_services() {
 }
 
 # check_variables
-selection_arguments
+# selection_arguments
 time_setting
 partitioning
 installation
