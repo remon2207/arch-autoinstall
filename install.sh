@@ -98,6 +98,7 @@ check_variables() {
         packagelist="${packagelist} amd-ucode"
     else
         echo "error in selection_arguments function"
+        echo "${packagelist}"
         exit 1
     fi
 
