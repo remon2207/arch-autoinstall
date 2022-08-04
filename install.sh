@@ -59,11 +59,37 @@ packagelist="base \
     gsmartcontrol \
     gparted"
 
-if [ ${#} -lt 8 ] ; then
+if [ ${#} -lt 11 ] ; then
     echo "Usage:"
-    echo "install.sh <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> <GPU: nvidia | amd-dgpu | intel | amd-igpu> <HostName> <UserName> <userPasword> <rootPassword>"
+    echo "install.sh \
+        <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
+        <GPU: nvidia | amd | intel> <HostName> <UserName> \
+        <userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
+        <boot-loader: systemd-boot | grub> <network: static-ip | dhcp>"
     exit
 fi
+
+check_variables() {
+    if [ ${2} != "intel" && ${2} !="amd" ]; then
+        echo "Missing argument or misspelled..."
+        return 1
+    elif [ ${3} != "xfce" && ${3} != "gnome" && ${3} != "kde" ]; then
+        echo "Missing argument or misspelled..."
+        return 1
+    elif [ ${4} != "nvidia" && ${4} != "amd" && ${4} != "intel" ]; then
+        echo "Missing argument or misspelled..."
+        return 1
+    elif [ ${9} != "yes" && ${9} != "no-exclude-efi" && ${9} != "no-root-only" && ${9} != "skip" ]; then
+        echo "Missing argument or misspelled..."
+        return 1
+    elif [ ${10} != "systemd-boot" && ${10} != "grub" ]; then
+        echo "Missing argument or misspelled..."
+        return 1
+    elif [ ${11} != "static-ip" && ${11} != "dhcp" ]; then
+        echo "Missing argument or misspelled..."
+        return 1
+    fi
+}
 
 selection_arguments() {
     # intel-ucode or amd-ucode
@@ -72,7 +98,7 @@ selection_arguments() {
     elif [ ${2} = "amd" ] ; then
         packagelist="${packagelist} amd-ucode"
     fi
-    
+
     # desktop
     if [ ${3} = "xfce" ] ; then
         packagelist="${packagelist} \
@@ -111,15 +137,17 @@ selection_arguments() {
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings"
     fi
-    
+
     if [ ${4} = "nvidia" ] ; then
         packagelist="${packagelist} nvidia-dkms nvidia-settings"
-    elif [ ${4} = "amd-dgpu" ] ; then
-        packagelist="${packagelist} vulkan-radeon"
+    elif [ ${4} = "amd" ] ; then
+        packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     elif [ ${4} = "intel" ] ; then
-        packagelist="${packagelist} xorg-server xorg-apps"
-    elif [ ${4} = "amd-igpu" ] ; then
-        packagelist="${packagelist} xf86-video-amdgpu"
+        echo "Already declared."
+    fi
+
+    if [ ${11} = "dhcp" ]; then
+        packagelist="${packagelist} dhcpcd"
     fi
 }
 
@@ -128,21 +156,39 @@ time_setting() {
 }
 
 partitioning() {
-    sgdisk -Z ${1}
-    sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${1}
-    #sgdisk -d 3 $1
-    #sgdisk -d 2 $1
-    sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
-    sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${1}
-    # sgdisk -n 0:: -t 0:8200 -c 0:"Linux swap" $1
-    
-    # format
-    mkfs.fat -F 32 ${1}1
-    mkfs.ext4 ${1}2
-    # mkswap ${1}4
-    # swapon ${1}4
-    mkfs.ext4 ${1}3
-    
+    if [ ${9} == "yes"]; then
+        sgdisk -Z ${1}
+        sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${1}
+        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
+        sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${1}
+
+        # format
+        mkfs.fat -F 32 ${1}1
+        mkfs.ext4 ${1}2
+        mkfs.ext4 ${1}3
+    elif [ ${9} == "no-exclude-efi"]; then
+        sgdisk -d 3 $1
+        sgdisk -d 2 $1
+        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
+        sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${1}
+
+        # format
+        mkfs.ext4 ${1}2
+        mkfs.ext4 ${1}3
+    elif [ ${9} == "no-root-only"]; then
+        # format
+        mkfs.ext4 ${1}2
+    elif [ ${9} == "skip"]; then
+        echo "Skip partitioning"
+
+        # format
+        mkfs.ext4 ${1}2
+        mkfs.ext4 ${1}3
+    else
+        echo "Not specified or misspelled..."
+        exit 1
+    fi
+
     # mount
     mount ${1}2 /mnt
     mkdir /mnt/boot
@@ -172,28 +218,29 @@ configuration() {
 }
 
 network() {
-    ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
-    # echo -e "127.0.0.1       localhost\n\
-    # ::1             localhost\n\
-    # ${ip_address}    ${5}.localdomain        ${5}" >> /mnt/etc/hosts
+        if [ ${11} = "static-ip" ]; then
+        ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
+        # echo -e "127.0.0.1       localhost\n\
+        # ::1             localhost\n\
+        # ${ip_address}    ${5}.localdomain        ${5}" >> /mnt/etc/hosts
 
-    cat << EOF >> /mnt/etc/hosts
+        cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
 ${ip_address}    ${5}.localdomain        ${5}
 EOF
-    
-    arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-    # echo -e "[Match]\n\
-    # Name=enp6s0\n\
-    # \n\
-    # [Network]\n\
-    # Address=${ip_address}/24\n\
-    # Gateway=192.168.1.1\n\
-    # DNS=8.8.8.8\n\
-    # DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
 
-    cat << EOF > /mnt/etc/systemd/network/20-wired.network
+        arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
+        # echo -e "[Match]\n\
+        # Name=enp6s0\n\
+        # \n\
+        # [Network]\n\
+        # Address=${ip_address}/24\n\
+        # Gateway=192.168.1.1\n\
+        # DNS=8.8.8.8\n\
+        # DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
+
+        cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=enp6s0
 
@@ -203,8 +250,14 @@ Gateway=192.168.1.1
 DNS=8.8.8.8
 DNS=8.8.4.4
 EOF
-    
-    ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+
+        ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+    elif [ ${11} = "dhcp" ]; then
+        arch-chroot /mnt systemctl enable dhcpcd.service
+    else
+        echo "Not specified or misspelled..."
+        exit 1
+    fi
 }
 
 create_user() {
@@ -243,47 +296,85 @@ replacement() {
 
 
 boot_loader() {
-    # grub
-    # arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub --recheck
-    # arch-chroot /mnt mkdir /boot/EFI/boot
-    # arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
-    # arch-chroot /mnt sed -i -e '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=30' -e '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 nomodeset nouveau.modeset=0"' -e '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' -e '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
-    # arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-    
-    # systemd-boot
-    arch-chroot /mnt bootctl --path=/boot install
-    # echo -e "default    arch\n\
-    # timeout    10\n\
-    # console-mode max\n\
-    # editor     no" >> /mnt/boot/loader/loader.conf
-    cat << EOF >> /mnt/boot/loader/loader.conf
+    if [ ${10} == "grub"]; then
+        # grub
+        arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub --recheck
+        arch-chroot /mnt mkdir /boot/EFI/boot
+        arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
+        arch-chroot /mnt sed -i '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=10' /etc/default/grub
+        if [ ${4} = "nvidia"]; then
+        arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1"' /etc/default/grub
+        elif [ ${4} = "amd"]; then
+            arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
+        elif [ ${4} = "intel"]; then
+            arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
+        else
+            echo "Missing argument or misspelled..."
+            exit 1
+        fi
+        arch-chroot /mnt sed -i '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' /etc/default/grub
+        arch-chroot /mnt sed -i '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
+        arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+    elif [ ${10} == "systemd-boot"]; then
+        # systemd-boot
+        arch-chroot /mnt bootctl --path=/boot install
+        # echo -e "default    arch\n\
+        # timeout    10\n\
+        # console-mode max\n\
+        # editor     no" >> /mnt/boot/loader/loader.conf
+        cat << EOF >> /mnt/boot/loader/loader.conf
 default      arch
 timeout      10
 console-mode max
 editor       no
 EOF
-    
-    root_partuuid=$(blkid -s PARTUUID -o value ${1}2)
-    
-    # echo -e "title    Arch Linux\n\
-    # linux    /vmlinuz-linux-zen\n\
-    # initrd   /intel-ucode.img\n\
-    # initrd   /initramfs-linux-zen.img\n\
-    # options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
-    cat << EOF >> /mnt/boot/loader/entries/arch.conf
+
+        root_partuuid=$(blkid -s PARTUUID -o value ${1}2)
+
+        # echo -e "title    Arch Linux\n\
+        # linux    /vmlinuz-linux-zen\n\
+        # initrd   /intel-ucode.img\n\
+        # initrd   /initramfs-linux-zen.img\n\
+        # options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
+        if [ ${4} == "nvidia"]; then
+            cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
 EOF
+        elif [ ${4} == "amd"]; then
+            cat << EOF >> /mnt/boot/loader/entries/arch.conf
+title    Arch Linux
+linux    /vmlinuz-linux-zen
+initrd   /intel-ucode.img
+initrd   /initramfs-linux-zen.img
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
+EOF
+        elif [ ${4} == "intel"]; then
+            cat << EOF >> /mnt/boot/loader/entries/arch.conf
+title    Arch Linux
+linux    /vmlinuz-linux-zen
+initrd   /intel-ucode.img
+initrd   /initramfs-linux-zen.img
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
+EOF
+        else
+            echo "Missing argument or misspelled..."
+            exit 1
+        fi
+        arch-chroot /mnt systemctl enable systemd-boot-update.service
+    else
+        echo "Missing argument or misspelled..."
+        exit 1
+    fi
 }
 
 enable_services() {
     arch-chroot /mnt systemctl enable docker.service
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
-    arch-chroot /mnt systemctl enable systemd-boot-update.service
 
     if [ ${3} = "xfce" ] ; then
         arch-chroot /mnt systemctl enable lightdm
@@ -294,6 +385,7 @@ enable_services() {
     fi
 }
 
+check_variables
 selection_arguments
 time_setting
 partitioning
