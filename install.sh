@@ -175,7 +175,7 @@ partitioning() {
     if [ "${partition_table}" = "yes" ]; then
         sgdisk -Z ${disk}
         sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${disk}
-        sgdisk -n 0::+15G -t 0:8300 -c 0:"Linux filesystem" ${disk}
+        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${disk}
         sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${disk}
 
         # format
