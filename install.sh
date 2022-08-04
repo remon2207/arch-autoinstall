@@ -97,6 +97,9 @@ selection_arguments() {
         packagelist="${packagelist} intel-ucode"
     elif [ "${2}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
+    else
+        echo "error in selection_arguments function"
+        exit 1
     fi
 
     # desktop
@@ -136,6 +139,9 @@ selection_arguments() {
             lightdm \
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings"
+    else
+        echo "error in selection_arguments function"
+        exit 1
     fi
 
     if [ "${4}" = "nvidia" ]; then
@@ -144,6 +150,9 @@ selection_arguments() {
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     elif [ "${4}" = "intel" ]; then
         echo "Already declared."
+    else
+        echo "error in selection_arguments function"
+        exit 1
     fi
 
     if [ "${11}" = "dhcp" ]; then
