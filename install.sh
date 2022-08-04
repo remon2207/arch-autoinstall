@@ -168,7 +168,7 @@ configuration() {
     echo "KEYMAP=us" > /mnt/etc/vconsole.conf
     echo ${5} > /mnt/etc/hostname
     arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
-    arch-chroot /mnt sh -c "echo 'Defaults editor=/usr/bin/nano' | EDITOR='tee -a' visudo"
+    arch-chroot /mnt sh -c "echo 'Defaults editor=/usr/bin/vim' | EDITOR='tee -a' visudo"
 }
 
 network() {
@@ -239,7 +239,6 @@ replacement() {
     arch-chroot /mnt sed -i "s/^#BUILDDIR/BUILDDIR/" /etc/makepkg.conf
     arch-chroot /mnt sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/" /etc/makepkg.conf
     arch-chroot /mnt sed -i "s/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/" /etc/systemd/system.conf
-    arch-chroot /mnt sed -i "s/^icolor brightnormal/## icolor brightnormal/" /usr/share/nano-syntax-highlighting/nanorc.nanorc
 }
 
 
