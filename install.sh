@@ -51,6 +51,7 @@ packagelist="base \
     virtualbox-guest-iso \
     starship \
     lsd \
+    bat \
     rsync \
     reflector \
     xorg-server \
