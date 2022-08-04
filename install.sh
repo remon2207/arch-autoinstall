@@ -93,9 +93,9 @@ check_variables() {
 
 selection_arguments() {
     # intel-ucode or amd-ucode
-    if [ "${2}" = "intel" ]; then
+    if [ "${ucode}" = "intel" ]; then
         packagelist="${packagelist} intel-ucode"
-    elif [ "${2}" = "amd" ]; then
+    elif [ "${ucode}" = "amd" ]; then
         packagelist="${packagelist} amd-ucode"
     else
         echo "error in selection_arguments function"
@@ -103,7 +103,7 @@ selection_arguments() {
     fi
 
     # desktop
-    if [ "${3}" = "xfce" ]; then
+    if [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
             xfce4 \
             xfce4-goodies \
@@ -115,7 +115,7 @@ selection_arguments() {
             lxappearance-gtk3 \
             evince \
             xarchiver"
-    elif [ "${3}" = "gnome" ]; then
+    elif [ "${de}" = "gnome" ]; then
         packagelist="${packagelist} \
             gdm \
             gnome-control-center \
@@ -132,7 +132,7 @@ selection_arguments() {
             file-roller \
             evince \
             gnome-backgrounds"
-    elif [ "${3}" = "kde" ]; then
+    elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
             lxappearance-gtk3 \
@@ -141,15 +141,15 @@ selection_arguments() {
             lightdm-gtk-greeter-settings"
     fi
 
-    if [ "${4}" = "nvidia" ]; then
+    if [ "${gpu}" = "nvidia" ]; then
         packagelist="${packagelist} nvidia-dkms nvidia-settings"
-    elif [ "${4}" = "amd" ]; then
+    elif [ "${gpu}" = "amd" ]; then
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
-    elif [ "${4}" = "intel" ]; then
+    elif [ "${gpu}" = "intel" ]; then
         echo "Already declared."
     fi
 
-    if [ "${11}" = "dhcp" ]; then
+    if [ "${network}" = "dhcp" ]; then
         packagelist="${packagelist} dhcpcd"
     fi
 }
@@ -389,9 +389,12 @@ enable_services() {
 }
 
 ucode="${2}"
+de="${3}"
+gpu="${4}"
+network="${11}"
 
 # check_variables
-selection_arguments $(ucode)
+selection_arguments "${ucode}" "${de}" "${gpu}" "${network}"
 time_setting
 partitioning
 installation
