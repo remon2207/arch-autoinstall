@@ -156,7 +156,7 @@ time_setting() {
 }
 
 partitioning() {
-    if [ "${9}" == "yes" ]; then
+    if [ "${9}" = "yes" ]; then
         sgdisk -Z ${1}
         sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${1}
         sgdisk -n 0::+15G -t 0:8300 -c 0:"Linux filesystem" ${1}
@@ -166,7 +166,7 @@ partitioning() {
         mkfs.fat -F 32 ${1}1
         mkfs.ext4 ${1}2
         mkfs.ext4 ${1}3
-    elif [ "${9}" == "no-exclude-efi" ]; then
+    elif [ "${9}" = "no-exclude-efi" ]; then
         sgdisk -d 3 $1
         sgdisk -d 2 $1
         sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
@@ -175,10 +175,10 @@ partitioning() {
         # format
         mkfs.ext4 ${1}2
         mkfs.ext4 ${1}3
-    elif [ "${9}" == "no-root-only" ]; then
+    elif [ "${9}" = "no-root-only" ]; then
         # format
         mkfs.ext4 ${1}2
-    elif [ "${9}" == "skip" ]; then
+    elif [ "${9}" = "skip" ]; then
         echo "Skip partitioning"
 
         # format
@@ -186,7 +186,6 @@ partitioning() {
         mkfs.ext4 ${1}3
     else
         echo "Not specified or misspelled..."
-        echo "${packagelist}"
         exit 1
     fi
 
