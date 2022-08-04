@@ -59,13 +59,13 @@ packagelist="base \
     gsmartcontrol \
     gparted"
 
-if [ ${#} -lt 11 ]; then
+if [ ${#} -lt 12 ]; then
     echo "Usage:"
     echo "install.sh \
 <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
 <GPU: nvidia | amd | intel> <HostName> <UserName> \
 <userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
-<boot-loader: systemd-boot | grub> <network: static-ip | dhcp>"
+<boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: GiB>"
     exit
 fi
 
@@ -80,6 +80,7 @@ root_password="${8}"
 partition_table="${9}"
 boot_loader="${10}"
 network="${11}"
+root_size="${12}"
 
 check_variables() {
     if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
@@ -175,7 +176,7 @@ partitioning() {
     if [ "${partition_table}" = "yes" ]; then
         sgdisk -Z ${disk}
         sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${disk}
-        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${disk}
+        sgdisk -n 0::+${root_size}G -t 0:8300 -c 0:"Linux filesystem" ${disk}
         sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${disk}
 
         # format
@@ -185,7 +186,7 @@ partitioning() {
     elif [ "${partition_table}" = "no-exclude-efi" ]; then
         sgdisk -d 3 ${disk}
         sgdisk -d 2 ${disk}
-        sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${disk}
+        sgdisk -n 0::+${root_size}G -t 0:8300 -c 0:"Linux filesystem" ${disk}
         sgdisk -n 0:: -t 0:8300 -c 0:"Linux filesystem" ${disk}
 
         # format
@@ -404,7 +405,7 @@ enable_services() {
 # check_variables
 selection_arguments "${ucode}" "${de}" "${gpu}" "${boot_loader}" "${network}"
 time_setting
-partitioning "${disk}" "${partition_table}"
+partitioning "${disk}" "${partition_table}" "${root_size}"
 installation
 configuration "${hostname}"
 networking "${hostname}" "${network}"
