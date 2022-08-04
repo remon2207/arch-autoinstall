@@ -186,6 +186,7 @@ partitioning() {
         mkfs.ext4 ${1}3
     else
         echo "Not specified or misspelled..."
+        echo "${packagelist}"
         exit 1
     fi
 
