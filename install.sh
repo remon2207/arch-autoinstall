@@ -388,8 +388,10 @@ enable_services() {
     fi
 }
 
+ucode="${2}"
+
 # check_variables
-selection_arguments $(2) $(3) $(4) $(11)
+selection_arguments $(ucode)
 time_setting
 partitioning
 installation
