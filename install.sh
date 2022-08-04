@@ -91,17 +91,7 @@ check_variables() {
     fi
 }
 
-    # intel-ucode or amd-ucode
-    if [ "${2}" = "intel" ]; then
-        packagelist="${packagelist} intel-ucode"
-    elif [ "${2}" = "amd" ]; then
-        packagelist="${packagelist} amd-ucode"
-    else
-        echo "error in selection_arguments function"
-        exit 1
-    fi
-
-selection_arguments() {
+selection_arguments(${2}) {
     # intel-ucode or amd-ucode
     if [ "${2}" = "intel" ]; then
         packagelist="${packagelist} intel-ucode"
@@ -199,7 +189,6 @@ partitioning() {
         mkfs.ext4 ${1}3
     else
         echo "Not specified or misspelled..."
-        echo "${packagelist}"
         exit 1
     fi
 
@@ -400,7 +389,7 @@ enable_services() {
 }
 
 # check_variables
-# selection_arguments
+selection_arguments
 time_setting
 partitioning
 installation
