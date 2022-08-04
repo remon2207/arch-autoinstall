@@ -59,7 +59,7 @@ packagelist="base \
     gsmartcontrol \
     gparted"
 
-if [ ${#} -lt 11 ] ; then
+if [ ${#} -lt 11 ]; then
     echo "Usage:"
     echo "install.sh \
         <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
@@ -156,7 +156,7 @@ time_setting() {
 }
 
 partitioning() {
-    if [ ${9} == "yes"]; then
+    if [ ${9} = "yes"]; then
         sgdisk -Z ${1}
         sgdisk -n 0::+512M -t 0:ef00 -c 0:"EFI System" ${1}
         sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
@@ -166,7 +166,7 @@ partitioning() {
         mkfs.fat -F 32 ${1}1
         mkfs.ext4 ${1}2
         mkfs.ext4 ${1}3
-    elif [ ${9} == "no-exclude-efi"]; then
+    elif [ ${9} = "no-exclude-efi"]; then
         sgdisk -d 3 $1
         sgdisk -d 2 $1
         sgdisk -n 0::+350G -t 0:8300 -c 0:"Linux filesystem" ${1}
@@ -175,10 +175,10 @@ partitioning() {
         # format
         mkfs.ext4 ${1}2
         mkfs.ext4 ${1}3
-    elif [ ${9} == "no-root-only"]; then
+    elif [ ${9} = "no-root-only"]; then
         # format
         mkfs.ext4 ${1}2
-    elif [ ${9} == "skip"]; then
+    elif [ ${9} = "skip"]; then
         echo "Skip partitioning"
 
         # format
@@ -296,7 +296,7 @@ replacement() {
 
 
 boot_loader() {
-    if [ ${10} == "grub"]; then
+    if [ ${10} = "grub"]; then
         # grub
         arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub --recheck
         arch-chroot /mnt mkdir /boot/EFI/boot
@@ -315,7 +315,7 @@ boot_loader() {
         arch-chroot /mnt sed -i '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' /etc/default/grub
         arch-chroot /mnt sed -i '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-    elif [ ${10} == "systemd-boot"]; then
+    elif [ ${10} = "systemd-boot"]; then
         # systemd-boot
         arch-chroot /mnt bootctl --path=/boot install
         # echo -e "default    arch\n\
@@ -336,7 +336,7 @@ EOF
         # initrd   /intel-ucode.img\n\
         # initrd   /initramfs-linux-zen.img\n\
         # options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
-        if [ ${4} == "nvidia"]; then
+        if [ ${4} = "nvidia"]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
@@ -344,7 +344,7 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
 EOF
-        elif [ ${4} == "amd"]; then
+        elif [ ${4} = "amd"]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
@@ -352,7 +352,7 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-        elif [ ${4} == "intel"]; then
+        elif [ ${4} = "intel"]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
