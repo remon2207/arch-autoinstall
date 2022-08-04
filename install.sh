@@ -72,24 +72,30 @@ fi
 check_variables() {
     if [ ${2} != "intel" ] && [ ${2} != "amd" ]; then
         echo "Missing argument or misspelled..."
+        return 1
     elif [ ${3} != "xfce" ] && [ ${3} != "gnome" ] && [ ${3} != "kde" ]; then
         echo "Missing argument or misspelled..."
+        return 1
     elif [ ${4} != "nvidia" ] && [ ${4} != "amd" ] && [ ${4} != "intel" ]; then
         echo "Missing argument or misspelled..."
+        return 1
     elif [ ${9} != "yes" ] && [ ${9} != "no-exclude-efi" ] && [ ${9} != "no-root-only" ] && [ ${9} != "skip" ]; then
         echo "Missing argument or misspelled..."
+        return 1
     elif [ ${10} != "systemd-boot" ] && [ ${10} != "grub" ]; then
         echo "Missing argument or misspelled..."
+        return 1
     elif [ ${11} != "static-ip" ] && [ ${11} != "dhcp" ]; then
         echo "Missing argument or misspelled..."
+        return 1
     fi
 }
 
 selection_arguments() {
     # intel-ucode or amd-ucode
-    if [ ${2} = "intel" ]; then
+    if [ ${2} == "intel" ]; then
         packagelist="${packagelist} intel-ucode"
-    elif [ ${2} = "amd" ]; then
+    elif [ ${2} == "amd" ]; then
         packagelist="${packagelist} amd-ucode"
     fi
 
