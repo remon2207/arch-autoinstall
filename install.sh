@@ -5,8 +5,8 @@ packagelist="base \
     linux-zen \
     linux-zen-headers \
     linux-firmware \
-    nano \
-    nano-syntax-highlighting \
+    vi \
+    vim \
     sudo \
     zsh \
     curl \
