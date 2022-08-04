@@ -135,7 +135,6 @@ selection_arguments() {
         packagelist="${packagelist} \
             gnome-control-center \
             gnome-shell \
-            gnome-terminal \
             gnome-tweaks \
             gnome-themes-extra \
             mutter \
