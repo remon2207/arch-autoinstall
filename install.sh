@@ -172,19 +172,36 @@ configuration() {
 
 network() {
     ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
-    echo -e "127.0.0.1       localhost\n\
-    ::1             localhost\n\
-    ${ip_address}    ${5}.localdomain        ${5}" >> /mnt/etc/hosts
+    # echo -e "127.0.0.1       localhost\n\
+    # ::1             localhost\n\
+    # ${ip_address}    ${5}.localdomain        ${5}" >> /mnt/etc/hosts
+
+    cat << EOF >> /mnt/etc/hosts
+127.0.0.1       localhost
+::1             localhost
+${ip_address}    ${5}.localdomain        ${5}
+EOF
     
     arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-    echo -e "[Match]\n\
-    Name=enp6s0\n\
-    \n\
-    [Network]\n\
-    Address=${ip_address}/24\n\
-    Gateway=192.168.1.1\n\
-    DNS=8.8.8.8\n\
-    DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
+    # echo -e "[Match]\n\
+    # Name=enp6s0\n\
+    # \n\
+    # [Network]\n\
+    # Address=${ip_address}/24\n\
+    # Gateway=192.168.1.1\n\
+    # DNS=8.8.8.8\n\
+    # DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
+
+    cat << EOF > /mnt/etc/systemd/network/20-wired.network
+[Match]
+Name=enp6s0
+
+[Network]
+Address=${ip_address}/24
+Gateway=192.168.1.1
+DNS=8.8.8.8
+DNS=8.8.4.4
+EOF
     
     ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 }
@@ -197,9 +214,14 @@ create_user() {
 
 
 japanese_input() {
-    echo -e "GTK_IM_MODULE=fcitx5\n\
-    QT_IM_MODULE=fcitx5\n\
-    XMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
+    # echo -e "GTK_IM_MODULE=fcitx5\n\
+    # QT_IM_MODULE=fcitx5\n\
+    # XMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
+    cat << EOF >> /mnt/etc/environment
+GTK_IM_MODULE=fcitx5
+QT_IM_MODULE=fcitx5
+XMODIFIERS=@im=fcitx5
+EOF
     echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 }
 
@@ -230,18 +252,31 @@ boot_loader() {
     
     # systemd-boot
     arch-chroot /mnt bootctl --path=/boot install
-    echo -e "default    arch\n\
-    timeout    10\n\
-    console-mode max\n\
-    editor     no" >> /mnt/boot/loader/loader.conf
+    # echo -e "default    arch\n\
+    # timeout    10\n\
+    # console-mode max\n\
+    # editor     no" >> /mnt/boot/loader/loader.conf
+    cat << EOF >> /mnt/boot/loader/loader.conf
+default      arch
+timeout      10
+console-mode max
+editor       no
+EOF
     
     root_partuuid=$(blkid -s PARTUUID -o value ${1}2)
     
-    echo -e "title    Arch Linux\n\
-    linux    /vmlinuz-linux-zen\n\
-    initrd   /intel-ucode.img\n\
-    initrd   /initramfs-linux-zen.img\n\
-    options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
+    # echo -e "title    Arch Linux\n\
+    # linux    /vmlinuz-linux-zen\n\
+    # initrd   /intel-ucode.img\n\
+    # initrd   /initramfs-linux-zen.img\n\
+    # options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
+    cat << EOF >> /mnt/boot/loader/entries/arch.conf
+title    Arch Linux
+linux    /vmlinuz-linux-zen
+initrd   /intel-ucode.img
+initrd   /initramfs-linux-zen.img
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
+EOF
 }
 
 enable_services() {
