@@ -70,7 +70,7 @@ if [ ${#} -lt 11 ]; then
 fi
 
 check_variables() {
-    if [ "${2}" != "intel" ] && [ "${2}" != "amd" ]; then
+    if [ ${2} != "intel" ] && [ ${2} != "amd" ]; then
         echo "Missing argument or misspelled..."
         return 1
     elif [ ${3} != "xfce" ] && [ ${3} != "gnome" ] && [ ${3} != "kde" ]; then
