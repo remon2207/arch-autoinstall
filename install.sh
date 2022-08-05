@@ -234,7 +234,7 @@ configuration() {
 
 networking() {
         if [ ${network} = "static-ip" ]; then
-        ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
+	ip_address=$(ip -4 a show enp6s0 | grep 192.168 | awk '{print $2}' | cut -d "/" -f 1)
         cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
