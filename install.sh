@@ -60,8 +60,6 @@ packagelist="base \
     xorg-xinit \
     xarchiver \
     gsmartcontrol \
-    evince \
-    feh \
     vlc \
     konsole \
     pcmanfm-gtk3 \
@@ -123,8 +121,24 @@ selection_arguments() {
     # desktop
     if [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
-            xfce4 \
-            xfce4-goodies \
+            exo \
+            garcon \
+            tumbler \
+            xfce4-appfinder \
+            xfce4-panel \
+            xfce4-power-manager \
+            xfce4-session \
+            xfce4-settings \
+            xfconf \
+            xfdesktop \
+            xfwm4 \
+            ristretto \
+            xfce4-clipman-plugin \
+            xfce4-datetime-plugin \
+            xfce4-notifyd \
+            xfce4-pulseaudio-plugin \
+            xfce4-screenshooter \
+            xfce4-whiskermenu-plugin \
             arc-gtk-theme \
             papirus-icon-theme \
             lightdm \
