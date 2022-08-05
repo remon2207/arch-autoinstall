@@ -66,7 +66,8 @@ packagelist="base \
 
 if [ ${#} -lt 12 ]; then
     echo "Usage:"
-    echo "./arch-autoinstall/install.sh \
+    echo "# ip -4 a"
+    echo "# ./arch-autoinstall/install.sh \
 <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
 <GPU: nvidia | amd | intel> <HostName> <UserName> \
 <userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
