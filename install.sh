@@ -64,11 +64,11 @@ packagelist="base \
 
 if [ ${#} -lt 12 ]; then
     echo "Usage:"
-    echo "install.sh \
+    echo "./arch-autoinstall/install.sh \
 <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
 <GPU: nvidia | amd | intel> <HostName> <UserName> \
 <userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
-<boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: GiB>"
+<boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: Numbers only (GiB)>"
     exit
 fi
 
@@ -375,7 +375,7 @@ enable_services() {
     fi
 }
 
-# check_variables
+check_variables
 selection_arguments "${ucode}" "${de}" "${gpu}" "${boot_loader}" "${network}"
 time_setting
 partitioning "${disk}" "${partition_table}" "${root_size}"
