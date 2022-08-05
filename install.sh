@@ -242,7 +242,7 @@ EOF
         arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
         cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
-Name=enp6s0
+Name=${net_interface}
 
 [Network]
 Address=${ip_address}/24
