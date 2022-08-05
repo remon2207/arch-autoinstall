@@ -347,6 +347,14 @@ initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
         fi
+
+        cat << EOF >> /mnt/boot/loader/entries/arch_fallback.conf
+title    Arch Linux Fallback
+linux    /vmlinuz-linux-zen
+initrd   /intel-ucode.img
+initrd   /initramfs-linux-zen-fallback.img
+options  root=PARTUUID=${root_partuuid} rw panic=180 debug
+EOF
         arch-chroot /mnt systemctl enable systemd-boot-update.service
     fi
 }
