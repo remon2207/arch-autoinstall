@@ -67,6 +67,7 @@ packagelist="base \
     go \
     ripgrep \
     xclip \
+    profile-sync-daemon \
     gparted"
 
 if [ ${#} -lt 12 ]; then
