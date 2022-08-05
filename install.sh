@@ -70,7 +70,7 @@ if [ ${#} -lt 12 ]; then
 <disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
 <GPU: nvidia | amd | intel> <HostName> <UserName> \
 <userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
-<boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: Numbers only (GiB)>"
+<boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: Numbers only (GiB)> <net_interface>"
     exit
 fi
 
@@ -86,6 +86,7 @@ partition_table="${9}"
 boot_loader="${10}"
 network="${11}"
 root_size="${12}"
+net_interface="${13}"
 
 check_variables() {
     if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
@@ -230,7 +231,7 @@ configuration() {
 
 networking() {
         if [ ${network} = "static-ip" ]; then
-	ip_address=$(ip -4 a show enp6s0 | grep 192.168 | awk '{print $2}' | cut -d "/" -f 1)
+	ip_address=$(ip -4 a show ${net_interface} | grep 192.168 | awk '{print $2}' | cut -d "/" -f 1)
         cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
