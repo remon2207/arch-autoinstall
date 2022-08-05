@@ -19,7 +19,8 @@ packagelist="base \
     cifs-utils \
     openssh \
     htop \
-    man \
+    man-db \
+    man-pages \
     ntfs-3g \
     exfat-utils \
     firefox \
@@ -203,10 +204,8 @@ partitioning() {
 
     # mount
     mount ${disk}2 /mnt
-    mkdir /mnt/boot
-    mount ${disk}1 /mnt/boot
-    mkdir /mnt/home
-    mount ${disk}3 /mnt/home
+    mount --mkdir ${disk}1 /mnt/boot
+    mount --mkdir ${disk}3 /mnt/home
 }
 
 installation() {
@@ -226,7 +225,6 @@ configuration() {
     echo "KEYMAP=us" > /mnt/etc/vconsole.conf
     echo ${hostname} > /mnt/etc/hostname
     arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
-    arch-chroot /mnt sh -c "echo 'Defaults editor=/usr/bin/vim' | EDITOR='tee -a' visudo"
 }
 
 networking() {
