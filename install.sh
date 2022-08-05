@@ -6,7 +6,7 @@ packagelist="base \
     linux-zen-headers \
     linux-firmware \
     vi \
-    vim \
+    neovim \
     sudo \
     zsh \
     curl \
@@ -62,6 +62,10 @@ packagelist="base \
     xarchiver \
     gsmartcontrol \
     rmlint \
+    fd \
+    go \
+    ripgrep \
+    xclip \
     gparted"
 
 if [ ${#} -lt 12 ]; then
