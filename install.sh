@@ -61,6 +61,7 @@ packagelist="base \
     xorg-xinit \
     xarchiver \
     gsmartcontrol \
+    rmlint \
     gparted"
 
 if [ ${#} -lt 12 ]; then
