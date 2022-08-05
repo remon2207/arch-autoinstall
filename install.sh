@@ -362,19 +362,6 @@ enable_services() {
 }
 
 check_variables
-# selection_arguments "${ucode}" "${de}" "${gpu}" "${boot_loader}" "${network}"
-# time_setting
-# partitioning "${disk}" "${partition_table}" "${root_size}"
-# installation
-# configuration "${hostname}"
-# networking "${hostname}" "${network}"
-# create_user "${username}" "${user_password}" "${root_password}"
-# japanese_input
-# add_to_group "${username}"
-# replacement
-# boot_loader "${disk}" "${gpu}" "${boot_loader}"
-# enable_services "${de}"
-
 selection_arguments
 time_setting
 partitioning
