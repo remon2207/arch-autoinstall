@@ -360,15 +360,28 @@ enable_services() {
 }
 
 check_variables
-selection_arguments "${ucode}" "${de}" "${gpu}" "${boot_loader}" "${network}"
+# selection_arguments "${ucode}" "${de}" "${gpu}" "${boot_loader}" "${network}"
+# time_setting
+# partitioning "${disk}" "${partition_table}" "${root_size}"
+# installation
+# configuration "${hostname}"
+# networking "${hostname}" "${network}"
+# create_user "${username}" "${user_password}" "${root_password}"
+# japanese_input
+# add_to_group "${username}"
+# replacement
+# boot_loader "${disk}" "${gpu}" "${boot_loader}"
+# enable_services "${de}"
+
+selection_arguments
 time_setting
-partitioning "${disk}" "${partition_table}" "${root_size}"
+partitioning
 installation
-configuration "${hostname}"
-networking "${hostname}" "${network}"
-create_user "${username}" "${user_password}" "${root_password}"
+configuration
+networking
+create_user
 japanese_input
-add_to_group "${username}"
+add_to_group
 replacement
-boot_loader "${disk}" "${gpu}" "${boot_loader}"
-enable_services "${de}"
+boot_loader
+enable_services
