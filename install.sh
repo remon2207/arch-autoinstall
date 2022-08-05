@@ -60,9 +60,6 @@ packagelist="base \
     xorg-xinit \
     xarchiver \
     gsmartcontrol \
-    vlc \
-    konsole \
-    pcmanfm-gtk3 \
     gparted"
 
 if [ ${#} -lt 12 ]; then
@@ -121,24 +118,8 @@ selection_arguments() {
     # desktop
     if [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
-            exo \
-            garcon \
-            tumbler \
-            xfce4-appfinder \
-            xfce4-panel \
-            xfce4-power-manager \
-            xfce4-session \
-            xfce4-settings \
-            xfconf \
-            xfdesktop \
-            xfwm4 \
-            ristretto \
-            xfce4-clipman-plugin \
-            xfce4-datetime-plugin \
-            xfce4-notifyd \
-            xfce4-pulseaudio-plugin \
-            xfce4-screenshooter \
-            xfce4-whiskermenu-plugin \
+            xfce4 \
+            xfce4-goodies \
             arc-gtk-theme \
             papirus-icon-theme \
             lightdm \
@@ -173,7 +154,6 @@ selection_arguments() {
     elif [ "${gpu}" = "amd" ]; then
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     elif [ "${gpu}" = "intel" ]; then
-        # packagelist="${packagelist} xf86-video-intel"
 	echo "Already declared"
     fi
 
@@ -255,10 +235,6 @@ configuration() {
 networking() {
         if [ ${network} = "static-ip" ]; then
         ip_address=$(ip -4 a show enp6s0 | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
-        # echo -e "127.0.0.1       localhost\n\
-        # ::1             localhost\n\
-        # ${ip_address}    ${5}.localdomain        ${5}" >> /mnt/etc/hosts
-
         cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
@@ -266,15 +242,6 @@ ${ip_address}    ${hostname}.localdomain        ${hostname}
 EOF
 
         arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-        # echo -e "[Match]\n\
-        # Name=enp6s0\n\
-        # \n\
-        # [Network]\n\
-        # Address=${ip_address}/24\n\
-        # Gateway=192.168.1.1\n\
-        # DNS=8.8.8.8\n\
-        # DNS=8.8.4.4" > /mnt/etc/systemd/network/20-wired.network
-
         cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=enp6s0
@@ -303,9 +270,6 @@ create_user() {
 
 
 japanese_input() {
-    # echo -e "GTK_IM_MODULE=fcitx5\n\
-    # QT_IM_MODULE=fcitx5\n\
-    # XMODIFIERS=@im=fcitx5" >> /mnt/etc/environment
     cat << EOF >> /mnt/etc/environment
 GTK_IM_MODULE=fcitx5
 QT_IM_MODULE=fcitx5
@@ -353,10 +317,6 @@ boot_loader() {
     elif [ ${boot_loader} = "systemd-boot" ]; then
         # systemd-boot
         arch-chroot /mnt bootctl --path=/boot install
-        # echo -e "default    arch\n\
-        # timeout    10\n\
-        # console-mode max\n\
-        # editor     no" >> /mnt/boot/loader/loader.conf
         cat << EOF >> /mnt/boot/loader/loader.conf
 default      arch
 timeout      10
@@ -366,11 +326,6 @@ EOF
 
         root_partuuid=$(blkid -s PARTUUID -o value ${disk}2)
 
-        # echo -e "title    Arch Linux\n\
-        # linux    /vmlinuz-linux-zen\n\
-        # initrd   /intel-ucode.img\n\
-        # initrd   /initramfs-linux-zen.img\n\
-        # options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1" >> /mnt/boot/loader/entries/arch.conf
         if [ ${gpu} = "nvidia" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
