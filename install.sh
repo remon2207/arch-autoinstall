@@ -199,9 +199,6 @@ partitioning() {
         # format
         mkfs.ext4 ${disk}2
         mkfs.ext4 ${disk}3
-    else
-        echo "Not specified or misspelled..."
-        exit 1
     fi
 
     # mount
@@ -256,9 +253,6 @@ EOF
         ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
     elif [ ${network} = "dhcp" ]; then
         arch-chroot /mnt systemctl enable dhcpcd.service
-    else
-        echo "Not specified or misspelled..."
-        exit 1
     fi
 }
 
@@ -308,9 +302,6 @@ boot_loader() {
             arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
         elif [ ${gpu} = "intel" ]; then
             arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
-        else
-            echo "Missing argument or misspelled..."
-            exit 1
         fi
         arch-chroot /mnt sed -i '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
         arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
@@ -350,14 +341,8 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-        else
-            echo "Missing argument or misspelled..."
-            exit 1
         fi
         arch-chroot /mnt systemctl enable systemd-boot-update.service
-    else
-        echo "Missing argument or misspelled..."
-        exit 1
     fi
 }
 
