@@ -5,6 +5,7 @@ packagelist="base \
     linux-zen \
     linux-zen-headers \
     linux-firmware \
+    efibootmgr \
     vi \
     neovim \
     sudo \
