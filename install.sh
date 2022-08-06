@@ -339,7 +339,7 @@ EOF
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
 linux    /vmlinuz-linux-zen
-initrd   /intel-ucode.img
+initrd   /amd-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
