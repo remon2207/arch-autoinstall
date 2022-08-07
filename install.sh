@@ -68,6 +68,8 @@ packagelist="base \
     ripgrep \
     xclip \
     profile-sync-daemon \
+    bluez \
+    blueman \
     gparted"
 
 if [ ${#} -lt 12 ]; then
@@ -368,6 +370,7 @@ enable_services() {
     arch-chroot /mnt systemctl enable docker.service
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
+    arch-chroot /mnt systemctl enable bluetooth.service
 
     if [ ${de} = "xfce" ]; then
         arch-chroot /mnt systemctl enable lightdm.service
