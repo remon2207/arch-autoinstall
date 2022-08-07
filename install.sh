@@ -67,6 +67,7 @@ packagelist="base \
     go \
     ripgrep \
     xclip \
+    vlc \
     profile-sync-daemon \
     bluez \
     blueman \
