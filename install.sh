@@ -59,7 +59,6 @@ packagelist="base \
     xorg-server \
     xorg-apps \
     xorg-xinit \
-    xarchiver \
     gsmartcontrol \
     rmlint \
     fd \
