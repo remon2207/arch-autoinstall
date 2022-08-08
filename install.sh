@@ -7,6 +7,7 @@ packagelist="base \
     linux-firmware \
     efibootmgr \
     vi \
+    neovim \
     sudo \
     zsh \
     curl \
@@ -59,8 +60,13 @@ packagelist="base \
     xorg-server \
     xorg-apps \
     xorg-xinit \
+    xarchiver \
     gsmartcontrol \
     rmlint \
+    fd \
+    go \
+    ripgrep \
+    xclip \
     vlc \
     profile-sync-daemon \
     bluez \
@@ -145,6 +151,7 @@ selection_arguments() {
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings \
             papirus-icon-theme \
+            gnome-shell-extension-appindicator \
             gnome-backgrounds"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
