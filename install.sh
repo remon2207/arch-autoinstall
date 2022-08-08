@@ -61,10 +61,6 @@ packagelist="base \
     xorg-xinit \
     gsmartcontrol \
     rmlint \
-    fd \
-    go \
-    ripgrep \
-    xclip \
     vlc \
     profile-sync-daemon \
     bluez \
