@@ -7,7 +7,6 @@ packagelist="base \
     linux-firmware \
     efibootmgr \
     vi \
-    neovim \
     sudo \
     zsh \
     curl \
