@@ -372,14 +372,7 @@ enable_services() {
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
     arch-chroot /mnt systemctl enable bluetooth.service
-
-    if [ ${de} = "xfce" ]; then
-        arch-chroot /mnt systemctl enable lightdm.service
-    elif [ ${de} = "gnome" ]; then
-        arch-chroot /mnt systemctl enable lightdm.service
-    elif [ ${de} = "kde" ]; then
-        arch-chroot /mnt systemctl enable lightdm.service
-    fi
+    arch-chroot /mnt systemctl enable lightdm.service
 }
 
 check_variables
