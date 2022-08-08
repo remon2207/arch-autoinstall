@@ -145,7 +145,6 @@ selection_arguments() {
             gnome-shell \
             gnome-tweaks \
             gnome-themes-extra \
-            gnome-shell-extension-appindicator \
             mutter \
             dconf-editor \
             lightdm \
