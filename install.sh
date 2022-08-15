@@ -137,8 +137,7 @@ selection_arguments() {
             papirus-icon-theme \
             lightdm \
             lightdm-gtk-greeter \
-            lightdm-gtk-greeter-settings \
-            lxappearance-gtk3"
+            lightdm-gtk-greeter-settings"
     elif [ "${de}" = "gnome" ]; then
         packagelist="${packagelist} \
             gnome-control-center \
