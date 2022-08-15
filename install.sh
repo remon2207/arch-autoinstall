@@ -147,19 +147,15 @@ selection_arguments() {
             gnome-themes-extra \
             mutter \
             dconf-editor \
-            lightdm \
-            lightdm-gtk-greeter \
-            lightdm-gtk-greeter-settings \
+            gdm \
             papirus-icon-theme \
             gnome-shell-extension-appindicator \
             gnome-backgrounds"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
-            lxappearance-gtk3 \
-            lightdm \
-            lightdm-gtk-greeter \
-            lightdm-gtk-greeter-settings"
+            sddm \
+            lxappearance-gtk3"
     fi
 
     if [ "${gpu}" = "nvidia" ]; then
@@ -372,7 +368,14 @@ enable_services() {
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
     arch-chroot /mnt systemctl enable bluetooth.service
-    arch-chroot /mnt systemctl enable lightdm.service
+
+    if [ "${de}" == "xfce" ]; then
+        arch-chroot /mnt systemctl enable lightdm.service
+    elif [ "${de}" == "gnome" ]; then
+        arch-chroot /mnt systemctl enable gdm.service
+    elif [ "${de}" == "kde" ]; then
+        arch-chroot /mnt systemctl enable lightdm.service
+    fi
 }
 
 check_variables
