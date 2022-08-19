@@ -134,6 +134,7 @@ selection_arguments() {
             xfce4 \
             xfce4-goodies \
             papirus-icon-theme \
+            arc-gtk-theme \
             lightdm \
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings"
