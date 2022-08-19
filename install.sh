@@ -133,7 +133,6 @@ selection_arguments() {
         packagelist="${packagelist} \
             xfce4 \
             xfce4-goodies \
-            arc-gtk-theme \
             papirus-icon-theme \
             lightdm \
             lightdm-gtk-greeter \
