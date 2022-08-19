@@ -147,11 +147,11 @@ selection_arguments() {
             gnome-terminal \
             mutter \
             dconf-editor \
+            eog \
             gdm \
             nautilus \
             papirus-icon-theme \
-            gnome-shell-extension-appindicator \
-            gnome-backgrounds"
+            gnome-shell-extension-appindicator"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
