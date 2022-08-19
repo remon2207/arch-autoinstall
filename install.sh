@@ -144,9 +144,11 @@ selection_arguments() {
             gnome-shell \
             gnome-tweaks \
             gnome-themes-extra \
+            gnome-terminal \
             mutter \
             dconf-editor \
             gdm \
+            nautilus \
             papirus-icon-theme \
             gnome-shell-extension-appindicator \
             gnome-backgrounds"
