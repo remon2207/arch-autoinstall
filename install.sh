@@ -60,7 +60,6 @@ packagelist="base \
     xorg-server \
     xorg-apps \
     xorg-xinit \
-    xarchiver \
     gsmartcontrol \
     rmlint \
     fd \
@@ -133,6 +132,7 @@ selection_arguments() {
         packagelist="${packagelist} \
             xfce4 \
             xfce4-goodies \
+            xarchiver \
             papirus-icon-theme \
             arc-gtk-theme \
             lightdm \
@@ -146,6 +146,7 @@ selection_arguments() {
             gnome-themes-extra \
             gnome-terminal \
             mutter \
+            file-roller \
             dconf-editor \
             eog \
             gdm \
