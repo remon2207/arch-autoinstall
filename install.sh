@@ -337,6 +337,13 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
 EOF
+            cat << EOF >> /mnt/boot/loader/entries/arch_nouveau.conf
+title    Arch Linux Nouveau
+linux    /vmlinuz-linux-zen
+initrd   /intel-ucode.img
+initrd   /initramfs-linux-zen.img
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
+EOF
         elif [ ${gpu} = "amd" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux
