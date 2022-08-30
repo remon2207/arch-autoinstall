@@ -134,6 +134,7 @@ selection_arguments() {
             kvantum \
             blueman \
             papirus-icon-theme \
+            arc-gtk-theme \
             lightdm \
             lightdm-gtk-greeter \
             lightdm-gtk-greeter-settings"
