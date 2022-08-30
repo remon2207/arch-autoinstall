@@ -26,8 +26,6 @@ packagelist="base \
     exfat-utils \
     firefox \
     firefox-i18n-ja \
-    vivaldi \
-    vivaldi-ffmpeg-codecs \
     wireplumber \
     pipewire \
     pipewire-pulse \
