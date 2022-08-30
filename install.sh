@@ -40,12 +40,8 @@ packagelist="base \
     fcitx5-im \
     fcitx5-mozc \
     audacious \
-    gnome-keyring \
-    qt5ct \
-    kvantum \
     docker \
     docker-compose \
-    gvfs \
     github-cli \
     discord \
     neofetch \
@@ -70,8 +66,6 @@ packagelist="base \
     xclip \
     vlc \
     profile-sync-daemon \
-    bluez \
-    blueman \
     gparted"
 
 if [ ${#} -lt 12 ]; then
@@ -135,6 +129,12 @@ selection_arguments() {
             xfce4 \
             xfce4-goodies \
             xarchiver \
+            gnome-keyring \
+            gvfs \
+            qt5ct \
+            kvantum \
+            bluez \
+            blueman \
             papirus-icon-theme \
             lightdm \
             lightdm-gtk-greeter \
@@ -146,6 +146,12 @@ selection_arguments() {
             gnome-tweaks \
             gnome-themes-extra \
             gnome-terminal \
+            gnome-keyring \
+            gvfs \
+            bluez \
+            blueman \
+            qt5ct \
+            kvantum \
             mutter \
             file-roller \
             dconf-editor \
@@ -157,8 +163,7 @@ selection_arguments() {
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
-            sddm \
-            lxappearance-gtk3"
+            dolphin"
     fi
 
     if [ "${gpu}" = "nvidia" ]; then
