@@ -389,7 +389,7 @@ enable_services() {
     elif [ "${de}" == "gnome" ]; then
         arch-chroot /mnt systemctl enable gdm.service
     elif [ "${de}" == "kde" ]; then
-        arch-chroot /mnt systemctl enable lightdm.service
+        arch-chroot /mnt systemctl enable sddm.service
     fi
 }
 
