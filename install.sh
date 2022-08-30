@@ -148,7 +148,6 @@ selection_arguments() {
             gnome-terminal \
             gnome-keyring \
             gvfs \
-            blueman \
             qt5ct \
             kvantum \
             mutter \
