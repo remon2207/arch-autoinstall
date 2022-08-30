@@ -260,8 +260,8 @@ Name=${net_interface}
 [Network]
 Address=${ip_address}/24
 Gateway=192.168.1.1
-DNS=1.1.1.1
-DNS=1.0.0.1
+DNS=8.8.8.8
+DNS=8.8.4.4
 EOF
 
         ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
