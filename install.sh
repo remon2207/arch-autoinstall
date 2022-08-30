@@ -60,6 +60,7 @@ packagelist="base \
     xorg-xinit \
     gsmartcontrol \
     rmlint \
+    bluez \
     fd \
     go \
     ripgrep \
@@ -133,7 +134,6 @@ selection_arguments() {
             gvfs \
             qt5ct \
             kvantum \
-            bluez \
             blueman \
             papirus-icon-theme \
             lightdm \
@@ -148,7 +148,6 @@ selection_arguments() {
             gnome-terminal \
             gnome-keyring \
             gvfs \
-            bluez \
             blueman \
             qt5ct \
             kvantum \
@@ -383,13 +382,12 @@ enable_services() {
     arch-chroot /mnt systemctl enable docker.service
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
+    arch-chroot /mnt systemctl enable bluetooth.service
 
     if [ "${de}" == "xfce" ]; then
         arch-chroot /mnt systemctl enable lightdm.service
-        arch-chroot /mnt systemctl enable bluetooth.service
     elif [ "${de}" == "gnome" ]; then
         arch-chroot /mnt systemctl enable gdm.service
-        arch-chroot /mnt systemctl enable bluetooth.service
     elif [ "${de}" == "kde" ]; then
         arch-chroot /mnt systemctl enable lightdm.service
     fi
