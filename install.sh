@@ -163,7 +163,8 @@ selection_arguments() {
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
-            dolphin"
+            dolphin \
+            konsole"
     fi
 
     if [ "${gpu}" = "nvidia" ]; then
