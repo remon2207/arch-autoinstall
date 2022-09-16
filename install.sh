@@ -29,7 +29,6 @@ packagelist="base \
     wireplumber \
     pipewire \
     pipewire-pulse \
-    pavucontrol \
     xdg-user-dirs-gtk \
     noto-fonts \
     noto-fonts-cjk \
@@ -57,7 +56,6 @@ packagelist="base \
     xorg-apps \
     xorg-xinit \
     gsmartcontrol \
-    rmlint \
     bluez \
     fd \
     go \
