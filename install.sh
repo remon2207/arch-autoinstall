@@ -159,7 +159,8 @@ selection_arguments() {
         packagelist="${packagelist} \
             plasma-meta \
             dolphin \
-            konsole"
+            konsole \
+            libappindicator-gtk3"
     fi
 
     if [ "${gpu}" = "nvidia" ]; then
