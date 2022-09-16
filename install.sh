@@ -223,7 +223,7 @@ partitioning() {
 }
 
 installation() {
-    reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
+    reflector --country Japan --protocol http,https --sort rate --save /etc/pacman.d/mirrorlist
     pacman -Sy --noconfirm archlinux-keyring
     pacstrap /mnt ${packagelist}
     genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
