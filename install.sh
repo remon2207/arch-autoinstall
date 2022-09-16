@@ -160,6 +160,7 @@ selection_arguments() {
             plasma-meta \
             dolphin \
             konsole \
+            gwenview \
             libappindicator-gtk3"
     fi
 
