@@ -161,6 +161,7 @@ selection_arguments() {
             dolphin \
             konsole \
             gwenview \
+            spectacle \
             libappindicator-gtk3"
     fi
 
