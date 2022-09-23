@@ -293,6 +293,11 @@ replacement() {
     arch-chroot /mnt cp /etc/udisks2/mount_options.conf.example /etc/udisks2/mount_options.conf
     arch-chroot /mnt sed -i "7s/^# \[defaults\]/\[defaults\]/" /etc/udisks2/mount_options.conf
     arch-chroot /mnt sed -i "15s/^# ntfs_defaults=uid=\$UID,gid=\$GID,windows_names/ntfs_defaults=uid=\$UID,gid=\$GID,noatime/" /etc/udisks2/mount_options.conf
+    arch-chroot /mnt sed -i "s/^#Color/Color/" /etc/pacman.conf
+    arch-chroot /mnt sed -i "s/^--protocol https/--protocol http,https/" /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i "s/^# --country France,Germany/--country Japan/" /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i "s/^--latest 5/# --latest 5/" /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i "s/^--sort age/--sort rate/" /etc/xdg/reflector/reflector.conf
 }
 
 
