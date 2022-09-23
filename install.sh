@@ -7,7 +7,7 @@ packagelist="base \
     linux-firmware \
     efibootmgr \
     vi \
-    neovim \
+    vim \
     sudo \
     zsh \
     curl \
@@ -47,9 +47,6 @@ packagelist="base \
     virtualbox-host-dkms \
     virtualbox-guest-iso \
     starship \
-    lsd \
-    bat \
-    rsync \
     reflector \
     xorg \
     xorg-server \
@@ -57,11 +54,6 @@ packagelist="base \
     xorg-xinit \
     gsmartcontrol \
     bluez \
-    fd \
-    go \
-    ripgrep \
-    xclip \
-    vlc \
     profile-sync-daemon \
     gparted"
 
