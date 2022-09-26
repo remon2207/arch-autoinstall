@@ -25,6 +25,7 @@ packagelist="base \
     ntfs-3g \
     exfat-utils \
     firefox \
+    firefox-i18n-en-us \
     firefox-i18n-ja \
     wireplumber \
     pipewire \
