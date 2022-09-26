@@ -386,6 +386,7 @@ enable_services() {
     arch-chroot /mnt systemctl enable fstrim.timer
     arch-chroot /mnt systemctl enable ufw.service
     arch-chroot /mnt systemctl enable bluetooth.service
+    arch-chroot /mnt systemctl enable reflector.timer
 
     if [ "${de}" == "xfce" ]; then
         arch-chroot /mnt systemctl enable lightdm.service
