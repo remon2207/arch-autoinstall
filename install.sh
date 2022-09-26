@@ -6,6 +6,11 @@ packagelist="base \
     linux-zen-headers \
     linux-firmware \
     efibootmgr \
+    mesa \
+    xf86-video-nouveau \
+    libva-vdpau-driver \
+    libva-utils \
+    vdpauinfo \
     vi \
     vim \
     sudo \
@@ -278,6 +283,8 @@ japanese_input() {
 GTK_IM_MODULE=fcitx5
 QT_IM_MODULE=fcitx5
 XMODIFIERS=@im=fcitx5
+LIBVA_DRIVER_NAME=vdpau
+VDPAU_DRIVER=nvidia
 EOF
     echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 }
