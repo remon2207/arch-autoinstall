@@ -139,15 +139,18 @@ selection_arguments() {
             gnome-themes-extra \
             gnome-terminal \
             gnome-keyring \
-            gvfs \
-            qt5ct \
-            kvantum \
+            gnome-backgrounds \
+            gnome-calculator \
+            gedit \
             mutter \
             file-roller \
+            nautilus \
+            gdm \
+            gvfs \
             dconf-editor \
             eog \
-            gdm \
-            nautilus \
+            qt5ct \
+            kvantum \
             papirus-icon-theme \
             gnome-shell-extension-appindicator"
     elif [ "${de}" = "kde" ]; then
