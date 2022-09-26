@@ -8,7 +8,6 @@ packagelist="base \
     efibootmgr \
     mesa \
     xf86-video-nouveau \
-    libva-vdpau-driver \
     libva-utils \
     vdpauinfo \
     vi \
