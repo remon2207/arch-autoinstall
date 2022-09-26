@@ -46,7 +46,6 @@ packagelist="base \
     github-cli \
     discord \
     neofetch \
-    tree \
     virtualbox \
     virtualbox-host-dkms \
     virtualbox-guest-iso \
