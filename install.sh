@@ -151,7 +151,6 @@ selection_arguments() {
             eog \
             qt5ct \
             kvantum \
-            papirus-icon-theme \
             gnome-shell-extension-appindicator"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
