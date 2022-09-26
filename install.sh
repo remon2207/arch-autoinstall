@@ -27,6 +27,9 @@ packagelist="base \
     firefox \
     firefox-i18n-en-us \
     firefox-i18n-ja \
+    thunderbird \
+    thunderbird-i18n-en-us \
+    thunderbird-i18n-ja \
     wireplumber \
     pipewire \
     pipewire-pulse \
