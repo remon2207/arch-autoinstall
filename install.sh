@@ -137,6 +137,9 @@ selection_arguments() {
             lightdm \
             lightdm-gtk-greeter \
             alacritty \
+            picom \
+            pavucontrol \
+            light-locker \
             ranger"
     elif [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
