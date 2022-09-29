@@ -126,6 +126,7 @@ selection_arguments() {
             i3-gaps \
             i3status \
             rofi \
+            feh \
             gnome-keyring \
             qt5ct \
             kvantum \
