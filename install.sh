@@ -22,7 +22,7 @@ packagelist="base \
     fzf \
     zip \
     unzip \
-    gufw \
+    ufw \
     git \
     cifs-utils \
     openssh \
@@ -62,10 +62,8 @@ packagelist="base \
     xorg-server \
     xorg-apps \
     xorg-xinit \
-    gsmartcontrol \
     bluez \
-    profile-sync-daemon \
-    gparted"
+    profile-sync-daemon"
 
 if [ ${#} -lt 12 ]; then
     echo "Usage:"
