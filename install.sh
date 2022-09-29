@@ -13,6 +13,7 @@ packagelist="base \
     vi \
     neovim \
     go \
+    fd \
     ripgrep \
     xsel \
     sudo \
@@ -126,6 +127,10 @@ selection_arguments() {
             i3status \
             rofi \
             feh \
+            tmux \
+            w3m \
+            xfce4-power-manager \
+            dunst \
             gnome-keyring \
             qt5ct \
             kvantum \
