@@ -131,7 +131,6 @@ selection_arguments() {
             kvantum \
             bluez \
             bluez-utils \
-            lxappearance-gtk3 \
             arc-gtk-theme \
             papirus-icon-theme \
             lightdm \
