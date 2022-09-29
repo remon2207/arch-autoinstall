@@ -40,7 +40,7 @@ packagelist="base \
     wireplumber \
     pipewire \
     pipewire-pulse \
-    xdg-user-dirs-gtk \
+    xdg-user-dirs \
     noto-fonts \
     noto-fonts-cjk \
     noto-fonts-emoji \
