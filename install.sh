@@ -11,7 +11,10 @@ packagelist="base \
     libva-utils \
     vdpauinfo \
     vi \
-    vim \
+    neovim \
+    go \
+    ripgrep \
+    xsel \
     sudo \
     zsh \
     curl \
@@ -68,7 +71,7 @@ if [ ${#} -lt 12 ]; then
     echo "Usage:"
     echo "# ip -4 a"
     echo "# ./arch-autoinstall/install.sh \
-<disk> <microcode: intel | amd> <DE: xfce | gnome | kde> \
+<disk> <microcode: intel | amd> <DE: i3 | xfce | gnome | kde> \
 <GPU: nvidia | amd | intel> <HostName> <UserName> \
 <userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
 <boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: Numbers only (GiB)> <net_interface>"
@@ -93,7 +96,7 @@ check_variables() {
     if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
         echo "Missing argument or misspelled..."
         return 1
-    elif [ "${de}" != "xfce" ] && [ "${de}" != "gnome" ] && [ "${de}" != "kde" ]; then
+    elif [ "${de}" != "i3" ] && [ "${de}" != "xfce" ] && [ "${de}" != "gnome" ] && [ "${de}" != "kde" ]; then
         echo "Missing argument or misspelled..."
         return 1
     elif [ "${gpu}" != "nvidia" ] && [ "${gpu}" != "amd" ] && [ "${gpu}" != "intel" ]; then
@@ -119,8 +122,25 @@ selection_arguments() {
         packagelist="${packagelist} amd-ucode"
     fi
 
-    # desktop
-    if [ "${de}" = "xfce" ]; then
+    # DE
+    if [ "${de}" = "i3" ]; then
+        packagelist="${packagelist} \
+            i3-gaps \
+            i3status \
+            rofi \
+            gnome-keyring \
+            qt5ct \
+            kvantum \
+            bluez
+            lxappearance-gtk3 \
+            arc-gtk-theme \
+            papirus-icon-theme \
+            lightdm \
+            lightdm-gtk-greeter \
+            lightdm-gtk-greeter-settings\
+            alacritty \
+            ranger"
+    elif [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
             xfce4 \
             xfce4-goodies \
