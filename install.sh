@@ -47,7 +47,6 @@ packagelist="base \
     fcitx5 \
     fcitx5-im \
     fcitx5-mozc \
-    audacious \
     docker \
     docker-compose \
     github-cli \
