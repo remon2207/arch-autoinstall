@@ -129,13 +129,13 @@ selection_arguments() {
             gnome-keyring \
             qt5ct \
             kvantum \
-            bluez
+            bluez \
+            bluez-utils \
             lxappearance-gtk3 \
             arc-gtk-theme \
             papirus-icon-theme \
             lightdm \
             lightdm-gtk-greeter \
-            lightdm-gtk-greeter-settings\
             alacritty \
             ranger"
     elif [ "${de}" = "xfce" ]; then
