@@ -38,6 +38,7 @@ packagelist="base \
     thunderbird \
     thunderbird-i18n-en-us \
     thunderbird-i18n-ja \
+    xdg-user-dirs \
     wireplumber \
     pipewire \
     pipewire-pulse \
