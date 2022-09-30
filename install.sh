@@ -148,7 +148,6 @@ selection_arguments() {
         packagelist="${packagelist} \
             xfce4 \
             xfce4-goodies \
-            xarchiver \
             gnome-keyring \
             gvfs \
             qt5ct \
