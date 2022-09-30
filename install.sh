@@ -129,7 +129,6 @@ selection_arguments() {
             feh \
             tmux \
             w3m \
-            xfce4-power-manager \
             dunst \
             gnome-keyring \
             qt5ct \
