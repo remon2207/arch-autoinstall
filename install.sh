@@ -11,7 +11,7 @@ packagelist="base \
     libva-utils \
     vdpauinfo \
     vi \
-    vim \
+    neovim \
     sudo \
     zsh \
     curl \
@@ -37,12 +37,10 @@ packagelist="base \
     wireplumber \
     pipewire \
     pipewire-pulse \
-    xdg-user-dirs-gtk \
+    xdg-user-dirs \
     noto-fonts \
     noto-fonts-cjk \
     noto-fonts-emoji \
-    audacious \
-    gsmartcontrol \
     fcitx5 \
     fcitx5-im \
     fcitx5-mozc \
@@ -61,7 +59,6 @@ packagelist="base \
     xorg-apps \
     xorg-xinit \
     bluez \
-    gparted \
     profile-sync-daemon"
 
 if [ ${#} -lt 12 ]; then
@@ -137,12 +134,9 @@ selection_arguments() {
             bluez-utils \
             arc-gtk-theme \
             papirus-icon-theme \
-            lightdm \
-            lightdm-gtk-greeter \
             alacritty \
             picom \
             pavucontrol \
-            light-locker \
             ranger"
     elif [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
