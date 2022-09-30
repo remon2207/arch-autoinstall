@@ -305,7 +305,6 @@ XMODIFIERS=@im=fcitx5
 LIBVA_DRIVER_NAME=vdpau
 VDPAU_DRIVER=nvidia
 EOF
-    # echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 }
 
 add_to_group() {
