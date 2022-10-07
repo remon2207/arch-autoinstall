@@ -66,6 +66,7 @@ packagelist="base \
     lsd \
     silicon \
     tig \
+    z \
     profile-sync-daemon"
 
 if [ ${#} -lt 12 ]; then
@@ -131,6 +132,7 @@ selection_arguments() {
             rofi \
             feh \
             tmux \
+            upower \
             w3m \
             dunst \
             gnome-keyring \
