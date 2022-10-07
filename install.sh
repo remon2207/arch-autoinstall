@@ -162,7 +162,8 @@ selection_arguments() {
             dconf-editor \
             eog \
             qt5ct \
-            kvantum"
+            kvantum \
+            gnome-shell-extension-appindicator"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
             plasma-meta \
