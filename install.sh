@@ -35,9 +35,6 @@ packagelist="base \
     firefox \
     firefox-i18n-en-us \
     firefox-i18n-ja \
-    thunderbird \
-    thunderbird-i18n-en-us \
-    thunderbird-i18n-ja \
     xdg-user-dirs \
     wireplumber \
     pipewire \
@@ -129,12 +126,9 @@ selection_arguments() {
         packagelist="${packagelist} \
             i3-gaps \
             i3status \
-            rofi \
-            feh \
-            tmux \
+            i3lock \
+            dmenu \
             upower \
-            polybar \
-            w3m \
             dunst \
             gnome-keyring \
             qt5ct \
@@ -143,10 +137,8 @@ selection_arguments() {
             bluez-utils \
             arc-gtk-theme \
             papirus-icon-theme \
-            alacritty \
-            picom \
-            pavucontrol \
-            ranger"
+            wezterm \
+            pavucontrol"
     elif [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
             xfce4 \
