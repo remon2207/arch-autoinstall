@@ -63,6 +63,9 @@ packagelist="base \
     xorg-apps \
     xorg-xinit \
     bluez \
+    lsd \
+    silicon \
+    tig \
     profile-sync-daemon"
 
 if [ ${#} -lt 12 ]; then
