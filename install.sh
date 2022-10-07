@@ -65,7 +65,6 @@ packagelist="base \
     thunderbird-i18n-ja \
     starship \
     lsd \
-    z \
     profile-sync-daemon"
 
 if [ ${#} -lt 12 ]; then
