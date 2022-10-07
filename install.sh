@@ -133,6 +133,7 @@ selection_arguments() {
             feh \
             tmux \
             upower \
+            polybar \
             w3m \
             dunst \
             gnome-keyring \
