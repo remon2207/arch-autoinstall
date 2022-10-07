@@ -11,9 +11,6 @@ packagelist="base \
     libva-utils \
     vdpauinfo \
     vi \
-    vim \
-    zip \
-    unzip \
     sudo \
     zsh \
     curl \
@@ -31,7 +28,7 @@ packagelist="base \
     firefox \
     firefox-i18n-en-us \
     firefox-i18n-ja \
-    xdg-user-dirs \
+    xdg-user-dirs-gtk \
     wireplumber \
     pipewire \
     pipewire-pulse \
@@ -46,17 +43,12 @@ packagelist="base \
     github-cli \
     discord \
     neofetch \
-    virtualbox \
-    virtualbox-host-dkms \
-    virtualbox-guest-iso \
-    starship \
     reflector \
     xorg \
     xorg-server \
     xorg-apps \
     xorg-xinit \
     bluez \
-    lsd \
     silicon \
     tig \
     z \
@@ -324,6 +316,7 @@ replacement() {
     arch-chroot /mnt sed -i "s/^--latest 5/# --latest 5/" /etc/xdg/reflector/reflector.conf
     arch-chroot /mnt sed -i "s/^--sort age/--sort rate/" /etc/xdg/reflector/reflector.conf
     arch-chroot /mnt pacman -Syy
+    echo "LANG=ja_JP.UTF-8" > /mnt/etc/locale.conf
 }
 
 
