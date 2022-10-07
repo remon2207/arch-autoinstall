@@ -125,9 +125,9 @@ selection_arguments() {
     if [ "${de}" = "i3" ]; then
         packagelist="${packagelist} \
             i3-gaps \
-            i3status \
+            polybar \
             i3lock \
-            dmenu \
+            rofi \
             upower \
             dunst \
             gnome-keyring \
