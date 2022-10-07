@@ -166,6 +166,7 @@ selection_arguments() {
             gnome-keyring \
             gnome-backgrounds \
             gnome-calculator \
+            gedit \
             mutter \
             file-roller \
             nautilus \
