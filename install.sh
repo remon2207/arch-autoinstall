@@ -135,7 +135,7 @@ selection_arguments() {
             kvantum \
             bluez \
             bluez-utils \
-            arc-gtk-theme \
+            adapta-gtk-theme \
             papirus-icon-theme \
             wezterm \
             pavucontrol"
