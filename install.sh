@@ -12,6 +12,10 @@ packagelist="base \
     vdpauinfo \
     vi \
     neovim \
+    go \
+    fd \
+    ripgrep \
+    xsel \
     sudo \
     zsh \
     curl \
