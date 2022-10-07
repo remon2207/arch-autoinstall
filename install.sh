@@ -16,6 +16,7 @@ packagelist="base \
     fd \
     ripgrep \
     xsel \
+    bat \
     sudo \
     zsh \
     curl \
