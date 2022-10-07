@@ -22,7 +22,7 @@ packagelist="base \
     curl \
     wget \
     fzf \
-    ufw \
+    gufw \
     git \
     cifs-utils \
     openssh \
