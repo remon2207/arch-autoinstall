@@ -59,6 +59,9 @@ packagelist="base \
     virtualbox \
     virtualbox-host-dkms \
     virtualbox-guest-iso \
+    thunderbird \
+    thunderbird-i18n-en-us \
+    thunderbird-i18n-ja \
     starship \
     lsd \
     z \
