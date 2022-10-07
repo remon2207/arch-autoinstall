@@ -306,9 +306,6 @@ replacement() {
     arch-chroot /mnt sed -i "s/^#BUILDDIR/BUILDDIR/" /etc/makepkg.conf
     arch-chroot /mnt sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/" /etc/makepkg.conf
     arch-chroot /mnt sed -i "s/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/" /etc/systemd/system.conf
-    # arch-chroot /mnt cp /etc/udisks2/mount_options.conf.example /etc/udisks2/mount_options.conf
-    # arch-chroot /mnt sed -i "7s/^# \[defaults\]/\[defaults\]/" /etc/udisks2/mount_options.conf
-    # arch-chroot /mnt sed -i "15s/^# ntfs_defaults=uid=\$UID,gid=\$GID,windows_names/ntfs_defaults=uid=\$UID,gid=\$GID,noatime,prealloc/" /etc/udisks2/mount_options.conf
     arch-chroot /mnt sed -i "s/^#Color/Color/" /etc/pacman.conf
     arch-chroot /mnt sed -i "s/^--protocol https/--protocol http,https/" /etc/xdg/reflector/reflector.conf
     arch-chroot /mnt sed -i "s/^# --country France,Germany/--country Japan/" /etc/xdg/reflector/reflector.conf
