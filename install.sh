@@ -310,7 +310,7 @@ EOF
 
 add_to_group() {
     arch-chroot /mnt gpasswd -a ${username} docker
-    # arch-chroot /mnt gpasswd -a ${username} vboxusers
+    arch-chroot /mnt gpasswd -a ${username} vboxusers
 }
 
 replacement() {
