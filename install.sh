@@ -11,6 +11,7 @@ packagelist="base \
     libva-utils \
     vdpauinfo \
     vi \
+    neovim \
     sudo \
     zsh \
     curl \
@@ -51,6 +52,17 @@ packagelist="base \
     bluez \
     silicon \
     tig \
+    virtualbox \
+    virtualbox-host-dkms \
+    virtualbox-guest-iso \
+    starship \
+    reflector \
+    xorg \
+    xorg-server \
+    xorg-apps \
+    xorg-xinit \
+    bluez \
+    lsd \
     z \
     profile-sync-daemon"
 
