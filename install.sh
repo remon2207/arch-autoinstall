@@ -175,8 +175,6 @@ selection_arguments() {
             gvfs \
             dconf-editor \
             eog \
-            qt5ct \
-            kvantum \
             gnome-shell-extension-appindicator"
     elif [ "${de}" = "kde" ]; then
         packagelist="${packagelist} \
