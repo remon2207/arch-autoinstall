@@ -129,6 +129,7 @@ selection_arguments() {
             polybar \
             i3lock \
             rofi \
+            picom \
             ttf-fantasque-sans-mono \
             ttf-iosevka-nerd \
             upower \
