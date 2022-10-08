@@ -128,11 +128,9 @@ selection_arguments() {
             i3-gaps \
             i3lock \
             i3status \
+            dmenu \
             xss-lock \
-            rofi \
             picom \
-            ttf-fantasque-sans-mono \
-            ttf-iosevka-nerd \
             upower \
             dunst \
             gnome-keyring \
