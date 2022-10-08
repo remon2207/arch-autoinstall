@@ -22,7 +22,7 @@ packagelist="base \
     curl \
     wget \
     fzf \
-    gufw \
+    ufw \
     git \
     cifs-utils \
     openssh \
@@ -34,7 +34,7 @@ packagelist="base \
     firefox \
     firefox-i18n-en-us \
     firefox-i18n-ja \
-    xdg-user-dirs-gtk \
+    xdg-user-dirs \
     wireplumber \
     pipewire \
     pipewire-pulse \
