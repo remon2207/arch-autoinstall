@@ -142,6 +142,7 @@ selection_arguments() {
             adapta-gtk-theme \
             papirus-icon-theme \
             alacritty \
+            tmux \
             w3m \
             ranger \
             pavucontrol"
