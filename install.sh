@@ -297,17 +297,6 @@ create_user() {
     echo "${username}:${user_password}" | arch-chroot /mnt chpasswd
 }
 
-
-japanese_input() {
-    cat << EOF >> /mnt/etc/environment
-GTK_IM_MODULE=fcitx5
-QT_IM_MODULE=fcitx5
-XMODIFIERS=@im=fcitx5
-LIBVA_DRIVER_NAME=vdpau
-VDPAU_DRIVER=nvidia
-EOF
-}
-
 add_to_group() {
     arch-chroot /mnt gpasswd -a ${username} docker
     arch-chroot /mnt gpasswd -a ${username} vboxusers
@@ -427,7 +416,6 @@ installation
 configuration
 networking
 create_user
-japanese_input
 add_to_group
 replacement
 boot_loader
