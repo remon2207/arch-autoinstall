@@ -141,7 +141,7 @@ selection_arguments() {
             bluez-utils \
             adapta-gtk-theme \
             papirus-icon-theme \
-            wezterm \
+            alacritty \
             w3m \
             ranger \
             pavucontrol"
