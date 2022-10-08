@@ -141,6 +141,8 @@ selection_arguments() {
             adapta-gtk-theme \
             papirus-icon-theme \
             wezterm \
+            w3m \
+            ranger \
             pavucontrol"
     elif [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
