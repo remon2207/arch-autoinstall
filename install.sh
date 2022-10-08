@@ -126,9 +126,9 @@ selection_arguments() {
     if [ "${de}" = "i3" ]; then
         packagelist="${packagelist} \
             i3-gaps \
-            polybar \
-            xss-lock \
             i3lock \
+            i3status \
+            xss-lock \
             rofi \
             picom \
             ttf-fantasque-sans-mono \
