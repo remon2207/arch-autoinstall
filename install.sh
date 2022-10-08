@@ -127,6 +127,7 @@ selection_arguments() {
         packagelist="${packagelist} \
             i3-gaps \
             polybar \
+            xss-lock \
             i3lock \
             rofi \
             picom \
