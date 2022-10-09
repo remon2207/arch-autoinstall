@@ -126,7 +126,7 @@ selection_arguments() {
             i3lock \
             i3status \
             dmenu \
-            xss-lock \
+            xautolock \
             feh \
             picom \
             upower \
