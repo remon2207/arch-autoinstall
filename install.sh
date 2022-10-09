@@ -137,6 +137,7 @@ selection_arguments() {
             bluez-utils \
             arc-gtk-theme \
             papirus-icon-theme \
+            pavucontrol \
             alacritty \
             tmux \
             w3m \
