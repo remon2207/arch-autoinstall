@@ -257,6 +257,7 @@ configuration() {
     arch-chroot /mnt hwclock --systohc --utc
     arch-chroot /mnt sed -i "s/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
     arch-chroot /mnt sed -i "s/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/" /etc/locale.gen
+    arch-chroot /mnt sed -i "s/^#ParallelDownloads/ParallelDownloads/" /etc/pacman.conf
     arch-chroot /mnt locale-gen
     echo "LANG=en_US.UTF-8" > /mnt/etc/locale.conf
     echo "KEYMAP=us" > /mnt/etc/vconsole.conf
