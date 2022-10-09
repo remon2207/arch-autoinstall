@@ -143,8 +143,7 @@ selection_arguments() {
             alacritty \
             tmux \
             w3m \
-            ranger \
-            pavucontrol"
+            ranger"
     elif [ "${de}" = "xfce" ]; then
         packagelist="${packagelist} \
             xfce4 \
