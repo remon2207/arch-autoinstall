@@ -135,7 +135,7 @@ selection_arguments() {
             kvantum \
             bluez \
             bluez-utils \
-            adapta-gtk-theme \
+            arc-gtk-theme \
             papirus-icon-theme \
             alacritty \
             tmux \
