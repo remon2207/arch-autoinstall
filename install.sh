@@ -127,6 +127,7 @@ selection_arguments() {
             i3status \
             dmenu \
             xautolock \
+            polkit \
             feh \
             picom \
             upower \
