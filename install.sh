@@ -124,8 +124,8 @@ selection_arguments() {
         packagelist="${packagelist} \
             i3-gaps \
             i3lock \
-            i3status \
-            dmenu \
+            rofi \
+            polybar \
             xautolock \
             polkit \
             feh \
