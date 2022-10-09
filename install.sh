@@ -127,6 +127,7 @@ selection_arguments() {
             i3status \
             dmenu \
             xss-lock \
+            feh \
             picom \
             upower \
             dunst \
