@@ -137,7 +137,6 @@ selection_arguments() {
             arc-gtk-theme \
             papirus-icon-theme \
             pavucontrol \
-            lxappearance-gtk3 \
             alacritty \
             tmux \
             w3m \
