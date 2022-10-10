@@ -143,7 +143,6 @@ selection_arguments() {
             lxappearance-gtk3 \
             alacritty \
             tmux \
-            ttf-iosevka-nerd \
             w3m \
             ranger"
     elif [ "${de}" = "xfce" ]; then
