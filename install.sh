@@ -57,9 +57,6 @@ packagelist="base \
     bluez \
     silicon \
     tig \
-    virtualbox \
-    virtualbox-host-dkms \
-    virtualbox-guest-iso \
     starship \
     lsd \
     profile-sync-daemon"
@@ -300,7 +297,6 @@ create_user() {
 
 add_to_group() {
     arch-chroot /mnt gpasswd -a ${username} docker
-    arch-chroot /mnt gpasswd -a ${username} vboxusers
 }
 
 replacement() {
