@@ -347,7 +347,7 @@ EOF
 
         if [ ${gpu} = "nvidia" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
-title    Arch Linux
+title    Arch Linux Nvidia
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
@@ -362,7 +362,7 @@ options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
         elif [ ${gpu} = "amd" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
-title    Arch Linux
+title    Arch Linux AMD
 linux    /vmlinuz-linux-zen
 initrd   /amd-ucode.img
 initrd   /initramfs-linux-zen.img
@@ -370,7 +370,7 @@ options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
         elif [ ${gpu} = "intel" ]; then
             cat << EOF >> /mnt/boot/loader/entries/arch.conf
-title    Arch Linux
+title    Arch Linux Intel
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
