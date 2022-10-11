@@ -55,9 +55,6 @@ packagelist="base \
     xorg-server \
     xorg-apps \
     xorg-xinit \
-    virtualbox \
-    virtualbox-host-dkms \
-    virtualbox-guest-iso \
     bluez \
     silicon \
     tig \
@@ -300,7 +297,6 @@ create_user() {
 
 add_to_group() {
     arch-chroot /mnt gpasswd -a ${username} docker
-    arch-chroot /mnt gpasswd -a ${username} vboxusers
 }
 
 replacement() {
