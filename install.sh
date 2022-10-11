@@ -13,6 +13,7 @@ packagelist="base \
     vi \
     neovim \
     go \
+    stylua \
     fd \
     ripgrep \
     xsel \
