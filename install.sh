@@ -14,6 +14,8 @@ packagelist="base \
     neovim \
     go \
     stylua \
+    zip \
+    unzip \
     fd \
     ripgrep \
     xsel \
