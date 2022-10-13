@@ -14,6 +14,7 @@ packagelist="base \
     neovim \
     go \
     fd \
+    tldr \
     ripgrep \
     xclip \
     unzip \
