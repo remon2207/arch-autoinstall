@@ -17,6 +17,7 @@ packagelist="base \
     fd \
     ripgrep \
     xsel \
+    unzip \
     bat \
     sudo \
     zsh \
