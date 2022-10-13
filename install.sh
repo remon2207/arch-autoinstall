@@ -16,7 +16,7 @@ packagelist="base \
     stylua \
     fd \
     ripgrep \
-    xsel \
+    xclip \
     unzip \
     bat \
     sudo \
