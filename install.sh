@@ -36,6 +36,8 @@ packagelist="base \
     firefox \
     firefox-i18n-en-us \
     firefox-i18n-ja \
+    vivaldi \
+    vivaldi-ffmpeg-codecs \
     xdg-user-dirs \
     wireplumber \
     pipewire \
