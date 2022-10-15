@@ -12,6 +12,7 @@ packagelist="base \
     vdpauinfo \
     vi \
     neovim \
+    deno \
     go \
     fd \
     tldr \
