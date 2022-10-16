@@ -195,7 +195,7 @@ selection_arguments() {
     elif [ "${gpu}" = "amd" ]; then
         packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     elif [ "${gpu}" = "intel" ]; then
-	echo "Already declared"
+        echo "Already declared"
     fi
 
     if [ "${boot_loader}" = "grub" ]; then
@@ -269,8 +269,8 @@ configuration() {
 }
 
 networking() {
-        if [ ${network} = "static-ip" ]; then
-	ip_address=$(ip -4 a show ${net_interface} | grep 192.168 | awk '{print $2}' | cut -d "/" -f 1)
+    if [ ${network} = "static-ip" ]; then
+        ip_address=$(ip -4 a show ${net_interface} | grep 192.168 | awk '{print $2}' | cut -d "/" -f 1)
         cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
@@ -320,7 +320,6 @@ replacement() {
     arch-chroot /mnt sed -i "s/^--sort age/--sort rate/" /etc/xdg/reflector/reflector.conf
     arch-chroot /mnt pacman -Syy
 }
-
 
 boot_loader() {
     if [ ${boot_loader} = "grub" ]; then
