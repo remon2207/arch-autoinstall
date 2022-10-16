@@ -130,6 +130,8 @@ selection_arguments() {
             polybar \
             xautolock \
             polkit \
+            scrot \
+            lxappearance-gtk3 \
             feh \
             picom \
             upower \
