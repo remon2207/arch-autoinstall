@@ -37,6 +37,12 @@ packagelist="base \
     firefox \
     firefox-i18n-en-us \
     firefox-i18n-ja \
+    adobe-source-han-sans-jp-fonts \
+    adobe-source-han-sans-otc-fonts \
+    adobe-source-han-serif-jp-fonts \
+    adobe-source-han-serif-otc-fonts \
+    adobe-source-sans-fonts \
+    adobe-source-serif-fonts \
     vivaldi \
     vivaldi-ffmpeg-codecs \
     xdg-user-dirs \
