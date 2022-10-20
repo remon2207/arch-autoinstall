@@ -312,18 +312,19 @@ add_to_group() {
 }
 
 replacement() {
-    arch-chroot /mnt sed -i "s/^#NTP=/NTP=0.asia.pool.ntp.org 1.asia.pool.ntp.org 2.asia.pool.ntp.org 3.asia.pool.ntp.org/" /etc/systemd/timesyncd.conf
-    arch-chroot /mnt sed -i "s/^#FallbackNTP/FallbackNTP/" /etc/systemd/timesyncd.conf
-    arch-chroot /mnt sed -i "s/-march=x86-64 -mtune=generic/-march=native/" /etc/makepkg.conf
+    arch-chroot /mnt sed -i 's/^#NTP=/NTP=0.asia.pool.ntp.org 1.asia.pool.ntp.org 2.asia.pool.ntp.org 3.asia.pool.ntp.org/' /etc/systemd/timesyncd.conf
+    arch-chroot /mnt sed -i 's/^#FallbackNTP/FallbackNTP/' /etc/systemd/timesyncd.conf
+    arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
     arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
-    arch-chroot /mnt sed -i "s/^#BUILDDIR/BUILDDIR/" /etc/makepkg.conf
-    arch-chroot /mnt sed -i "s/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/" /etc/makepkg.conf
-    arch-chroot /mnt sed -i "s/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/" /etc/systemd/system.conf
-    arch-chroot /mnt sed -i "s/^#Color/Color/" /etc/pacman.conf
-    arch-chroot /mnt sed -i "s/^--protocol https/--protocol http,https/" /etc/xdg/reflector/reflector.conf
-    arch-chroot /mnt sed -i "s/^# --country France,Germany/--country Japan/" /etc/xdg/reflector/reflector.conf
-    arch-chroot /mnt sed -i "s/^--latest 5/# --latest 5/" /etc/xdg/reflector/reflector.conf
-    arch-chroot /mnt sed -i "s/^--sort age/--sort rate/" /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
+    arch-chroot /mnt sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
+    arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
+    arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
+    arch-chroot /mnt sed -i 's/^--protocol https/--protocol http,https/' /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+    arch-chroot /mnt/ sed i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
     arch-chroot /mnt pacman -Syy
 }
 
