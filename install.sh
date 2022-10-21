@@ -17,6 +17,7 @@ packagelist="base \
     fd \
     tldr \
     ripgrep \
+    git-delta \
     xclip \
     unzip \
     bat \
@@ -96,6 +97,8 @@ boot_loader="${10}"
 network="${11}"
 root_size="${12}"
 net_interface="${13}"
+primary_dns="2606:4700:4700::1111"
+secondary_dns="2606:4700:4700::1001"
 
 check_variables() {
     if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
@@ -291,8 +294,8 @@ Name=${net_interface}
 [Network]
 Address=${ip_address}/24
 Gateway=192.168.1.1
-DNS=2001:4860:4860::8888
-DNS=2001:4860:4860::8844
+DNS=${primary_dns}
+DNS=${secondary_dns}
 EOF
 
         ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
