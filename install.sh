@@ -24,6 +24,7 @@ packagelist="base \
     bat \
     sudo \
     zsh \
+    fish \
     curl \
     wget \
     fzf \
