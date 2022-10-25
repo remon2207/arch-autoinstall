@@ -156,6 +156,8 @@ selection_arguments() {
             papirus-icon-theme \
             pavucontrol \
             alacritty \
+            kitty \
+            wezterm \
             tmux \
             w3m \
             ranger"
