@@ -1,79 +1,79 @@
 #!/usr/bin/env bash
 
 packagelist="base \
-    base-devel \
-    linux-zen \
-    linux-zen-headers \
-    linux-firmware \
-    efibootmgr \
-    mesa \
-    xf86-video-nouveau \
-    libva-utils \
-    vdpauinfo \
-    vi \
-    neovim \
-    bash-completion \
-    deno \
-    go \
-    fd \
-    tldr \
-    ripgrep \
-    git-delta \
-    xclip \
-    unzip \
-    bat \
-    sudo \
-    zsh \
-    fish \
-    curl \
-    wget \
-    fzf \
-    ufw \
-    git \
-    cifs-utils \
-    openssh \
-    htop \
-    man-db \
-    man-pages \
-    ntfs-3g \
-    exfat-utils \
-    firefox \
-    firefox-i18n-en-us \
-    firefox-i18n-ja \
-    adobe-source-han-sans-jp-fonts \
-    adobe-source-han-sans-otc-fonts \
-    adobe-source-han-serif-jp-fonts \
-    adobe-source-han-serif-otc-fonts \
-    adobe-source-sans-fonts \
-    adobe-source-serif-fonts \
-    vivaldi \
-    vivaldi-ffmpeg-codecs \
-    xdg-user-dirs \
-    wireplumber \
-    pipewire \
-    pipewire-pulse \
-    noto-fonts \
-    noto-fonts-cjk \
-    noto-fonts-emoji \
-    fcitx5 \
-    fcitx5-im \
-    fcitx5-mozc \
-    docker \
-    docker-compose \
-    github-cli \
-    discord \
-    neofetch \
-    reflector \
-    xorg \
-    xorg-server \
-    xorg-apps \
-    xorg-xinit \
-    bluez \
-    silicon \
-    tig \
-    starship \
-    lsd \
-    profile-sync-daemon"
+  base-devel \
+  linux-zen \
+  linux-zen-headers \
+  linux-firmware \
+  efibootmgr \
+  mesa \
+  xf86-video-nouveau \
+  libva-utils \
+  vdpauinfo \
+  vi \
+  neovim \
+  bash-completion \
+  deno \
+  go \
+  fd \
+  tldr \
+  ripgrep \
+  git-delta \
+  xclip \
+  unzip \
+  bat \
+  sudo \
+  zsh \
+  fish \
+  curl \
+  wget \
+  fzf \
+  ufw \
+  git \
+  cifs-utils \
+  openssh \
+  htop \
+  man-db \
+  man-pages \
+  ntfs-3g \
+  exfat-utils \
+  firefox \
+  firefox-i18n-en-us \
+  firefox-i18n-ja \
+  adobe-source-han-sans-jp-fonts \
+  adobe-source-han-sans-otc-fonts \
+  adobe-source-han-serif-jp-fonts \
+  adobe-source-han-serif-otc-fonts \
+  adobe-source-sans-fonts \
+  adobe-source-serif-fonts \
+  vivaldi \
+  vivaldi-ffmpeg-codecs \
+  xdg-user-dirs \
+  wireplumber \
+  pipewire \
+  pipewire-pulse \
+  noto-fonts \
+  noto-fonts-cjk \
+  noto-fonts-emoji \
+  fcitx5 \
+  fcitx5-im \
+  fcitx5-mozc \
+  docker \
+  docker-compose \
+  github-cli \
+  discord \
+  neofetch \
+  reflector \
+  xorg \
+  xorg-server \
+  xorg-apps \
+  xorg-xinit \
+  bluez \
+  silicon \
+  tig \
+  starship \
+  lsd \
+  profile-sync-daemon"
 
 if [ ${#} -lt 12 ]; then
   echo "Usage:"
@@ -135,72 +135,72 @@ selection_arguments() {
   # DE
   if [ "${de}" = "i3" ]; then
     packagelist="${packagelist} \
-            i3-gaps \
-            i3lock \
-            rofi \
-            polybar \
-            xautolock \
-            polkit \
-            scrot \
-            lxappearance-gtk3 \
-            feh \
-            picom \
-            upower \
-            dunst \
-            gnome-keyring \
-            qt5ct \
-            kvantum \
-            bluez \
-            bluez-utils \
-            arc-gtk-theme \
-            papirus-icon-theme \
-            pavucontrol \
-            alacritty \
-            kitty \
-            wezterm \
-            tmux \
-            w3m \
-            ranger"
+      i3-gaps \
+      i3lock \
+      rofi \
+      polybar \
+      xautolock \
+      polkit \
+      scrot \
+      lxappearance-gtk3 \
+      feh \
+      picom \
+      upower \
+      dunst \
+      gnome-keyring \
+      qt5ct \
+      kvantum \
+      bluez \
+      bluez-utils \
+      arc-gtk-theme \
+      papirus-icon-theme \
+      pavucontrol \
+      alacritty \
+      kitty \
+      wezterm \
+      tmux \
+      w3m \
+      ranger"
   elif [ "${de}" = "xfce" ]; then
     packagelist="${packagelist} \
-            xfce4 \
-            xfce4-goodies \
-            gnome-keyring \
-            gvfs \
-            qt5ct \
-            kvantum \
-            blueman \
-            papirus-icon-theme \
-            arc-gtk-theme \
-            lightdm \
-            lightdm-gtk-greeter \
-            lightdm-gtk-greeter-settings"
+      xfce4 \
+      xfce4-goodies \
+      gnome-keyring \
+      gvfs \
+      qt5ct \
+      kvantum \
+      blueman \
+      papirus-icon-theme \
+      arc-gtk-theme \
+      lightdm \
+      lightdm-gtk-greeter \
+      lightdm-gtk-greeter-settings"
   elif [ "${de}" = "gnome" ]; then
     packagelist="${packagelist} \
-            gnome-control-center \
-            gnome-shell \
-            gnome-tweaks \
-            gnome-themes-extra \
-            gnome-terminal \
-            gnome-keyring \
-            gnome-backgrounds \
-            gnome-calculator \
-            gedit \
-            mutter \
-            file-roller \
-            nautilus \
-            gdm \
-            gvfs \
-            dconf-editor \
-            eog \
-            gnome-shell-extension-appindicator"
+      gnome-control-center \
+      gnome-shell \
+      gnome-tweaks \
+      gnome-themes-extra \
+      gnome-terminal \
+      gnome-keyring \
+      gnome-backgrounds \
+      gnome-calculator \
+      gedit \
+      mutter \
+      file-roller \
+      nautilus \
+      gdm \
+      gvfs \
+      dconf-editor \
+      eog \
+      gnome-shell-extension-appindicator"
   elif [ "${de}" = "kde" ]; then
     packagelist="${packagelist} \
-            plasma-meta \
-            dolphin \
-            konsole \
-            gwenview \
-            spectacle"
+      plasma-meta \
+      dolphin \
+      konsole \
+      gwenview \
+      spectacle"
   fi
 
   if [ "${gpu}" = "nvidia" ]; then
