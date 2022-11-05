@@ -144,6 +144,7 @@ selection_arguments() {
       scrot \
       lxappearance-gtk3 \
       feh \
+      hsetroot \
       picom \
       upower \
       dunst \
