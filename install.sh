@@ -99,8 +99,8 @@ boot_loader="${10}"
 network="${11}"
 root_size="${12}"
 net_interface="${13}"
-primary_dns="2606:4700:4700::1111"
-secondary_dns="2606:4700:4700::1001"
+primary_dns="1.1.1.1"
+secondary_dns="1.0.0.1"
 
 check_variables() {
   if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
