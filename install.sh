@@ -301,6 +301,7 @@ Address=${ip_address}/24
 Gateway=192.168.1.1
 DNS=${primary_dns}
 DNS=${secondary_dns}
+Domains=home
 EOF
 
     ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
@@ -320,8 +321,8 @@ add_to_group() {
 }
 
 replacement() {
-  arch-chroot /mnt sed -i 's/^#NTP=/NTP=0.asia.pool.ntp.org 1.asia.pool.ntp.org 2.asia.pool.ntp.org 3.asia.pool.ntp.org/' /etc/systemd/timesyncd.conf
-  arch-chroot /mnt sed -i 's/^#FallbackNTP/FallbackNTP/' /etc/systemd/timesyncd.conf
+  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' /etc/systemd/timesyncd.conf
+  arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=0.jp.pool.ntp.org 1.jp.pool.ntp.org 2.jp.pool.ntp.org 3.jp.pool.ntp.org/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
