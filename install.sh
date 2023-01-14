@@ -335,7 +335,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
+  arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
   arch-chroot /mnt pacman -Syy
 }
 
