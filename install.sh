@@ -192,6 +192,7 @@ selection_arguments() {
       gvfs \
       dconf-editor \
       eog \
+      networkmanager \
       gnome-shell-extension-appindicator"
   elif [ "${de}" = "kde" ]; then
     packagelist="${packagelist} \
@@ -422,6 +423,7 @@ enable_services() {
     arch-chroot /mnt systemctl enable lightdm.service
   elif [ "${de}" = "gnome" ]; then
     arch-chroot /mnt systemctl enable gdm.service
+    arch-chroot /mnt systemctl enable NetworkManager.service
   elif [ "${de}" = "kde" ]; then
     arch-chroot /mnt systemctl enable sddm.service
   fi
