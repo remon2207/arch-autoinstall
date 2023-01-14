@@ -24,7 +24,6 @@ packagelist="base \
   bat \
   sudo \
   zsh \
-  fish \
   curl \
   wget \
   fzf \
@@ -74,8 +73,7 @@ packagelist="base \
   starship \
   lsd \
   profile-sync-daemon \
-  nfs-utils
-  "
+  nfs-utils"
 
 if [ ${#} -lt 12 ]; then
   echo "Usage:"
