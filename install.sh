@@ -45,8 +45,6 @@ packagelist="base \
   adobe-source-han-serif-otc-fonts \
   adobe-source-sans-fonts \
   adobe-source-serif-fonts \
-  vivaldi \
-  vivaldi-ffmpeg-codecs \
   xdg-user-dirs \
   wireplumber \
   pipewire \
