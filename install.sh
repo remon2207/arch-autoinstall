@@ -28,7 +28,7 @@ packagelist="base \
   curl \
   wget \
   fzf \
-  ufw \
+  nftables \
   git \
   cifs-utils \
   openssh \
@@ -73,7 +73,9 @@ packagelist="base \
   tig \
   starship \
   lsd \
-  profile-sync-daemon"
+  profile-sync-daemon \
+  nfs-utils
+  "
 
 if [ ${#} -lt 12 ]; then
   echo "Usage:"
@@ -289,8 +291,9 @@ networking() {
 ${ip_address}    ${hostname}.home        ${hostname}
 EOF
 
-    arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-    cat << EOF > /mnt/etc/systemd/network/20-wired.network
+    if [ ${de} != 'gnome' ]; then
+      arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
+      cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=${net_interface}
 
@@ -300,6 +303,9 @@ Gateway=192.168.1.1
 DNS=192.168.1.1
 Domains=home
 EOF
+    elif [ ${de} = 'gnome' ]; then
+      arch-chroot /mnt systemctl enable systemd-resolved.service
+    fi
 
     ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
   elif [ ${network} = "dhcp" ]; then
@@ -410,7 +416,7 @@ EOF
 enable_services() {
   arch-chroot /mnt systemctl enable docker.service
   arch-chroot /mnt systemctl enable fstrim.timer
-  arch-chroot /mnt systemctl enable ufw.service
+  arch-chroot /mnt systemctl enable nftables.service
   arch-chroot /mnt systemctl enable bluetooth.service
   arch-chroot /mnt systemctl enable reflector.timer
 
