@@ -288,7 +288,7 @@ networking() {
 ${ip_address}    ${hostname}.home        ${hostname}
 EOF
 
-    if [ ${de} != 'gnome' ]; then
+    if [ ${de} != 'gnome' ] || [ ${de} != 'kde' ]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
@@ -300,7 +300,7 @@ Gateway=192.168.1.1
 DNS=192.168.1.1
 Domains=home
 EOF
-    elif [ ${de} = 'gnome' ]; then
+    elif [ ${de} = 'gnome' ] || [ ${de} = 'kde' ]; then
       arch-chroot /mnt systemctl enable systemd-resolved.service
     fi
 
@@ -424,6 +424,7 @@ enable_services() {
     arch-chroot /mnt systemctl enable NetworkManager.service
   elif [ "${de}" = "kde" ]; then
     arch-chroot /mnt systemctl enable sddm.service
+    arch-chroot /mnt systemctl enable NetworkManager.service
   fi
 }
 
