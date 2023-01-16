@@ -300,11 +300,13 @@ Gateway=192.168.1.1
 DNS=192.168.1.1
 Domains=home
 EOF
-    elif [ ${de} = 'gnome' ] || [ ${de} = 'kde' ]; then
+    elif [ ${de} != 'i3' ]; then
       arch-chroot /mnt systemctl enable systemd-resolved.service
+      ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
+    else
+      ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
     fi
 
-    ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
   elif [ ${network} = "dhcp" ]; then
     arch-chroot /mnt systemctl enable dhcpcd.service
   fi
