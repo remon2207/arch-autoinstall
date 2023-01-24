@@ -40,12 +40,6 @@ packagelist="base \
   firefox \
   firefox-i18n-en-us \
   firefox-i18n-ja \
-  adobe-source-han-sans-jp-fonts \
-  adobe-source-han-sans-otc-fonts \
-  adobe-source-han-serif-jp-fonts \
-  adobe-source-han-serif-otc-fonts \
-  adobe-source-sans-fonts \
-  adobe-source-serif-fonts \
   xdg-user-dirs \
   wireplumber \
   pipewire \
@@ -78,10 +72,10 @@ if [ ${#} -lt 12 ]; then
   echo "Usage:"
   echo "# ip -4 a"
   echo "# ./arch-autoinstall/install.sh \
-<disk> <microcode: intel | amd> <DE: i3 | xfce | gnome | kde> \
-<GPU: nvidia | amd | intel> <HostName> <UserName> \
-<userPasword> <rootPassword> <partition-table-destroy: yes | no-exclude-efi | no-root-only | skip> \
-<boot-loader: systemd-boot | grub> <network: static-ip | dhcp> <root_partition_size: Numbers only (GiB)> <net_interface>"
+<disk> <microcode:intel|amd> <DE:i3|xfce|gnome|kde> \
+<GPU:nvidia|amd|intel> <HostName> <UserName> \
+<userPasword> <rootPassword> <partition-table-destroy:yes|no-exclude-efi|no-root-only|skip> \
+<boot-loader:systemd-boot|grub> <network:static-ip|dhcp> <root_partition_size:Numbers only (GiB)> <net_interface>"
   exit
 fi
 
@@ -102,22 +96,22 @@ net_interface="${13}"
 check_variables() {
   if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
     echo "Missing argument or misspelled..."
-    return 1
+    exit 1
   elif [ "${de}" != "i3" ] && [ "${de}" != "xfce" ] && [ "${de}" != "gnome" ] && [ "${de}" != "kde" ]; then
     echo "Missing argument or misspelled..."
-    return 1
+    exit 1
   elif [ "${gpu}" != "nvidia" ] && [ "${gpu}" != "amd" ] && [ "${gpu}" != "intel" ]; then
     echo "Missing argument or misspelled..."
-    return 1
+    exit 1
   elif [ "${partition_table}" != "yes" ] && [ "${partition_table}" != "no-exclude-efi" ] && [ "${partition_table}" != "no-root-only" ] && [ "${partition_table}" != "skip" ]; then
     echo "Missing argument or misspelled..."
-    return 1
+    exit 1
   elif [ "${boot_loader}" != "systemd-boot" ] && [ "${boot_loader}" != "grub" ]; then
     echo "Missing argument or misspelled..."
-    return 1
+    exit 1
   elif [ "${network}" != "static-ip" ] && [ "${network}" != "dhcp" ]; then
     echo "Missing argument or misspelled..."
-    return 1
+    exit 1
   fi
 }
 
@@ -261,7 +255,7 @@ partitioning() {
 }
 
 installation() {
-  reflector --country Japan --protocol http,https --sort rate --save /etc/pacman.d/mirrorlist
+  reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
   pacman -Sy --noconfirm archlinux-keyring
   pacstrap /mnt ${packagelist}
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -281,15 +275,15 @@ configuration() {
 }
 
 networking() {
-  if [ ${network} = "static-ip" ]; then
+  if [ "${network}" = "static-ip" ]; then
     ip_address=$(ip -4 a show ${net_interface} | grep 192.168 | awk '{print $2}' | cut -d "/" -f 1)
     cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
-${ip_address}    ${hostname}.home        ${hostname}
+${ip_address}    ${hostname}.home    ${hostname}
 EOF
 
-    if [ ${de} != 'gnome' ] || [ ${de} != 'kde' ]; then
+    if [ "${de}" != "gnome" ] || [ "${de}" != "kde" ]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
@@ -301,14 +295,14 @@ Gateway=192.168.1.1
 DNS=192.168.1.1
 Domains=home
 EOF
-    elif [ ${de} != 'i3' ]; then
+    elif [ "${de}" != "i3" ]; then
       arch-chroot /mnt systemctl enable systemd-resolved.service
       ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
     else
       ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
     fi
 
-  elif [ ${network} = "dhcp" ]; then
+  elif [ "${network}" = "dhcp" ]; then
     arch-chroot /mnt systemctl enable dhcpcd.service
   fi
 }
@@ -332,7 +326,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
-  arch-chroot /mnt sed -i 's/^--protocol https/--protocol http,https/' /etc/xdg/reflector/reflector.conf
+  arch-chroot /mnt sed -i 's/^--protocol https/#--protocol http,https/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
@@ -378,7 +372,7 @@ EOF
 
     root_partuuid=$(blkid -s PARTUUID -o value ${disk}2)
 
-    if [ ${gpu} = "nvidia" ]; then
+    if [ "${gpu}" = "nvidia" ]; then
       cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux Nvidia
 linux    /vmlinuz-linux-zen
@@ -393,7 +387,7 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-    elif [ ${gpu} = "amd" ]; then
+    elif [ "${gpu}" = "amd" ]; then
       cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux AMD
 linux    /vmlinuz-linux-zen
@@ -401,7 +395,7 @@ initrd   /amd-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-    elif [ ${gpu} = "intel" ]; then
+    elif [ "${gpu}" = "intel" ]; then
       cat << EOF >> /mnt/boot/loader/entries/arch.conf
 title    Arch Linux Intel
 linux    /vmlinuz-linux-zen
