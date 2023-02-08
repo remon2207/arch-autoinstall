@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
+if [ ${#} -lt 12 ]; then
+  cat << EOF
+Usage:
+
+# ./install.sh <disk> <microcode:intel|amd>
+  <DE:i3|xfce|gnome|kde> <GPU:nvidia|amd|intel>
+  <HostName> <UserName>
+  <userPasword> <rootPassword>
+  <partition-table-destroy:yes|no-exclude-efi|no-root-only|skip>
+  <boot-loader:systemd-boot|grub> <network:static-ip|dhcp>
+  <root_partition_size:Numbers only (GiB)>
+EOF
+  exit 1
+fi
+
 packagelist="base \
   base-devel \
   linux-zen \
@@ -68,16 +83,7 @@ packagelist="base \
   profile-sync-daemon \
   nfs-utils"
 
-if [ ${#} -lt 12 ]; then
-  echo "Usage:"
-  echo "# ip -4 a"
-  echo "# ./arch-autoinstall/install.sh \
-<disk> <microcode:intel|amd> <DE:i3|xfce|gnome|kde> \
-<GPU:nvidia|amd|intel> <HostName> <UserName> \
-<userPasword> <rootPassword> <partition-table-destroy:yes|no-exclude-efi|no-root-only|skip> \
-<boot-loader:systemd-boot|grub> <network:static-ip|dhcp> <root_partition_size:Numbers only (GiB)> <net_interface>"
-  exit
-fi
+net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
 
 disk="${1}"
 microcode="${2}"
@@ -91,7 +97,6 @@ partition_table="${9}"
 boot_loader="${10}"
 network="${11}"
 root_size="${12}"
-net_interface="${13}"
 
 check_variables() {
   if [ "${microcode}" != "intel" ] && [ "${microcode}" != "amd" ]; then
@@ -190,10 +195,12 @@ selection_arguments() {
   elif [ "${de}" = "kde" ]; then
     packagelist="${packagelist} \
       plasma-meta \
+      packagekit-qt5 \
       dolphin \
       konsole \
       gwenview \
-      spectacle"
+      spectacle \
+      kate"
   fi
 
   if [ "${gpu}" = "nvidia" ]; then
