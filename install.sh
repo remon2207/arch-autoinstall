@@ -338,7 +338,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
-  arch-chroot /mnt sed -i 's/en_US.UTF-8/ja_JP.UTF-8/' /etc/locale.conf
+ # arch-chroot /mnt sed -i 's/en_US.UTF-8/ja_JP.UTF-8/' /etc/locale.conf
   cat << EOF >> /mnt/etc/environment
 GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
