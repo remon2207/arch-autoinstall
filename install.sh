@@ -80,6 +80,7 @@ packagelist="base \
   tig \
   starship \
   lsd \
+  eza \
   profile-sync-daemon \
   eza \
   nfs-utils"
