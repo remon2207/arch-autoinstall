@@ -81,6 +81,7 @@ packagelist="base \
   starship \
   lsd \
   profile-sync-daemon \
+  eza \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
