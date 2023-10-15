@@ -27,6 +27,7 @@ packagelist="base \
   vdpauinfo \
   vi \
   neovim \
+  tree-sitter-cli \
   bash-completion \
   deno \
   go \
@@ -83,6 +84,8 @@ packagelist="base \
   eza \
   profile-sync-daemon \
   eza \
+  vivaldi \
+  vivaldi-ffmpeg-codecs \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
@@ -133,7 +136,7 @@ selection_arguments() {
   # DE
   if [ "${de}" = "i3" ]; then
     packagelist="${packagelist} \
-      i3-gaps \
+      i3-wm \
       i3lock \
       rofi \
       polybar \
@@ -294,15 +297,23 @@ EOF
 
     if [ "${de}" != "gnome" ] || [ "${de}" != "kde" ]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
+#       cat << EOF > /mnt/etc/systemd/network/20-wired.network
+# [Match]
+# Name=${net_interface}
+#
+# [Network]
+# Address=${ip_address}/24
+# Gateway=192.168.1.1
+# DNS=192.168.1.1
+# Domains=home
+# EOF
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=${net_interface}
 
 [Network]
-Address=${ip_address}/24
-Gateway=192.168.1.1
-DNS=192.168.1.1
-Domains=home
+DHCP=yes
+DNS=192.168.1.202
 EOF
     elif [ "${de}" != "i3" ]; then
       arch-chroot /mnt systemctl enable systemd-resolved.service
