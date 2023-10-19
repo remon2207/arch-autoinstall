@@ -88,6 +88,8 @@ packagelist="base \
   vivaldi-ffmpeg-codecs \
   pigz \
   pv \
+  shfmt \
+  yamlfmt \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
@@ -299,16 +301,16 @@ EOF
 
     if [ "${de}" != "gnome" ] || [ "${de}" != "kde" ]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-#       cat << EOF > /mnt/etc/systemd/network/20-wired.network
-# [Match]
-# Name=${net_interface}
-#
-# [Network]
-# Address=${ip_address}/24
-# Gateway=192.168.1.1
-# DNS=192.168.1.1
-# Domains=home
-# EOF
+      #       cat << EOF > /mnt/etc/systemd/network/20-wired.network
+      # [Match]
+      # Name=${net_interface}
+      #
+      # [Network]
+      # Address=${ip_address}/24
+      # Gateway=192.168.1.1
+      # DNS=192.168.1.1
+      # Domains=home
+      # EOF
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=${net_interface}
@@ -353,7 +355,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
- # arch-chroot /mnt sed -i 's/en_US.UTF-8/ja_JP.UTF-8/' /etc/locale.conf
+  # arch-chroot /mnt sed -i 's/en_US.UTF-8/ja_JP.UTF-8/' /etc/locale.conf
   cat << EOF >> /mnt/etc/environment
 GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
