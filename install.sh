@@ -289,6 +289,7 @@ configuration() {
   echo "KEYMAP=us" > /mnt/etc/vconsole.conf
   echo ${hostname} > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
+  arch-chroot /mnt chown -R ${username} /nix/var/nix/{gcroots,profiles}
 }
 
 networking() {
