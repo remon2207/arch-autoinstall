@@ -32,6 +32,7 @@ packagelist="base \
   deno \
   go \
   fd \
+  sd \
   tldr \
   ripgrep \
   git-delta \
