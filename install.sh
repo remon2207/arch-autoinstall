@@ -107,9 +107,9 @@ username=$6
 user_password=$7
 root_password=$8
 partition_table=$9
-boot_loader=$10
-network=$11
-root_size=$12
+boot_loader=${10}
+network=${11}
+root_size=${12}
 
 check_variables() {
   if [[ $microcode != 'intel' ]] && [[ $microcode != 'amd' ]]; then
