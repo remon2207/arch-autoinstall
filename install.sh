@@ -113,22 +113,22 @@ root_size=${12}
 
 check_variables() {
   if [[ $microcode != 'intel' ]] && [[ $microcode != 'amd' ]]; then
-    echo 'Missing argument or misspelled...'
+    echo 'microcode'
     exit 1
   elif [[ $de != 'i3' ]] && [[ $de != 'xfce' ]] && [[ $de != 'gnome' ]] && [[ $de != 'kde' ]]; then
-    echo 'Missing argument or misspelled...'
+    echo 'de'
     exit 1
   elif [[ $gpu != 'nvidia' ]] && [[ $gpu != 'amd' ]] && [[ $gpu != 'intel' ]]; then
-    echo 'Missing argument or misspelled...'
+    echo 'gpu'
     exit 1
   elif [[ $partition_table != 'yes' ]] && [[ $partition_table != 'no-exclude-efi' ]] && [[ $partition_table != 'no-root-only' ]] && [[ $partition_table != 'skip' ]]; then
-    echo 'Missing argument or misspelled...'
+    echo 'partition table'
     exit 1
   elif [[ $boot_loader != 'systemd-boot' ]] && [[ $boot_loader != 'grub' ]]; then
-    echo 'Missing argument or misspelled...'
+    echo 'boot loader'
     exit 1
   elif [[ $network != 'static-ip' ]] && [[ $network != 'dhcp' ]]; then
-    echo 'Missing argument or misspelled...'
+    echo 'network'
     exit 1
   fi
 }
