@@ -113,22 +113,22 @@ root_size=${12}
 
 check_variables() {
   if [[ $microcode != 'intel' ]] && [[ $microcode != 'amd' ]]; then
-    echo 'microcode'
+    echo 'microcode error'
     exit 1
   elif [[ $de != 'i3' ]] && [[ $de != 'xfce' ]] && [[ $de != 'gnome' ]] && [[ $de != 'kde' ]]; then
-    echo 'de'
+    echo 'de error'
     exit 1
   elif [[ $gpu != 'nvidia' ]] && [[ $gpu != 'amd' ]] && [[ $gpu != 'intel' ]]; then
-    echo 'gpu'
+    echo 'gpu error'
     exit 1
   elif [[ $partition_table != 'yes' ]] && [[ $partition_table != 'no-exclude-efi' ]] && [[ $partition_table != 'no-root-only' ]] && [[ $partition_table != 'skip' ]]; then
-    echo 'partition table'
+    echo 'partition table error'
     exit 1
   elif [[ $boot_loader != 'systemd-boot' ]] && [[ $boot_loader != 'grub' ]]; then
-    echo 'boot loader'
+    echo 'boot loader error'
     exit 1
   elif [[ $network != 'static-ip' ]] && [[ $network != 'dhcp' ]]; then
-    echo 'network'
+    echo 'network error'
     exit 1
   fi
 }
@@ -239,7 +239,7 @@ time_setting() {
 
 partitioning() {
   if [[ $partition_table = 'yes' ]]; then
-    sgdisk -Z ${disk}
+    sgdisk -Z $disk
     sgdisk -n 0::+512M -t 0:ef00 -c 0:'EFI System' $disk
     sgdisk -n 0::+${root_size}G -t 0:8300 -c 0:'Linux filesystem' $disk
     sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' $disk
@@ -297,7 +297,7 @@ configuration() {
 
 networking() {
   if [[ $network = 'static-ip' ]]; then
-    ip_address=$(ip -4 a show ${net_interface} | grep 192.168 | awk '{print $2}' | cut -d '/' -f 1)
+    ip_address=$(ip -4 a show $net_interface | grep 192.168 | awk '{print $2}' | cut -d '/' -f 1)
     cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
@@ -306,16 +306,6 @@ EOF
 
     if [[ $de != 'gnome' ]] || [[ $de != 'kde' ]]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-      #       cat << EOF > /mnt/etc/systemd/network/20-wired.network
-      # [Match]
-      # Name=${net_interface}
-      #
-      # [Network]
-      # Address=${ip_address}/24
-      # Gateway=192.168.1.1
-      # DNS=192.168.1.1
-      # Domains=home
-      # EOF
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=$net_interface
@@ -355,10 +345,14 @@ replacement() {
   arch-chroot /mnt sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
-  arch-chroot /mnt sed -i 's/^--protocol https/#--protocol http,https/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
+  # arch-chroot /mnt sed -i 's/^--protocol https/#--protocol http,https/' /etc/xdg/reflector/reflector.conf
+  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan,Australia/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+  cat << EOF >> /mnt/etc/xdg/reflector/reflector.conf
+
+--age 24
+EOF
   arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
   cat << EOF >> /mnt/etc/environment
 GTK_IM_MODULE='fcitx5'
@@ -440,7 +434,6 @@ initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen-fallback.img
 options  root=PARTUUID=$root_partuuid rw panic=180 debug
 EOF
-    arch-chroot /mnt systemctl enable systemd-boot-update.service
   fi
 }
 
@@ -450,6 +443,7 @@ enable_services() {
   arch-chroot /mnt systemctl enable nftables.service
   arch-chroot /mnt systemctl enable bluetooth.service
   arch-chroot /mnt systemctl enable reflector.timer
+  arch-chroot /mnt systemctl enable systemd-boot-update.service
 
   if [[ $de = 'xfce' ]]; then
     arch-chroot /mnt systemctl enable lightdm.service
