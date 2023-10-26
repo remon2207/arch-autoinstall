@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 set -eu
-
-if [[ $# -lt 11 ]]; then
+if [[ $# -eq 0 ]]; then
   cat << EOF
 Usage:
 
