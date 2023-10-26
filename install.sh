@@ -27,6 +27,7 @@ packagelist="base \
   vdpauinfo \
   vi \
   neovim \
+  emacs-nox \
   tree-sitter-cli \
   bash-completion \
   deno \
