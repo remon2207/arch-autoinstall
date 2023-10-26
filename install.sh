@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu
+
 if [[ $# -lt 12 ]]; then
   cat << EOF
 Usage:
@@ -240,45 +242,45 @@ time_setting() {
 
 partitioning() {
   if [[ $partition_table = 'yes' ]]; then
-    sgdisk -Z $disk
-    sgdisk -n 0::+512M -t 0:ef00 -c 0:'EFI System' $disk
-    sgdisk -n 0::+${root_size}G -t 0:8300 -c 0:'Linux filesystem' $disk
-    sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' $disk
+    sgdisk -Z "${disk}"
+    sgdisk -n 0::+512M -t 0:ef00 -c 0:'EFI System' "${disk}"
+    sgdisk -n 0::"+${root_size}G" -t 0:8300 -c 0:'Linux filesystem' "${disk}"
+    sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' "${disk}"
 
     # format
-    mkfs.fat -F 32 ${disk}1
-    mkfs.ext4 ${disk}2
-    mkfs.ext4 ${disk}3
+    mkfs.fat -F 32 "${disk}1"
+    mkfs.ext4 "${disk}2"
+    mkfs.ext4 "${disk}3"
   elif [[ $partition_table = 'no-exclude-efi' ]]; then
-    sgdisk -d 3 $disk
-    sgdisk -d 2 $disk
-    sgdisk -n 0::+${root_size}G -t 0:8300 -c 0:'Linux filesystem' $disk
-    sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' $disk
+    sgdisk -d 3 "${disk}"
+    sgdisk -d 2 "${disk}"
+    sgdisk -n 0::"+${root_size}G" -t 0:8300 -c 0:'Linux filesystem' "${disk}"
+    sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' "${disk}"
 
     # format
-    mkfs.ext4 ${disk}2
-    mkfs.ext4 ${disk}3
+    mkfs.ext4 "${disk}2"
+    mkfs.ext4 "${disk}3"
   elif [[ $partition_table = 'no-root-only' ]]; then
     # format
-    mkfs.ext4 ${disk}2
+    mkfs.ext4 "${disk}2"
   elif [[ $partition_table = 'skip' ]]; then
     echo 'Skip partitioning'
 
     # format
-    mkfs.ext4 ${disk}2
-    mkfs.ext4 ${disk}3
+    mkfs.ext4 "${disk}2"
+    mkfs.ext4 "${disk}3"
   fi
 
   # mount
-  mount ${disk}2 /mnt
-  mount --mkdir ${disk}1 /mnt/boot
-  mount --mkdir ${disk}3 /mnt/home
+  mount "${disk}2" /mnt
+  mount --mkdir "${disk}1" /mnt/boot
+  mount --mkdir "${disk}3" /mnt/home
 }
 
 installation() {
   reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
   pacman -Sy --noconfirm archlinux-keyring
-  pacstrap /mnt $packagelist
+  pacstrap /mnt "${packagelist}"
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
@@ -291,21 +293,21 @@ configuration() {
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' > /mnt/etc/vconsole.conf
-  echo $hostname > /mnt/etc/hostname
+  echo "${hostname}" > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
-  arch-chroot /mnt chown -R $username /nix/var/nix/{gcroots,profiles}
+  arch-chroot /mnt chown -R "${username}" /nix/var/nix/{gcroots,profiles}
 }
 
 networking() {
   if [[ $network = 'static-ip' ]]; then
-    ip_address=$(ip -4 a show $net_interface | grep 192.168 | awk '{print $2}' | cut -d '/' -f 1)
+    ip_address=$(ip -4 a show "${net_interface}" | grep 192.168 | awk '{print $2}' | cut -d '/' -f 1)
     cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
 $ip_address    ${hostname}.home    $hostname
 EOF
 
-    if [[ $de != 'gnome' ]] || [[ $de != 'kde' ]]; then
+    if [[ $de != 'gnome' ]] && [[ $de != 'kde' ]]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
@@ -329,19 +331,19 @@ EOF
 
 create_user() {
   echo "root:$root_password" | arch-chroot /mnt chpasswd
-  arch-chroot /mnt useradd -m -G wheel -s /bin/bash $username
+  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${username}"
   echo "${username}:${user_password}" | arch-chroot /mnt chpasswd
 }
 
 add_to_group() {
-  arch-chroot /mnt gpasswd -a $username docker
+  arch-chroot /mnt gpasswd -a "${username}" docker
 }
 
 replacement() {
   arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$\(\($\(nproc\)+1\)\)"/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
@@ -393,7 +395,7 @@ console-mode max
 editor       no
 EOF
 
-    root_partuuid=$(blkid -s PARTUUID -o value ${disk}2)
+    root_partuuid=$(blkid -s PARTUUID -o value "${disk}2")
 
     if [[ $gpu = 'nvidia' ]]; then
       cat << EOF > /mnt/boot/loader/entries/arch.conf
@@ -457,15 +459,19 @@ enable_services() {
   fi
 }
 
-check_variables
-selection_arguments
-time_setting
-partitioning
-installation
-configuration
-networking
-create_user
-add_to_group
-replacement
-boot_loader
-enable_services
+main() {
+  check_variables
+  selection_arguments
+  time_setting
+  partitioning
+  installation
+  configuration
+  networking
+  create_user
+  add_to_group
+  replacement
+  boot_loader
+  enable_services
+}
+
+main "$@"
