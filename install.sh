@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -eu
+
 if [[ $# -eq 0 ]]; then
   cat << EOF
 Usage:
