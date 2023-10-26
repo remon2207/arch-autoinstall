@@ -386,7 +386,7 @@ boot_loader() {
   elif [[ $boot_loader = 'systemd-boot' ]]; then
     # systemd-boot
     arch-chroot /mnt bootctl --path=/boot install
-    cat << EOF >> /mnt/boot/loader/loader.conf
+    cat << EOF > /mnt/boot/loader/loader.conf
 default      arch
 timeout      10
 console-mode max
@@ -396,14 +396,14 @@ EOF
     root_partuuid=$(blkid -s PARTUUID -o value ${disk}2)
 
     if [[ $gpu = 'nvidia' ]]; then
-      cat << EOF >> /mnt/boot/loader/entries/arch.conf
+      cat << EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux Nvidia
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
 EOF
-      cat << EOF >> /mnt/boot/loader/entries/arch_nouveau.conf
+      cat << EOF > /mnt/boot/loader/entries/arch_nouveau.conf
 title    Arch Linux Nouveau
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
@@ -411,7 +411,7 @@ initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180
 EOF
     elif [[ $gpu = 'amd' ]]; then
-      cat << EOF >> /mnt/boot/loader/entries/arch.conf
+      cat << EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux AMD
 linux    /vmlinuz-linux-zen
 initrd   /amd-ucode.img
@@ -419,7 +419,7 @@ initrd   /initramfs-linux-zen.img
 options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180
 EOF
     elif [[ $gpu = 'intel' ]]; then
-      cat << EOF >> /mnt/boot/loader/entries/arch.conf
+      cat << EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux Intel
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
@@ -428,7 +428,7 @@ options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180
 EOF
     fi
 
-    cat << EOF >> /mnt/boot/loader/entries/arch_fallback.conf
+    cat << EOF > /mnt/boot/loader/entries/arch_fallback.conf
 title    Arch Linux Fallback
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
