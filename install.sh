@@ -15,7 +15,6 @@ Usage:
   <userPasword>
   <rootPassword>
   <partition-table-destroy:yes | no-exclude-efi | no-root-only | skip>
-  <network:static-ip | dhcp>
   <root_partition_size:Numbers only (GiB)>
 EOF
   exit 1
@@ -92,13 +91,13 @@ packagelist="base \
   lsd \
   eza \
   profile-sync-daemon \
-  eza \
   vivaldi \
   vivaldi-ffmpeg-codecs \
   pigz \
   pv \
   shfmt \
   yamlfmt \
+  shellcheck \
   nix \
   fish \
   fisher \
@@ -115,8 +114,7 @@ username="${6}"
 user_password="${7}"
 root_password="${8}"
 partition_table="${9}"
-network="${10}"
-root_size="${11}"
+root_size="${10}"
 
 check_variables() {
   if [[ "${microcode}" != 'intel' ]] && [[ "${microcode}" != 'amd' ]]; then
@@ -130,9 +128,6 @@ check_variables() {
     exit 1
   elif [[ "${partition_table}" != 'yes' ]] && [[ "${partition_table}" != 'no-exclude-efi' ]] && [[ "${partition_table}" != 'no-root-only' ]] && [[ "${partition_table}" != 'skip' ]]; then
     echo 'partition table error'
-    exit 1
-  elif [[ "${network}" != 'static-ip' ]] && [[ "${network}" != 'dhcp' ]]; then
-    echo 'network error'
     exit 1
   fi
 }
@@ -227,10 +222,6 @@ selection_arguments() {
   elif [[ "${gpu}" == 'intel' ]]; then
     echo 'Already declared'
   fi
-
-  if [[ "${network}" == 'dhcp' ]]; then
-    packagelist="${packagelist} dhcpcd"
-  fi
 }
 
 time_setting() {
@@ -270,8 +261,8 @@ partitioning() {
 
   # mount
   mount "${disk}2" /mnt
-  mount --mkdir "${disk}1" /mnt/boot
-  mount --mkdir "${disk}3" /mnt/home
+  mount -m "${disk}1" /mnt/boot
+  mount -m "${disk}3" /mnt/home
 }
 
 installation() {
@@ -297,17 +288,16 @@ configuration() {
 }
 
 networking() {
-  if [[ "${network}" == 'static-ip' ]]; then
-    ip_address=$(ip -4 a show "${net_interface}" | grep '192.168' | awk '{print $2}' | cut -d '/' -f 1)
-    cat << EOF >> /mnt/etc/hosts
+  ip_address=$(ip -4 a show "${net_interface}" | grep '192.168' | awk '{print $2}' | cut -d '/' -f 1)
+  cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
 ${ip_address}    ${hostname}.home    ${hostname}
 EOF
 
-    if [[ "${de}" != 'gnome' ]] && [[ "${de}" != 'kde' ]]; then
-      arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-      cat << EOF > /mnt/etc/systemd/network/20-wired.network
+  if [[ "${de}" != 'gnome' ]] && [[ "${de}" != 'kde' ]]; then
+    arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
+    cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
 Name=${net_interface}
 
@@ -315,15 +305,11 @@ Name=${net_interface}
 DHCP=yes
 DNS=192.168.1.202
 EOF
-    elif [[ "${de}" != 'i3' ]]; then
-      arch-chroot /mnt systemctl enable systemd-resolved.service
-      ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
-    else
-      ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
-    fi
-
-  elif [[ "${network}" == 'dhcp' ]]; then
-    arch-chroot /mnt systemctl enable dhcpcd.service
+  elif [[ "${de}" != 'i3' ]]; then
+    arch-chroot /mnt systemctl enable systemd-resolved.service
+    ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
+  else
+    ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
   fi
 }
 
