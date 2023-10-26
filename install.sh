@@ -2,16 +2,20 @@
 
 set -eu
 
-if [[ $# -lt 12 ]]; then
+if [[ $# -lt 11 ]]; then
   cat << EOF
 Usage:
 
-# ./install.sh <disk> <microcode:intel|amd>
-  <DE:i3|xfce|gnome|kde> <GPU:nvidia|amd|intel>
-  <HostName> <UserName>
-  <userPasword> <rootPassword>
-  <partition-table-destroy:yes|no-exclude-efi|no-root-only|skip>
-  <boot-loader:systemd-boot|grub> <network:static-ip|dhcp>
+# ./install.sh <disk>
+  <microcode:intel | amd>
+  <DE:i3 | xfce | gnome | kde>
+  <GPU:nvidia | amd | intel>
+  <HostName>
+  <UserName>
+  <userPasword>
+  <rootPassword>
+  <partition-table-destroy:yes | no-exclude-efi | no-root-only | skip>
+  <network:static-ip | dhcp>
   <root_partition_size:Numbers only (GiB)>
 EOF
   exit 1
@@ -23,6 +27,7 @@ packagelist="base \
   linux-zen-headers \
   linux-firmware \
   efibootmgr \
+  dosfstools \
   mesa \
   xf86-video-nouveau \
   libva-utils \
@@ -101,36 +106,32 @@ packagelist="base \
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
 
-disk=$1
-microcode=$2
-de=$3
-gpu=$4
-hostname=$5
-username=$6
-user_password=$7
-root_password=$8
-partition_table=$9
-boot_loader=${10}
-network=${11}
-root_size=${12}
+disk="${1}"
+microcode="${2}"
+de="${3}"
+gpu="${4}"
+hostname="${5}"
+username="${6}"
+user_password="${7}"
+root_password="${8}"
+partition_table="${9}"
+network="${10}"
+root_size="${11}"
 
 check_variables() {
-  if [[ $microcode != 'intel' ]] && [[ $microcode != 'amd' ]]; then
+  if [[ "${microcode}" != 'intel' ]] && [[ "${microcode}" != 'amd' ]]; then
     echo 'microcode error'
     exit 1
-  elif [[ $de != 'i3' ]] && [[ $de != 'xfce' ]] && [[ $de != 'gnome' ]] && [[ $de != 'kde' ]]; then
+  elif [[ "${de}" != 'i3' ]] && [[ "${de}" != 'xfce' ]] && [[ "${de}" != 'gnome' ]] && [[ "${de}" != 'kde' ]]; then
     echo 'de error'
     exit 1
-  elif [[ $gpu != 'nvidia' ]] && [[ $gpu != 'amd' ]] && [[ $gpu != 'intel' ]]; then
+  elif [[ "${gpu}" != 'nvidia' ]] && [[ "${gpu}" != 'amd' ]] && [[ "${gpu}" != 'intel' ]]; then
     echo 'gpu error'
     exit 1
-  elif [[ $partition_table != 'yes' ]] && [[ $partition_table != 'no-exclude-efi' ]] && [[ $partition_table != 'no-root-only' ]] && [[ $partition_table != 'skip' ]]; then
+  elif [[ "${partition_table}" != 'yes' ]] && [[ "${partition_table}" != 'no-exclude-efi' ]] && [[ "${partition_table}" != 'no-root-only' ]] && [[ "${partition_table}" != 'skip' ]]; then
     echo 'partition table error'
     exit 1
-  elif [[ $boot_loader != 'systemd-boot' ]] && [[ $boot_loader != 'grub' ]]; then
-    echo 'boot loader error'
-    exit 1
-  elif [[ $network != 'static-ip' ]] && [[ $network != 'dhcp' ]]; then
+  elif [[ "${network}" != 'static-ip' ]] && [[ "${network}" != 'dhcp' ]]; then
     echo 'network error'
     exit 1
   fi
@@ -138,15 +139,15 @@ check_variables() {
 
 selection_arguments() {
   # intel-ucode or amd-ucode
-  if [[ $microcode = 'intel' ]]; then
-    packagelist="$packagelist intel-ucode"
-  elif [[ $microcode = 'amd' ]]; then
-    packagelist="$packagelist amd-ucode"
+  if [[ "${microcode}" = 'intel' ]]; then
+    packagelist="${packagelist} intel-ucode"
+  elif [[ "${microcode}" = 'amd' ]]; then
+    packagelist="${packagelist} amd-ucode"
   fi
 
   # DE
-  if [[ $de = 'i3' ]]; then
-    packagelist="$packagelist \
+  if [[ "${de}" = 'i3' ]]; then
+    packagelist="${packagelist} \
       i3-wm \
       i3lock \
       rofi \
@@ -174,8 +175,8 @@ selection_arguments() {
       tmux \
       w3m \
       ranger"
-  elif [[ $de = 'xfce' ]]; then
-    packagelist="$packagelist \
+  elif [[ "${de}" = 'xfce' ]]; then
+    packagelist="${packagelist} \
       xfce4 \
       xfce4-goodies \
       gnome-keyring \
@@ -188,8 +189,8 @@ selection_arguments() {
       lightdm \
       lightdm-gtk-greeter \
       lightdm-gtk-greeter-settings"
-  elif [[ $de = 'gnome' ]]; then
-    packagelist="$packagelist \
+  elif [[ "${de}" = 'gnome' ]]; then
+    packagelist="${packagelist} \
       gnome-control-center \
       gnome-shell \
       gnome-tweaks \
@@ -208,8 +209,8 @@ selection_arguments() {
       eog \
       networkmanager \
       gnome-shell-extension-appindicator"
-  elif [[ $de = 'kde' ]]; then
-    packagelist="$packagelist \
+  elif [[ "${de}" = 'kde' ]]; then
+    packagelist="${packagelist} \
       plasma-meta \
       packagekit-qt5 \
       dolphin \
@@ -219,20 +220,16 @@ selection_arguments() {
       kate"
   fi
 
-  if [[ $gpu = 'nvidia' ]]; then
-    packagelist="$packagelist nvidia-dkms nvidia-settings"
-  elif [[ $gpu = 'amd' ]]; then
-    packagelist="$packagelist xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
-  elif [[ $gpu = 'intel' ]]; then
+  if [[ "${gpu}" = 'nvidia' ]]; then
+    packagelist="${packagelist} nvidia-dkms nvidia-settings"
+  elif [[ "${gpu}" = 'amd' ]]; then
+    packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
+  elif [[ "${gpu}" = 'intel' ]]; then
     echo 'Already declared'
   fi
 
-  if [[ $boot_loader = 'grub' ]]; then
-    packagelist="$packagelist grub efibootmgr dosfstools"
-  fi
-
-  if [[ $network = 'dhcp' ]]; then
-    packagelist="$packagelist dhcpcd"
+  if [[ "${network}" = 'dhcp' ]]; then
+    packagelist="${packagelist} dhcpcd"
   fi
 }
 
@@ -241,7 +238,7 @@ time_setting() {
 }
 
 partitioning() {
-  if [[ $partition_table = 'yes' ]]; then
+  if [[ "${partition_table}" = 'yes' ]]; then
     sgdisk -Z "${disk}"
     sgdisk -n 0::+512M -t 0:ef00 -c 0:'EFI System' "${disk}"
     sgdisk -n 0::"+${root_size}G" -t 0:8300 -c 0:'Linux filesystem' "${disk}"
@@ -251,7 +248,7 @@ partitioning() {
     mkfs.fat -F 32 "${disk}1"
     mkfs.ext4 "${disk}2"
     mkfs.ext4 "${disk}3"
-  elif [[ $partition_table = 'no-exclude-efi' ]]; then
+  elif [[ "${partition_table}" = 'no-exclude-efi' ]]; then
     sgdisk -d 3 "${disk}"
     sgdisk -d 2 "${disk}"
     sgdisk -n 0::"+${root_size}G" -t 0:8300 -c 0:'Linux filesystem' "${disk}"
@@ -260,10 +257,10 @@ partitioning() {
     # format
     mkfs.ext4 "${disk}2"
     mkfs.ext4 "${disk}3"
-  elif [[ $partition_table = 'no-root-only' ]]; then
+  elif [[ "${partition_table}" = 'no-root-only' ]]; then
     # format
     mkfs.ext4 "${disk}2"
-  elif [[ $partition_table = 'skip' ]]; then
+  elif [[ "${partition_table}" = 'skip' ]]; then
     echo 'Skip partitioning'
 
     # format
@@ -278,7 +275,7 @@ partitioning() {
 }
 
 installation() {
-  reflector --country Japan --sort rate --save /etc/pacman.d/mirrorlist
+  reflector --country Japan,Australia --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   pacman -Sy --noconfirm archlinux-keyring
   pacstrap /mnt "${packagelist}"
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -286,7 +283,8 @@ installation() {
 
 configuration() {
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-  arch-chroot /mnt hwclock --systohc --utc
+  # arch-chroot /mnt hwclock --systohc --utc
+  arch-chroot /mnt hwclock -wu
   arch-chroot /mnt sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
@@ -299,38 +297,38 @@ configuration() {
 }
 
 networking() {
-  if [[ $network = 'static-ip' ]]; then
-    ip_address=$(ip -4 a show "${net_interface}" | grep 192.168 | awk '{print $2}' | cut -d '/' -f 1)
+  if [[ "${network}" = 'static-ip' ]]; then
+    ip_address=$(ip -4 a show "${net_interface}" | grep '192.168' | awk '{print $2}' | cut -d '/' -f 1)
     cat << EOF >> /mnt/etc/hosts
 127.0.0.1       localhost
 ::1             localhost
-$ip_address    ${hostname}.home    $hostname
+${ip_address}    ${hostname}.home    ${hostname}
 EOF
 
-    if [[ $de != 'gnome' ]] && [[ $de != 'kde' ]]; then
+    if [[ "${de}" != 'gnome' ]] && [[ "${de}" != 'kde' ]]; then
       arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
       cat << EOF > /mnt/etc/systemd/network/20-wired.network
 [Match]
-Name=$net_interface
+Name=${net_interface}
 
 [Network]
 DHCP=yes
 DNS=192.168.1.202
 EOF
-    elif [[ $de != 'i3' ]]; then
+    elif [[ "${de}" != 'i3' ]]; then
       arch-chroot /mnt systemctl enable systemd-resolved.service
       ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
     else
       ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
     fi
 
-  elif [[ $network = 'dhcp' ]]; then
+  elif [[ "${network}" = 'dhcp' ]]; then
     arch-chroot /mnt systemctl enable dhcpcd.service
   fi
 }
 
 create_user() {
-  echo "root:$root_password" | arch-chroot /mnt chpasswd
+  echo "root:${root_password}" | arch-chroot /mnt chpasswd
   arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${username}"
   echo "${username}:${user_password}" | arch-chroot /mnt chpasswd
 }
@@ -365,79 +363,61 @@ XMODIFIERS='@im=fcitx5'
 LIBVA_DRIVER_NAME='nvidia'
 VDPAU_DRIVER='nvidia'
 EOF
+
   arch-chroot /mnt pacman -Syy
 }
 
 boot_loader() {
-  if [[ $boot_loader = 'grub' ]]; then
-    # grub
-    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub --recheck
-    arch-chroot /mnt mkdir /boot/EFI/boot
-    arch-chroot /mnt cp /boot/EFI/grub/grubx64.efi /boot/EFI/Boot/bootx64.efi
-    arch-chroot /mnt sed -i '/^GRUB_TIMEOUT=/c\GRUB_TIMEOUT=10' /etc/default/grub
-    if [[ $gpu = 'nvidia' ]]; then
-      arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1"' /etc/default/grub
-      arch-chroot /mnt sed -i '/^GRUB_GFXMODE=/c\GRUB_GFXMODE=1920x1080-24' /etc/default/grub
-    elif [[ $gpu = 'amd' ]]; then
-      arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
-    elif [[ $gpu = 'intel' ]]; then
-      arch-chroot /mnt sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/c\GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 panic=180"' /etc/default/grub
-    fi
-    arch-chroot /mnt sed -i '/^GRUB_DISABLE_OS_PROBER=/c\GRUB_DISABLE_OS_PROBER=false' /etc/default/grub
-    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-  elif [[ $boot_loader = 'systemd-boot' ]]; then
-    # systemd-boot
-    arch-chroot /mnt bootctl --path=/boot install
-    cat << EOF > /mnt/boot/loader/loader.conf
+  arch-chroot /mnt bootctl install
+  cat << EOF > /mnt/boot/loader/loader.conf
 default      arch
 timeout      10
 console-mode max
 editor       no
 EOF
 
-    root_partuuid=$(blkid -s PARTUUID -o value "${disk}2")
+  root_partuuid=$(blkid -s PARTUUID -o value "${disk}2")
 
-    if [[ $gpu = 'nvidia' ]]; then
-      cat << EOF > /mnt/boot/loader/entries/arch.conf
+  if [[ "${gpu}" = 'nvidia' ]]; then
+    cat << EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux Nvidia
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
-options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
 EOF
-      cat << EOF > /mnt/boot/loader/entries/arch_nouveau.conf
+    cat << EOF > /mnt/boot/loader/entries/arch_nouveau.conf
 title    Arch Linux Nouveau
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
-options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-    elif [[ $gpu = 'amd' ]]; then
-      cat << EOF > /mnt/boot/loader/entries/arch.conf
+  elif [[ "${gpu}" = 'amd' ]]; then
+    cat << EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux AMD
 linux    /vmlinuz-linux-zen
 initrd   /amd-ucode.img
 initrd   /initramfs-linux-zen.img
-options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-    elif [[ $gpu = 'intel' ]]; then
-      cat << EOF > /mnt/boot/loader/entries/arch.conf
+  elif [[ "${gpu}" = 'intel' ]]; then
+    cat << EOF > /mnt/boot/loader/entries/arch.conf
 title    Arch Linux Intel
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
-options  root=PARTUUID=$root_partuuid rw loglevel=3 panic=180
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
-    fi
+  fi
 
-    cat << EOF > /mnt/boot/loader/entries/arch_fallback.conf
+  cat << EOF > /mnt/boot/loader/entries/arch_fallback.conf
 title    Arch Linux Fallback
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen-fallback.img
-options  root=PARTUUID=$root_partuuid rw panic=180 debug
+options  root=PARTUUID=${root_partuuid} rw panic=180 debug
 EOF
-  fi
 }
 
 enable_services() {
@@ -448,12 +428,12 @@ enable_services() {
   arch-chroot /mnt systemctl enable reflector.timer
   arch-chroot /mnt systemctl enable systemd-boot-update.service
 
-  if [[ $de = 'xfce' ]]; then
+  if [[ "${de}" = 'xfce' ]]; then
     arch-chroot /mnt systemctl enable lightdm.service
-  elif [[ $de = 'gnome' ]]; then
+  elif [[ "${de}" = 'gnome' ]]; then
     arch-chroot /mnt systemctl enable gdm.service
     arch-chroot /mnt systemctl enable NetworkManager.service
-  elif [[ $de = 'kde' ]]; then
+  elif [[ "${de}" = 'kde' ]]; then
     arch-chroot /mnt systemctl enable sddm.service
     arch-chroot /mnt systemctl enable NetworkManager.service
   fi
