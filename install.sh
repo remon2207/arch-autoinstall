@@ -332,7 +332,6 @@ replacement() {
   arch-chroot /mnt sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
-  # arch-chroot /mnt sed -i 's/^--protocol https/#--protocol http,https/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan,Australia/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
