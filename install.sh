@@ -231,9 +231,9 @@ time_setting() {
 partitioning() {
   if [[ "${partition_table}" == 'yes' ]]; then
     sgdisk -Z "${disk}"
-    sgdisk -n 0::+512M -t 0:ef00 -c 0:'EFI System' "${disk}"
-    sgdisk -n 0::"+${root_size}G" -t 0:8300 -c 0:'Linux filesystem' "${disk}"
-    sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' "${disk}"
+    sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' "${disk}"
+    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:Linux filesystem' "${disk}"
+    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${disk}"
 
     # format
     mkfs.fat -F 32 "${disk}1"
@@ -242,8 +242,8 @@ partitioning() {
   elif [[ "${partition_table}" == 'no-exclude-efi' ]]; then
     sgdisk -d 3 "${disk}"
     sgdisk -d 2 "${disk}"
-    sgdisk -n 0::"+${root_size}G" -t 0:8300 -c 0:'Linux filesystem' "${disk}"
-    sgdisk -n 0:: -t 0:8300 -c 0:'Linux filesystem' "${disk}"
+    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:EFI system partition' "${disk}"
+    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${disk}"
 
     # format
     mkfs.ext4 "${disk}2"
