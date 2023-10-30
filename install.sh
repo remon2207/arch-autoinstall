@@ -25,8 +25,7 @@ packagelist="base \
   linux-zen \
   linux-zen-headers \
   linux-firmware \
-  libva-utils \
-  vdpauinfo \
+  libva-vdpau-driver \
   neovim \
   go \
   fd \
