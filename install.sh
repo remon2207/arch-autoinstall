@@ -28,7 +28,6 @@ packagelist="base \
   libva-utils \
   vdpauinfo \
   neovim \
-  bash-completion \
   go \
   fd \
   sd \
@@ -243,7 +242,7 @@ partitioning() {
 installation() {
   reflector --country Japan,Australia --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   pacman -Sy --noconfirm archlinux-keyring
-  pacstrap /mnt "${packagelist}"
+  pacstrap /mnt ${packagelist}
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
@@ -289,7 +288,7 @@ EOF
 
 create_user() {
   echo "root:${root_password}" | arch-chroot /mnt chpasswd
-  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${username}"
+  arch-chroot /mnt useradd -m -G wheel -s /bin/bash ${username}
   echo "${username}:${user_password}" | arch-chroot /mnt chpasswd
 }
 
