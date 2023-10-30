@@ -136,8 +136,6 @@ selection_arguments() {
       gnome-keyring \
       qt5ct \
       kvantum \
-      bluez \
-      bluez-utils \
       arc-gtk-theme \
       papirus-icon-theme \
       pavucontrol \
@@ -261,7 +259,6 @@ configuration() {
   echo 'KEYMAP=us' > /mnt/etc/vconsole.conf
   echo "${hostname}" > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
-  arch-chroot /mnt chown -R "${username}" /nix/var/nix/{gcroots,profiles}
 }
 
 networking() {
@@ -346,7 +343,7 @@ title    Arch Linux Nvidia
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
-options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 nomodeset i915.modeset=0 nouveau.modeset=0 nvidia-drm.modeset=1
+options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
 EOF
     cat << EOF > /mnt/boot/loader/entries/arch_nouveau.conf
 title    Arch Linux Nouveau
@@ -386,7 +383,6 @@ enable_services() {
   arch-chroot /mnt systemctl enable docker.service
   arch-chroot /mnt systemctl enable fstrim.timer
   arch-chroot /mnt systemctl enable nftables.service
-  arch-chroot /mnt systemctl enable bluetooth.service
   arch-chroot /mnt systemctl enable reflector.timer
   arch-chroot /mnt systemctl enable systemd-boot-update.service
 
