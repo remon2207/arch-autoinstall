@@ -203,20 +203,20 @@ time_setting() {
 
 partitioning() {
   if [[ "${partition_table}" == 'yes' ]]; then
-    sgdisk -Z "${disk}"
-    sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' "${disk}"
-    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:Linux filesystem' "${disk}"
-    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${disk}"
+    sgdisk -Z ${disk}
+    sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' ${disk}
+    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:Linux filesystem' ${disk}
+    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' ${disk}
 
     # format
     mkfs.fat -F 32 "${disk}1"
     mkfs.ext4 "${disk}2"
     mkfs.ext4 "${disk}3"
   elif [[ "${partition_table}" == 'no-exclude-efi' ]]; then
-    sgdisk -d 3 "${disk}"
-    sgdisk -d 2 "${disk}"
-    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:EFI system partition' "${disk}"
-    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${disk}"
+    sgdisk -d 3 ${disk}
+    sgdisk -d 2 ${disk}
+    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:EFI system partition' ${disk}
+    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' ${disk}
 
     # format
     mkfs.ext4 "${disk}2"
@@ -292,7 +292,7 @@ create_user() {
 }
 
 add_to_group() {
-  arch-chroot /mnt gpasswd -a "${username}" docker
+  arch-chroot /mnt gpasswd -a ${username} docker
 }
 
 replacement() {
@@ -327,7 +327,7 @@ EOF
 boot_loader() {
   arch-chroot /mnt bootctl install
   cat << EOF > /mnt/boot/loader/loader.conf
-default      arch
+default      arch.conf
 timeout      10
 console-mode max
 editor       no
@@ -337,7 +337,7 @@ EOF
 
   if [[ "${gpu}" == 'nvidia' ]]; then
     cat << EOF > /mnt/boot/loader/entries/arch.conf
-title    Arch Linux Nvidia
+title    Arch Linux
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
@@ -345,7 +345,7 @@ options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 i915.modeset=0 n
 EOF
   elif [[ "${gpu}" == 'amd' ]]; then
     cat << EOF > /mnt/boot/loader/entries/arch.conf
-title    Arch Linux AMD
+title    Arch Linux
 linux    /vmlinuz-linux-zen
 initrd   /amd-ucode.img
 initrd   /initramfs-linux-zen.img
@@ -353,7 +353,7 @@ options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
 EOF
   elif [[ "${gpu}" == 'intel' ]]; then
     cat << EOF > /mnt/boot/loader/entries/arch.conf
-title    Arch Linux Intel
+title    Arch Linux
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen.img
@@ -362,7 +362,7 @@ EOF
   fi
 
   cat << EOF > /mnt/boot/loader/entries/arch_fallback.conf
-title    Arch Linux Fallback
+title    Arch Linux (Fallback)
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen-fallback.img
