@@ -25,26 +25,15 @@ packagelist="base \
   linux-zen \
   linux-zen-headers \
   linux-firmware \
-  efibootmgr \
-  dosfstools \
-  mesa \
-  xf86-video-nouveau \
   libva-utils \
   vdpauinfo \
-  vi \
   neovim \
-  emacs-nox \
-  tree-sitter-cli \
   bash-completion \
-  deno \
   go \
   fd \
   sd \
   tldr \
   ripgrep \
-  git-delta \
-  xclip \
-  unzip \
   bat \
   sudo \
   zsh \
@@ -53,17 +42,11 @@ packagelist="base \
   fzf \
   nftables \
   git \
-  cifs-utils \
   openssh \
   htop \
   nmap \
   man-db \
   man-pages \
-  ntfs-3g \
-  exfat-utils \
-  firefox \
-  firefox-i18n-en-us \
-  firefox-i18n-ja \
   xdg-user-dirs \
   wireplumber \
   pipewire \
@@ -84,9 +67,7 @@ packagelist="base \
   xorg-server \
   xorg-apps \
   xorg-xinit \
-  bluez \
   silicon \
-  tig \
   starship \
   lsd \
   eza \
@@ -95,10 +76,6 @@ packagelist="base \
   vivaldi-ffmpeg-codecs \
   pigz \
   pv \
-  shfmt \
-  yamlfmt \
-  shellcheck \
-  nix \
   fish \
   fisher \
   nfs-utils"
