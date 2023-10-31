@@ -26,6 +26,7 @@ packagelist="base \
   linux-zen-headers \
   linux-firmware \
   libva-vdpau-driver \
+  vi \
   neovim \
   go \
   fd \
@@ -125,7 +126,6 @@ selection_arguments() {
       scrot \
       lxappearance-gtk3 \
       feh \
-      hsetroot \
       picom \
       upower \
       dunst \
@@ -245,8 +245,7 @@ installation() {
 
 configuration() {
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-  # arch-chroot /mnt hwclock --systohc --utc
-  arch-chroot /mnt hwclock -wu
+  arch-chroot /mnt hwclock --systohc --utc
   arch-chroot /mnt sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
