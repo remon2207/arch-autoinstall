@@ -136,7 +136,6 @@ selection_arguments() {
       kitty \
       wezterm \
       tmux \
-      w3m \
       ranger"
   elif [[ "${de}" == 'xfce' ]]; then
     packagelist="${packagelist} \
