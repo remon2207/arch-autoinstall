@@ -228,7 +228,7 @@ partitioning() {
 
   # mount
   mount "${disk}2" /mnt
-  mount -m "${disk}1" /mnt/boot
+  mount -m -o fmask=0077,dmask=0077 "${disk}1" /mnt/boot
   mount -m "${disk}3" /mnt/home
 }
 
