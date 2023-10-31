@@ -74,8 +74,6 @@ packagelist="base \
   vivaldi-ffmpeg-codecs \
   pigz \
   pv \
-  fish \
-  fisher \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
