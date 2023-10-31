@@ -125,7 +125,6 @@ selection_arguments() {
       lxappearance-gtk3 \
       feh \
       picom \
-      upower \
       dunst \
       gnome-keyring \
       qt5ct \
