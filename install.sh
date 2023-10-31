@@ -62,7 +62,6 @@ packagelist="base \
   neofetch \
   reflector \
   xorg \
-  xorg-server \
   xorg-apps \
   xorg-xinit \
   silicon \
