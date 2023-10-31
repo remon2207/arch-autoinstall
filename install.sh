@@ -53,7 +53,6 @@ packagelist="base \
   noto-fonts \
   noto-fonts-cjk \
   noto-fonts-emoji \
-  fcitx5 \
   fcitx5-im \
   fcitx5-mozc \
   docker \
