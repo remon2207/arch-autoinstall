@@ -53,6 +53,9 @@ packagelist="base \
   noto-fonts \
   noto-fonts-cjk \
   noto-fonts-emoji \
+  not-fonts-extra \
+  nerd-fonts \
+  ttf-hack \
   fcitx5-im \
   fcitx5-mozc \
   docker \
@@ -73,6 +76,10 @@ packagelist="base \
   vivaldi-ffmpeg-codecs \
   pigz \
   pv \
+  lazygit \
+  shfmt \
+  shellcheck \
+  unzip \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
