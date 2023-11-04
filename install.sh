@@ -258,6 +258,7 @@ configuration() {
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' > /mnt/etc/vconsole.conf
+  echo 'FONT=drdos8x16' >> /mnt/etc/vconsole.conf
   echo "${hostname}" > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 }
