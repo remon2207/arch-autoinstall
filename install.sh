@@ -53,7 +53,7 @@ packagelist="base \
   noto-fonts \
   noto-fonts-cjk \
   noto-fonts-emoji \
-  not-fonts-extra \
+  noto-fonts-extra \
   nerd-fonts \
   ttf-hack \
   fcitx5-im \
@@ -80,6 +80,9 @@ packagelist="base \
   shfmt \
   shellcheck \
   unzip \
+  virtualbox \
+  virtualbox-host-dkms \
+  virtualbox-guest-iso \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
@@ -143,6 +146,7 @@ selection_arguments() {
       kitty \
       wezterm \
       tmux \
+      ttf-font-awesome \
       ranger"
   elif [[ "${de}" == 'xfce' ]]; then
     packagelist="${packagelist} \
@@ -193,8 +197,6 @@ selection_arguments() {
     packagelist="${packagelist} nvidia-dkms nvidia-settings"
   elif [[ "${gpu}" == 'amd' ]]; then
     packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
-  elif [[ "${gpu}" == 'intel' ]]; then
-    echo 'Already declared'
   fi
 }
 
@@ -204,20 +206,20 @@ time_setting() {
 
 partitioning() {
   if [[ "${partition_table}" == 'yes' ]]; then
-    sgdisk -Z ${disk}
-    sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' ${disk}
-    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:Linux filesystem' ${disk}
-    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' ${disk}
+    sgdisk -Z "${disk}"
+    sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' "${disk}"
+    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:Linux filesystem' "${disk}"
+    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${disk}"
 
     # format
     mkfs.fat -F 32 "${disk}1"
     mkfs.ext4 "${disk}2"
     mkfs.ext4 "${disk}3"
   elif [[ "${partition_table}" == 'no-exclude-efi' ]]; then
-    sgdisk -d 3 ${disk}
-    sgdisk -d 2 ${disk}
-    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:EFI system partition' ${disk}
-    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' ${disk}
+    sgdisk -d 3 "${disk}"
+    sgdisk -d 2 "${disk}"
+    sgdisk -n "0::+${root_size}G" -t 0:8300 -c '0:EFI system partition' "${disk}"
+    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${disk}"
 
     # format
     mkfs.ext4 "${disk}2"
@@ -241,8 +243,8 @@ partitioning() {
 
 installation() {
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-  pacman -Sy --noconfirm archlinux-keyring
-  pacstrap /mnt ${packagelist}
+  sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+  pacstrap -K /mnt "${packagelist}"
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
@@ -287,12 +289,13 @@ EOF
 
 create_user() {
   echo "root:${root_password}" | arch-chroot /mnt chpasswd
-  arch-chroot /mnt useradd -m -G wheel -s /bin/bash ${username}
+  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${username}"
   echo "${username}:${user_password}" | arch-chroot /mnt chpasswd
 }
 
 add_to_group() {
-  arch-chroot /mnt gpasswd -a ${username} docker
+  arch-chroot /mnt gpasswd -a "${username}" docker
+  arch-chroot /mnt gpasswd -a "${username}" vboxusers
 }
 
 replacement() {
@@ -301,7 +304,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$\(\($\(nproc\)+1\)\)"/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/COMPRESSXZ=\(xz -c -z -\)/COMPRESSXZ=\(xz -c -z --threads=0 -\)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
   arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
@@ -366,7 +369,7 @@ title    Arch Linux (Fallback)
 linux    /vmlinuz-linux-zen
 initrd   /intel-ucode.img
 initrd   /initramfs-linux-zen-fallback.img
-options  root=PARTUUID=${root_partuuid} rw panic=180 debug
+options  root=PARTUUID=${root_partuuid} rw panic=180 debug i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
 EOF
 }
 
