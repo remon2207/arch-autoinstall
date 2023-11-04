@@ -244,7 +244,7 @@ partitioning() {
 installation() {
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
-  pacstrap -K /mnt "${packagelist}"
+  pacstrap -K /mnt ${packagelist}
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
