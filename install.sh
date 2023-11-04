@@ -39,7 +39,6 @@ packagelist="base \
   curl \
   wget \
   fzf \
-  nftables \
   git \
   openssh \
   htop \
@@ -84,6 +83,7 @@ packagelist="base \
   virtualbox \
   virtualbox-host-dkms \
   virtualbox-guest-iso \
+  stylua \
   nfs-utils"
 
 net_interface=$(ip -br link show | grep ' UP ' | awk '{print $1}')
@@ -282,9 +282,9 @@ DNS=192.168.1.202
 EOF
   elif [[ "${de}" != 'i3' ]]; then
     arch-chroot /mnt systemctl enable systemd-resolved.service
-    ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
+    ln -sf ../run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
   else
-    ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+    ln -sf ../run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
   fi
 }
 
@@ -380,7 +380,6 @@ EOF
 enable_services() {
   arch-chroot /mnt systemctl enable docker.service
   arch-chroot /mnt systemctl enable fstrim.timer
-  arch-chroot /mnt systemctl enable nftables.service
   arch-chroot /mnt systemctl enable reflector.timer
   arch-chroot /mnt systemctl enable systemd-boot-update.service
 
