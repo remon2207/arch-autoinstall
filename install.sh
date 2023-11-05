@@ -383,76 +383,85 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  root_partuuid=$(blkid -s PARTUUID -o value "${DISK}2")
-  vmlinuz=$(find /mnt/boot/*vmlinuz* | awk -F '/' '{print $3}')
-  ucode=$(find /mnt/boot/*ucode* | awk -F '/' '{print $3}')
-  initramfs=$(find /mnt/boot/*initramfs* | tail -n 1 | awk -F '/' '{print $3}')
-  initramfs_fallback=$(find /mnt/boot/*initramfs* | head -n 1)
+  ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
+  VMLINUZ=$(find /mnt/boot/*vmlinuz* | awk -F '/' '{print $3}')
+  UCODE=$(find /mnt/boot/*ucode* | awk -F '/' '{print $3}')
+  INITRAMFS=$(find /mnt/boot/*initramfs* | tail -n 1 | awk -F '/' '{print $3}')
+  INITRAMFS_FALLBACK=$(find /mnt/boot/*initramfs* | head -n 1)
 
-  nvidia_conf=$(
+  NVIDIA_CONF=$(
     cat << EOF
 title    Arch Linux
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs}
-options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
+linux    /${VMLINUZ}
+initrd   /${UCODE}
+initrd   /${INITRAMFS}
+options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
 EOF
   )
-  nvidia_fallback_conf=$(
+  readonly NVIDIA_CONF
+
+  NVIDIA_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (Fallback)
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs_fallback}
-options  root=PARTUUID=${root_partuuid} rw debug panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
+linux    /${VMLINUZ}
+initrd   /${UCODE}
+initrd   /${INITRAMFS_FALLBACK}
+options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
 EOF
   )
-  amd_conf=$(
+  readonly NVIDIA_FALLBACK_CONF
+
+  AMD_CONF=$(
     cat << EOF
 title    Arch Linux
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs}
-options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
+linux    /${VMLINUZ}
+initrd   /${UCODE}
+initrd   /${INITRAMFS}
+options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
 EOF
   )
-  amd_fallback_conf=$(
+  readonly AMD_CONF
+
+  AMD_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (Fallback)
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs_fallback}
-options  root=PARTUUID=${root_partuuid} rw debug panic=180 i915.modeset=0
+linux    /${VMLINUZ}
+initrd   /${UCODE}
+initrd   /${INITRAMFS_FALLBACK}
+options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0
 EOF
   )
+  readonly AMD_FALLBACK_CONF
+
   INTEL_CONF=$(
     cat << EOF
 title    Arch Linux
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs}
-options  root=PARTUUID=${root_partuuid} rw loglevel=3 panic=180
+linux    /${VMLINUZ}
+initrd   /${UCODE}
+initrd   /${INITRAMFS}
+options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
 EOF
   )
-  local -r INTEL_CONF
+  readonly INTEL_CONF
+
   INTEL_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (Fallback)
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs_fallback}
-options  root=PARTUUID=${root_partuuid} rw debug panic=180
+linux    /${VMLINUZ}
+initrd   /${UCODE}
+initrd   /${INITRAMFS_FALLBACK}
+options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180
 EOF
   )
-  local -r INTEL_FALLBACK_CONF
+  readonly INTEL_FALLBACK_CONF
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
   if [[ "${GPU}" == 'nvidia' ]]; then
-    echo "${nvidia_conf}" > /mnt/boot/loader/entries/arch.conf
-    echo "${nvidia_fallback_conf}" > /mnt/boot/loader/entries/arch_fallback.conf
+    echo "${NVIDIA_CONF}" > /mnt/boot/loader/entries/arch.conf
+    echo "${NVIDIA_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
   elif [[ "${GPU}" == 'amd' ]]; then
-    echo "${amd_conf}" > /mnt/boot/loader/entries/arch.conf
-    echo "${amd_fallback_conf}" > /mnt/boot/loader/entries/arch_fallback.conf
+    echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
+    echo "${AMD_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
   elif [[ "${GPU}" == 'intel' ]]; then
     echo "${INTEL_CONF}" > /mnt/boot/loader/entries/arch.conf
     echo "${INTEL_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
