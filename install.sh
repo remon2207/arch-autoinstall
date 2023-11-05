@@ -438,7 +438,7 @@ title    Arch Linux
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
+options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0
 EOF
   )
   readonly AMD_CONF
