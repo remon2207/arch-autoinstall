@@ -20,10 +20,11 @@ EOF
   exit 1
 fi
 
-packagelist="base{,-devel} \
-  linux-zen{,-headers} \
+packagelist="base \
+  base-devel \
+  linux-zen \
+  linux-zen-headers \
   linux-firmware \
-  libva-vdpau-driver \
   vi \
   neovim \
   go \
@@ -41,26 +42,36 @@ packagelist="base{,-devel} \
   openssh \
   htop \
   nmap \
-  man-{db,pages} \
+  man-db \
+  man-pages \
   xdg-user-dirs \
   wireplumber \
-  pipewire{,-pulse} \
-  noto-fonts{,-cjk,-emoji,-extra} \
+  pipewire \
+  pipewire-pulse \
+  noto-fonts \
+  noto-fonts-cjk \
+  noto-fonts-emoji \
+  noto-fonts-extra \
   nerd-fonts \
   ttf-hack \
-  fcitx5-{im,mozc} \
-  docker{,-compose} \
+  fcitx5-im \
+  fcitx5-mozc \
+  docker \
+  docker-compose \
   github-cli \
   discord \
   neofetch \
   reflector \
-  xorg{,-apps,-xinit} \
+  xorg \
+  xorg-apps \
+  xorg-xinit \
   silicon \
   starship \
   lsd \
   eza \
   profile-sync-daemon \
-  vivaldi{,-ffmpeg-codecs} \
+  vivaldi \
+  vivaldi-ffmpeg-codecs \
   pigz \
   lbzip2 \
   pv \
@@ -68,7 +79,9 @@ packagelist="base{,-devel} \
   shfmt \
   shellcheck \
   unzip \
-  virtualbox{,-host-dkms,-guest-iso} \
+  virtualbox \
+  virtualbox-host-dkms \
+  virtualbox-guest-iso \
   stylua \
   nfs-utils"
 
@@ -108,24 +121,40 @@ readonly PARTITION_TABLE
 ROOT_SIZE="${10}"
 readonly ROOT_SIZE
 
-VCONSOLE=$(
-  cat << EOF
-KEYMAP=us
-FONT=drdos8x16
-EOF
-)
-readonly VCONSOLE
-
-ENVIRONMENT=$(
-  cat << EOF
+if [[ "${GPU}" == 'nvidia' ]]; then
+  ENVIRONMENT=$(
+    cat << EOF
 GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
-LIBVA_DRIVER_NAME='nvidia'
+LIBVA_DRIVER_NAME='vdpau'
 VDPAU_DRIVER='nvidia'
 EOF
-)
+  )
+elif [[ "${GPU}" == 'amd' ]]; then
+  ENVIRONMENT=$(
+    cat << EOF
+GTK_IM_MODULE='fcitx5'
+QT_IM_MODULE='fcitx5'
+XMODIFIERS='@im=fcitx5'
+
+LIBVA_DRIVER_NAME='radeonsi'
+# VDPAU_DRIVER=''
+EOF
+  )
+elif [[ "${GPU}" == 'intel' ]]; then
+  ENVIRONMENT=$(
+    cat << EOF
+GTK_IM_MODULE='fcitx5'
+QT_IM_MODULE='fcitx5'
+XMODIFIERS='@im=fcitx5'
+
+LIBVA_DRIVER_NAME='i965'
+VDPAU_DRIVER='va_gl'
+EOF
+  )
+fi
 readonly ENVIRONMENT
 
 LOADER_CONF=$(
@@ -186,7 +215,8 @@ selection_arguments() {
   # DE
   if [[ "${DE}" == 'i3' ]]; then
     packagelist="${packagelist} \
-      i3{-wm,lock} \
+      i3-wm \
+      i3lock \
       rofi \
       polybar \
       xautolock \
@@ -199,7 +229,8 @@ selection_arguments() {
       gnome-keyring \
       qt5ct \
       kvantum \
-      {arc-gtk,papirus-icon}-theme \
+      arc-gtk-theme \
+      papirus-icon-theme \
       pavucontrol \
       alacritty \
       kitty \
@@ -209,17 +240,28 @@ selection_arguments() {
       ranger"
   elif [[ "${DE}" == 'xfce' ]]; then
     packagelist="${packagelist} \
-      xfce4{,-goodies} \
+      xfce4 \
+      xfce4-goodies \
       gnome-keyring \
       gvfs \
       qt5ct \
       kvantum \
       blueman \
-      {arc-gtk,papirus-icon}-theme \
-      lightdm{,-gtk-greeter,-gtk-greeter-settings}"
+      papirus-icon-theme \
+      arc-gtk-theme \
+      lightdm \
+      lightdm-gtk-greeter \
+      lightdm-gtk-greeter-settings"
   elif [[ "${DE}" == 'gnome' ]]; then
     packagelist="${packagelist} \
-      gnome-{control-center,shell,tweaks,themes-extra,terminal,keyring,backgrounds,shell-extension-appindicator} \
+      gnome-control-center \
+      gnome-shell \
+      gnome-tweaks \
+      gnome-themes-extra \
+      gnome-terminal \
+      gnome-keyring \
+      gnome-backgrounds \
+      gnome-calculator \
       gedit \
       mutter \
       file-roller \
@@ -228,7 +270,8 @@ selection_arguments() {
       gvfs \
       dconf-editor \
       eog \
-      networkmanager"
+      networkmanager \
+      gnome-shell-extension-appindicator"
   elif [[ "${DE}" == 'kde' ]]; then
     packagelist="${packagelist} \
       plasma-meta \
@@ -241,9 +284,11 @@ selection_arguments() {
   fi
 
   if [[ "${GPU}" == 'nvidia' ]]; then
-    packagelist="${packagelist} nvidia-{dkms,settings}"
+    packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
   elif [[ "${GPU}" == 'amd' ]]; then
     packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
+  elif [[ "${GPU}" == 'intel' ]]; then
+    packagelist="${packagelist} libvdpau-va-gl libva-intel-driver"
   fi
 }
 
@@ -292,19 +337,22 @@ installation() {
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
   pacstrap -K /mnt ${packagelist}
+  if [[ "${GPU}" == 'nvidia' ]]; then
+    sed -i 's/^MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /mnt/etc/mkinitcpio.conf
+    arch-chroot /mnt mkinitcpio -p linux-zen
+  fi
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
 configuration() {
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   arch-chroot /mnt hwclock --systohc --utc
-  arch-chroot /mnt sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' -e \
-    's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen
+  arch-chroot /mnt sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+  arch-chroot /mnt sed -i 's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
-  echo "${VCONSOLE}" >> /mnt/etc/vconsole.conf
-  arch-chroot /mnt mkinitcpio -p linux-zen
+  echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
   echo "${HOSTNAME}" > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 }
@@ -332,21 +380,21 @@ add_to_group() {
 }
 
 replacement() {
-  arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
-  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' -e \
-    's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
+  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' /etc/systemd/timesyncd.conf
+  arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
-  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' -e \
-    's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' -e \
-    's/^#BUILDDIR/BUILDDIR/' -e \
-    's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' -e \
-    's/^COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q --threads=0 -)/' -e \
-    's/^COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' -e \
-    's/^COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(lbzip2 -c -f)/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' -e \
-    's/^--latest 5/# --latest 5/' -e \
-    's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q --threads=0 -)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(lbzip2 -c -f)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
+  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
+  arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
+  arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${ENVIRONMENT}" >> /mnt/etc/environment
 
@@ -442,17 +490,23 @@ EOF
 }
 
 enable_services() {
-  arch-chroot /mnt systemctl enable {iptables,docker,systemd-boot-update}.service
-  arch-chroot /mnt systemctl enable {fstrim,reflector}.timer
+  arch-chroot /mnt systemctl enable iptables.service
+  arch-chroot /mnt systemctl enable docker.service
+  arch-chroot /mnt systemctl enable fstrim.timer
+  arch-chroot /mnt systemctl enable reflector.timer
+  arch-chroot /mnt systemctl enable systemd-boot-update.service
   if [[ "${DE}" == 'i3' ]] || [[ "${DE}" == 'xfce' ]]; then
-    arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
+    arch-chroot /mnt systemctl enable systemd-networkd.service
+    arch-chroot /mnt systemctl enable systemd-resolved.service
   fi
   if [[ "${DE}" == 'xfce' ]]; then
     arch-chroot /mnt systemctl enable lightdm.service
   elif [[ "${DE}" == 'gnome' ]]; then
-    arch-chroot /mnt systemctl enable {gdm,NetworkManager}.service
+    arch-chroot /mnt systemctl enable gdm.service
+    arch-chroot /mnt systemctl enable NetworkManager.service
   elif [[ "${DE}" == 'kde' ]]; then
-    arch-chroot /mnt systemctl enable {sddm,NetworkManager}.service
+    arch-chroot /mnt systemctl enable sddm.service
+    arch-chroot /mnt systemctl enable NetworkManager.service
   fi
 }
 
@@ -472,3 +526,7 @@ main() {
 }
 
 main "$@"
+
+echo '======================================================'
+echo "Remove 'kms' and 'consolefont' in /etc/mkinitcpio.conf"
+echo '======================================================'
