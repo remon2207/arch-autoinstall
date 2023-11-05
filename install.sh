@@ -332,6 +332,7 @@ configuration() {
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo "${VCONSOLE}" >> /mnt/etc/vconsole.conf
+  arch-chroot /mnt mkinitcpio -p linux-zen
   echo "${HOSTNAME}" > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 }
@@ -383,10 +384,10 @@ boot_loader() {
   arch-chroot /mnt bootctl install
 
   root_partuuid=$(blkid -s PARTUUID -o value "${DISK}2")
-  vmlinuz=$(find /boot/*vmlinuz* | awk -F '/' '{print $3}')
-  ucode=$(find /boot/*ucode* | awk -F '/' '{print $3}')
-  initramfs=$(find /boot/*initramfs* | tail -n 1 | awk -F '/' '{print $3}')
-  initramfs_fallback=$(find /boot/*initramfs* | head -n 1)
+  vmlinuz=$(find /mnt/boot/*vmlinuz* | awk -F '/' '{print $3}')
+  ucode=$(find /mnt/boot/*ucode* | awk -F '/' '{print $3}')
+  initramfs=$(find /mnt/boot/*initramfs* | tail -n 1 | awk -F '/' '{print $3}')
+  initramfs_fallback=$(find /mnt/boot/*initramfs* | head -n 1)
 
   nvidia_conf=$(
     cat << EOF
