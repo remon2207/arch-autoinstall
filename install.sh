@@ -423,7 +423,7 @@ EOF
 
   NVIDIA_FALLBACK_CONF=$(
     cat << EOF
-title    Arch Linux (Fallback)
+title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
@@ -445,7 +445,7 @@ EOF
 
   AMD_FALLBACK_CONF=$(
     cat << EOF
-title    Arch Linux (Fallback)
+title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
@@ -467,7 +467,7 @@ EOF
 
   INTEL_FALLBACK_CONF=$(
     cat << EOF
-title    Arch Linux (Fallback)
+title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
