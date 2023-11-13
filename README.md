@@ -1,5 +1,12 @@
 # arch-autoinstall
 
+#### USAGE:
+`./arch-autoinstall/install.sh` or
+
+`./arch-autoinstall/install.sh -h` or
+
+`./arch-autoinstall/install.sh --help`
+
 ```bash
 ./arch-autoinstall/install.sh --disk <disk> \
 --microcode <microcode> \
