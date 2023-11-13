@@ -2,17 +2,23 @@
 
 set -eu
 
-readonly HELP="USAGE:
-${0} <disk>
-  <microcode:intel | amd>
-  <gpu:intel | amd>
-  <HostName>
-  <UserName>
-  <userPasword>
-  <rootPassword>"
+usage() {
+  cat << EOF
+USAGE:
+  ${0} <OPTIONS>
+OPTIONS:
+  --disk                 Path of disk
+  --microcode            [intel, amd]
+  --gpu                  [intel, amd]
+  --host-name            host name
+  --user-name            user name
+  --user-password        Password of user
+  --root-password        Password of root
+EOF
+}
 
 if [[ $# -eq 0 ]]; then
-  echo "${HELP}"
+  usage
   exit 1
 fi
 
@@ -29,16 +35,45 @@ packagelist="base \
   man-pages \
   reflector"
 
-NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
+NET_INTERFACE=$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
-readonly DISK="${1}"
-readonly MICROCODE="${2}"
-readonly GPU="${3}"
-readonly HOSTNAME="${4}"
-readonly USERNAME="${5}"
-readonly USER_PASSWORD="${6}"
-readonly ROOT_PASSWORD="${7}"
+opt_str='disk:,microcode:,gpu:,host-name:,user-name:,user-password:,root-password:'
+OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
+eval set -- "${OPTIONS}"
+
+while true; do
+  case "${1}" in
+  '--disk')
+    readonly DISK="${2}"
+    shift
+    ;;
+  '--microcode')
+    readonly MICROCODE="${2}"
+    shift
+    ;;
+  '--gpu')
+    readonly GPU="${2}"
+    shift
+    ;;
+  '--host-name')
+    readonly HOST_NAME="${2}"
+    shift
+    ;;
+  '--user-name')
+    readonly USER_NAME="${2}"
+    shift
+    ;;
+  '--user-password')
+    readonly USER_PASSWORD="${2}"
+    shift
+    ;;
+  '--root-password')
+    readonly ROOT_PASSWORD="${2}"
+    shift
+    ;;
+  esac
+done
 
 LOADER_CONF=$(
   cat << EOF
@@ -114,7 +149,7 @@ configuration() {
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
-  echo "${HOSTNAME}" > /mnt/etc/hostname
+  echo "${HOST_NAME}" > /mnt/etc/hostname
 }
 
 networking() {
@@ -125,8 +160,8 @@ networking() {
 
 create_user() {
   echo "root:${ROOT_PASSWORD}" | arch-chroot /mnt chpasswd
-  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${USERNAME}"
-  echo "${USERNAME}:${USER_PASSWORD}" | arch-chroot /mnt chpasswd
+  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${USER_NAME}"
+  echo "${USER_NAME}:${USER_PASSWORD}" | arch-chroot /mnt chpasswd
 }
 
 replacement() {

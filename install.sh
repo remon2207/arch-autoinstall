@@ -2,8 +2,10 @@
 
 set -eu
 
-readonly HELP="USAGE:
-  ${0} [OPTIONS]
+usage() {
+  cat << EOF
+USAGE:
+  ${0} <OPTIONS>
 OPTIONS:
   --disk                 Path of disk
   --microcode            [intel, amd]
@@ -14,10 +16,12 @@ OPTIONS:
   --user-password        Password of user
   --root-password        Password of root
   --partition-destroy    [yes, exclude-efi, root-only, skip]
-  --root-size            Only the size you want to allocate to the root (omit units)"
+  --root-size            Only the size you want to allocate to the root (omit units)
+EOF
+}
 
 if [[ $# -eq 0 ]]; then
-  echo "${HELP}"
+  usage
   exit 1
 fi
 
@@ -86,7 +90,7 @@ packagelist="base \
   stylua \
   nfs-utils"
 
-NET_INTERFACE=$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')
+NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
 IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
@@ -96,7 +100,6 @@ opt_str='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
   root-password:,partition-destroy:,root-size:'
 OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
 eval set -- "${OPTIONS}"
-unset opt_str OPTIONS
 
 while true; do
   case "${1}" in
