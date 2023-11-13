@@ -369,6 +369,9 @@ boot_loader() {
   UCODE=$(find /mnt/boot/*ucode* | awk -F '/' '{print $4}')
   INITRAMFS=$(find /mnt/boot/*initramfs* | tail -n 1 | awk -F '/' '{print $4}')
   INITRAMFS_FALLBACK=$(find /mnt/boot/*initramfs* | head -n 1 | awk -F '/' '{print $4}')
+  NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
+  AMD_PARAMS='rw panic=180 i915.modeset=0'
+  INTEL_PARAMS='rw panic=180'
 
   NVIDIA_CONF=$(
     cat << EOF
@@ -376,7 +379,7 @@ title    Arch Linux
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
+options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} loglevel=3
 EOF
   )
   readonly NVIDIA_CONF
@@ -387,7 +390,7 @@ title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
-options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1
+options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} debug
 EOF
   )
   readonly NVIDIA_FALLBACK_CONF
@@ -398,7 +401,7 @@ title    Arch Linux
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0
+options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} loglevel=3
 EOF
   )
   readonly AMD_CONF
@@ -409,7 +412,7 @@ title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
-options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0
+options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} debug
 EOF
   )
   readonly AMD_FALLBACK_CONF
@@ -420,7 +423,7 @@ title    Arch Linux
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
+options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} loglevel=3
 EOF
   )
   readonly INTEL_CONF
@@ -431,7 +434,7 @@ title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
-options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180
+options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} debug
 EOF
   )
   readonly INTEL_FALLBACK_CONF
