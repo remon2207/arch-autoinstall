@@ -72,7 +72,12 @@ while true; do
     readonly ROOT_PASSWORD="${2}"
     shift
     ;;
+  '--')
+    shift
+    break
+    ;;
   esac
+  shift
 done
 
 LOADER_CONF=$(
