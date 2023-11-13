@@ -266,4 +266,4 @@ main() {
   enable_services
 }
 
-main "$@"
+main "${@}"

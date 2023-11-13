@@ -532,7 +532,7 @@ main() {
   enable_services
 }
 
-main "$@"
+main "${@}"
 
 echo '======================================================'
 echo "Remove 'kms' and 'consolefont' in /etc/mkinitcpio.conf"
