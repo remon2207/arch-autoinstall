@@ -16,12 +16,13 @@ set -eu
 readonly HELP="USAGE:
   ${0} [OPTIONS]
 OPTIONS:
+  --disk                 Path of disk
   --microcode            [intel, amd]
   --de                   [i3, xfce, gnome, kde]
   --gpu                  [nvidia, amd, intel]
   --host-name            host name
   --user-name            user name
-  --user-password        User of password
+  --user-password        Password of user
   --root-password        Password of root
   --partition-destroy    [yes, exclude-efi, root-only, skip]
   --root-size            Only the size you want to allocate to the root (omit units)"
