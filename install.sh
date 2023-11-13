@@ -2,11 +2,6 @@
 
 set -eu
 
-if [[ $# -eq 0 ]]; then
-  echo "${HELP}"
-  exit 1
-fi
-
 readonly HELP="USAGE:
 ${0} <disk>
   <microcode:intel | amd>
@@ -14,10 +9,15 @@ ${0} <disk>
   <GPU:nvidia | amd | intel>
   <HostName>
   <UserName>
-  <userPasword>
-  <rootPassword>
+  <UserPasword>
+  <RootPassword>
   <partition-table-destroy:yes | exclude-efi | root-only | skip>
   <root_partition_size:Numbers only (GiB)>"
+
+if [[ $# -eq 0 ]]; then
+  echo "${HELP}"
+  exit 1
+fi
 
 packagelist="base \
   base-devel \
@@ -90,16 +90,61 @@ readonly NET_INTERFACE
 IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
 readonly IP_ADDRESS
 
-readonly DISK="${1}"
-readonly MICROCODE="${2}"
-readonly DE="${3}"
-readonly GPU="${4}"
-readonly HOSTNAME="${5}"
-readonly USERNAME="${6}"
-readonly USER_PASSWORD="${7}"
-readonly ROOT_PASSWORD="${8}"
-readonly PARTITION_TABLE="${9}"
-readonly ROOT_SIZE="${10}"
+opt_str='microcode:,de:,gpu:,hostname:,username:,userpassword:,\
+  rootpassword:,partitiondestory:,rootsize:'
+OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
+eval set -- "${OPTIONS}"
+unset opt_str OPTIONS
+
+while true; do
+  case "${1}" in
+  '--disk')
+    readonly DISK="${2}"
+    shift
+    ;;
+  '--microcode')
+    readonly MICROCODE="${2}"
+    shift
+    ;;
+  '--de')
+    readonly DE="${2}"
+    shift
+    ;;
+  '--gpu')
+    readonly GPU="${2}"
+    shift
+    ;;
+  '--hostname')
+    readonly HOST_NAME="${2}"
+    shift
+    ;;
+  '--username')
+    readonly USER_NAME="${2}"
+    shift
+    ;;
+  '--userpassword')
+    readonly USER_PASSWORD="${2}"
+    shift
+    ;;
+  '--rootpassword')
+    readonly ROOT_PASSWORD="${2}"
+    shift
+    ;;
+  '--partitiondestroy')
+    readonly PARTITION_DESTROY="${2}"
+    shift
+    ;;
+  '--rootsize')
+    readonly ROOT_SIZE=${2}
+    shift
+    ;;
+  '--')
+    shift
+    break
+    ;;
+  esac
+  shift
+done
 
 if [[ "${GPU}" == 'nvidia' ]]; then
   readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
@@ -138,7 +183,7 @@ HOSTS=$(
   cat << EOF
 127.0.0.1       localhost
 ::1             localhost
-${IP_ADDRESS}   ${HOSTNAME}.home    ${HOSTNAME}
+${IP_ADDRESS}   ${HOST_NAME}.home    ${HOST_NAME}
 EOF
 )
 readonly HOSTS
@@ -160,7 +205,7 @@ check_variables() {
   elif [[ "${GPU}" != 'nvidia' ]] && [[ "${GPU}" != 'amd' ]] && [[ "${GPU}" != 'intel' ]]; then
     echo 'gpu error'
     exit 1
-  elif [[ "${PARTITION_TABLE}" != 'yes' ]] && [[ "${PARTITION_TABLE}" != 'exclude-efi' ]] && [[ "${PARTITION_TABLE}" != 'root-only' ]] && [[ "${PARTITION_TABLE}" != 'skip' ]]; then
+  elif [[ "${PARTITION_DESTROY}" != 'yes' ]] && [[ "${PARTITION_DESTROY}" != 'exclude-efi' ]] && [[ "${PARTITION_DESTROY}" != 'root-only' ]] && [[ "${PARTITION_DESTROY}" != 'skip' ]]; then
     echo 'partition table error'
     exit 1
   fi
@@ -257,7 +302,7 @@ time_setting() {
 }
 
 partitioning() {
-  if [[ "${PARTITION_TABLE}" == 'yes' ]]; then
+  if [[ "${PARTITION_DESTROY}" == 'yes' ]]; then
     sgdisk -Z "${DISK}"
     sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' "${DISK}"
     sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c '0:Linux filesystem' "${DISK}"
@@ -267,7 +312,7 @@ partitioning() {
     mkfs.fat -F 32 "${DISK}1"
     mkfs.ext4 "${DISK}2"
     mkfs.ext4 "${DISK}3"
-  elif [[ "${PARTITION_TABLE}" == 'exclude-efi' ]]; then
+  elif [[ "${PARTITION_DESTROY}" == 'exclude-efi' ]]; then
     sgdisk -d 3 "${DISK}"
     sgdisk -d 2 "${DISK}"
     sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c '0:EFI system partition' "${DISK}"
@@ -276,10 +321,10 @@ partitioning() {
     # format
     mkfs.ext4 "${DISK}2"
     mkfs.ext4 "${DISK}3"
-  elif [[ "${PARTITION_TABLE}" == 'root-only' ]]; then
+  elif [[ "${PARTITION_DESTROY}" == 'root-only' ]]; then
     # format
     mkfs.ext4 "${DISK}2"
-  elif [[ "${PARTITION_TABLE}" == 'skip' ]]; then
+  elif [[ "${PARTITION_DESTROY}" == 'skip' ]]; then
     echo 'Skip partitioning'
 
     # format
@@ -313,7 +358,7 @@ configuration() {
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
-  echo "${HOSTNAME}" > /mnt/etc/hostname
+  echo "${HOST_NAME}" > /mnt/etc/hostname
   arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 }
 
@@ -330,13 +375,13 @@ networking() {
 
 create_user() {
   echo "root:${ROOT_PASSWORD}" | arch-chroot /mnt chpasswd
-  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${USERNAME}"
-  echo "${USERNAME}:${USER_PASSWORD}" | arch-chroot /mnt chpasswd
+  arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${USER_NAME}"
+  echo "${USER_NAME}:${USER_PASSWORD}" | arch-chroot /mnt chpasswd
 }
 
 add_to_group() {
-  arch-chroot /mnt gpasswd -a "${USERNAME}" docker
-  arch-chroot /mnt gpasswd -a "${USERNAME}" vboxusers
+  arch-chroot /mnt gpasswd -a "${USER_NAME}" docker
+  arch-chroot /mnt gpasswd -a "${USER_NAME}" vboxusers
 }
 
 replacement() {
