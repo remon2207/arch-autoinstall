@@ -120,6 +120,7 @@ selection_arguments() {
 }
 
 time_setting() {
+  hwclock --systohc --utc
   timedatectl set-ntp true
 }
 

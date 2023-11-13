@@ -303,6 +303,7 @@ selection_arguments() {
 }
 
 time_setting() {
+  hwclock --systohc --utc
   timedatectl set-ntp true
 }
 
@@ -365,7 +366,7 @@ configuration() {
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
   echo "${HOST_NAME}" > /mnt/etc/hostname
-  arch-chroot /mnt sh -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
+  arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
 }
 
 networking() {
