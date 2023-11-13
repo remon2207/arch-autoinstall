@@ -357,6 +357,7 @@ installation() {
 configuration() {
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   arch-chroot /mnt hwclock --systohc --utc
+  arch-chroot /mnt timedatectl set-ntp true
   arch-chroot /mnt sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
@@ -415,13 +416,23 @@ boot_loader() {
   arch-chroot /mnt bootctl install
 
   ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
+  readonly ROOT_PARTUUID
+
   VMLINUZ=$(find /mnt/boot/*vmlinuz* | awk -F '/' '{print $4}')
+  readonly VMLINUZ
+
   UCODE=$(find /mnt/boot/*ucode* | awk -F '/' '{print $4}')
+  readonly UCODE
+
   INITRAMFS=$(find /mnt/boot/*initramfs* | tail -n 1 | awk -F '/' '{print $4}')
+  readonly INITRAMFS
+
   INITRAMFS_FALLBACK=$(find /mnt/boot/*initramfs* | head -n 1 | awk -F '/' '{print $4}')
-  NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
-  AMD_PARAMS='rw panic=180 i915.modeset=0'
-  INTEL_PARAMS='rw panic=180'
+  readonly INITRAMFS_FALLBACK
+
+  readonly NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
+  readonly AMD_PARAMS='rw panic=180 i915.modeset=0'
+  readonly INTEL_PARAMS='rw panic=180'
 
   NVIDIA_CONF=$(
     cat << EOF
