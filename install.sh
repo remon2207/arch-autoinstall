@@ -503,23 +503,17 @@ EOF
 }
 
 enable_services() {
-  arch-chroot /mnt systemctl enable iptables.service
-  arch-chroot /mnt systemctl enable docker.service
-  arch-chroot /mnt systemctl enable fstrim.timer
-  arch-chroot /mnt systemctl enable reflector.timer
-  arch-chroot /mnt systemctl enable systemd-boot-update.service
+  arch-chroot /mnt systemctl enable {iptables,docker,systemd-boot-update}.service
+  arch-chroot /mnt systemctl enable {fstrim,reflector}.timer
   if [[ "${DE}" == 'i3' ]] || [[ "${DE}" == 'xfce' ]]; then
-    arch-chroot /mnt systemctl enable systemd-networkd.service
-    arch-chroot /mnt systemctl enable systemd-resolved.service
+    arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
   fi
   if [[ "${DE}" == 'xfce' ]]; then
     arch-chroot /mnt systemctl enable lightdm.service
   elif [[ "${DE}" == 'gnome' ]]; then
-    arch-chroot /mnt systemctl enable gdm.service
-    arch-chroot /mnt systemctl enable NetworkManager.service
+    arch-chroot /mnt systemctl enable {gdm,NetworkManager}.service
   elif [[ "${DE}" == 'kde' ]]; then
-    arch-chroot /mnt systemctl enable sddm.service
-    arch-chroot /mnt systemctl enable NetworkManager.service
+    arch-chroot /mnt systemctl enable {sddm,NetworkManager}.service
   fi
 }
 
