@@ -3,10 +3,12 @@
 set -eu
 
 if [[ $# -eq 0 ]]; then
-  cat << EOF
-Usage:
+  echo "${HELP}"
+  exit 1
+fi
 
-$0 <disk>
+readonly HELP="USAGE:
+${0} <disk>
   <microcode:intel | amd>
   <DE:i3 | xfce | gnome | kde>
   <GPU:nvidia | amd | intel>
@@ -15,10 +17,7 @@ $0 <disk>
   <userPasword>
   <rootPassword>
   <partition-table-destroy:yes | exclude-efi | root-only | skip>
-  <root_partition_size:Numbers only (GiB)>
-EOF
-  exit 1
-fi
+  <root_partition_size:Numbers only (GiB)>"
 
 packagelist="base \
   base-devel \
@@ -91,71 +90,39 @@ readonly NET_INTERFACE
 IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
 readonly IP_ADDRESS
 
-DISK="${1}"
-readonly DISK
-
-MICROCODE="${2}"
-readonly MICROCODE
-
-DE="${3}"
-readonly DE
-
-GPU="${4}"
-readonly GPU
-
-HOSTNAME="${5}"
-readonly HOSTNAME
-
-USERNAME="${6}"
-readonly USERNAME
-
-USER_PASSWORD="${7}"
-readonly USER_PASSWORD
-
-ROOT_PASSWORD="${8}"
-readonly ROOT_PASSWORD
-
-PARTITION_TABLE="${9}"
-readonly PARTITION_TABLE
-
-ROOT_SIZE="${10}"
-readonly ROOT_SIZE
+readonly DISK="${1}"
+readonly MICROCODE="${2}"
+readonly DE="${3}"
+readonly GPU="${4}"
+readonly HOSTNAME="${5}"
+readonly USERNAME="${6}"
+readonly USER_PASSWORD="${7}"
+readonly ROOT_PASSWORD="${8}"
+readonly PARTITION_TABLE="${9}"
+readonly ROOT_SIZE="${10}"
 
 if [[ "${GPU}" == 'nvidia' ]]; then
-  ENVIRONMENT=$(
-    cat << EOF
-GTK_IM_MODULE='fcitx5'
+  readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='vdpau'
-VDPAU_DRIVER='nvidia'
-EOF
-  )
+VDPAU_DRIVER='nvidia'"
 elif [[ "${GPU}" == 'amd' ]]; then
-  ENVIRONMENT=$(
-    cat << EOF
-GTK_IM_MODULE='fcitx5'
+  readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='radeonsi'
-# VDPAU_DRIVER=''
-EOF
-  )
+# VDPAU_DRIVER=''"
 elif [[ "${GPU}" == 'intel' ]]; then
-  ENVIRONMENT=$(
-    cat << EOF
-GTK_IM_MODULE='fcitx5'
+  readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='i965'
-VDPAU_DRIVER='va_gl'
-EOF
-  )
+VDPAU_DRIVER='va_gl'"
 fi
-readonly ENVIRONMENT
 
 LOADER_CONF=$(
   cat << EOF
@@ -176,17 +143,12 @@ EOF
 )
 readonly HOSTS
 
-WIRED=$(
-  cat << EOF
-[Match]
+readonly WIRED="[Match]
 Name=${NET_INTERFACE}
 
 [Network]
 DHCP=yes
-DNS=192.168.1.202
-EOF
-)
-readonly WIRED
+DNS=192.168.1.202"
 
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
@@ -205,14 +167,12 @@ check_variables() {
 }
 
 selection_arguments() {
-  # intel-ucode or amd-ucode
   if [[ "${MICROCODE}" == 'intel' ]]; then
     packagelist="${packagelist} intel-ucode"
   elif [[ "${MICROCODE}" == 'amd' ]]; then
     packagelist="${packagelist} amd-ucode"
   fi
 
-  # DE
   if [[ "${DE}" == 'i3' ]]; then
     packagelist="${packagelist} \
       i3-wm \
@@ -338,7 +298,7 @@ installation() {
   sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
-    sed -i 's/^MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /mnt/etc/mkinitcpio.conf
+    sed -i 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /mnt/etc/mkinitcpio.conf
     arch-chroot /mnt mkinitcpio -p linux-zen
   fi
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -384,7 +344,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
-  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=native/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
@@ -393,7 +353,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/^COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(lbzip2 -c -f)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
   arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed -i 's/^--latest 5/# --latest 5/' /etc/xdg/reflector/reflector.conf
+  arch-chroot /mnt sed -i 's/^--latest 5/# &/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${ENVIRONMENT}" >> /mnt/etc/environment
