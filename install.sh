@@ -2,17 +2,29 @@
 
 set -eu
 
+# readonly HELP="USAGE:
+# ${0} <disk>
+#   <microcode:intel | amd>
+#   <DE:i3 | xfce | gnome | kde>
+#   <GPU:nvidia | amd | intel>
+#   <HostName>
+#   <UserName>
+#   <UserPasword>
+#   <RootPassword>
+#   <partition-table-destroy:yes | exclude-efi | root-only | skip>
+#   <root_partition_size:Numbers only (GiB)>"
 readonly HELP="USAGE:
-${0} <disk>
-  <microcode:intel | amd>
-  <DE:i3 | xfce | gnome | kde>
-  <GPU:nvidia | amd | intel>
-  <HostName>
-  <UserName>
-  <UserPasword>
-  <RootPassword>
-  <partition-table-destroy:yes | exclude-efi | root-only | skip>
-  <root_partition_size:Numbers only (GiB)>"
+  ${0} [OPTIONS]
+OPTIONS:
+  --microcode            [intel, amd]
+  --de                   [i3, xfce, gnome, kde]
+  --gpu                  [nvidia, amd, intel]
+  --host-name            host name
+  --user-name            user name
+  --user-password        User of password
+  --root-password        Password of root
+  --partition-destroy    [yes, exclude-efi, root-only, skip]
+  --root-size            Only the size you want to allocate to the root (omit units)"
 
 if [[ $# -eq 0 ]]; then
   echo "${HELP}"
@@ -90,8 +102,8 @@ readonly NET_INTERFACE
 IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
 readonly IP_ADDRESS
 
-opt_str='microcode:,de:,gpu:,hostname:,username:,userpassword:,\
-  rootpassword:,partitiondestory:,rootsize:'
+opt_str='microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
+  root-password:,partition-destroy:,root-size:'
 OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
 eval set -- "${OPTIONS}"
 unset opt_str OPTIONS
@@ -114,27 +126,27 @@ while true; do
     readonly GPU="${2}"
     shift
     ;;
-  '--hostname')
+  '--host-name')
     readonly HOST_NAME="${2}"
     shift
     ;;
-  '--username')
+  '--user-name')
     readonly USER_NAME="${2}"
     shift
     ;;
-  '--userpassword')
+  '--user-password')
     readonly USER_PASSWORD="${2}"
     shift
     ;;
-  '--rootpassword')
+  '--root-password')
     readonly ROOT_PASSWORD="${2}"
     shift
     ;;
-  '--partitiondestroy')
+  '--partition-destroy')
     readonly PARTITION_DESTROY="${2}"
     shift
     ;;
-  '--rootsize')
+  '--root-size')
     readonly ROOT_SIZE=${2}
     shift
     ;;
