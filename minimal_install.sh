@@ -140,7 +140,6 @@ replacement() {
   arch-chroot /mnt sed -i 's/^--latest 5/# &/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
-  echo "${ENVIRONMENT}" >> /mnt/etc/environment
 
   arch-chroot /mnt pacman -Syy
 }
