@@ -2,17 +2,6 @@
 
 set -eu
 
-# readonly HELP="USAGE:
-# ${0} <disk>
-#   <microcode:intel | amd>
-#   <DE:i3 | xfce | gnome | kde>
-#   <GPU:nvidia | amd | intel>
-#   <HostName>
-#   <UserName>
-#   <UserPasword>
-#   <RootPassword>
-#   <partition-table-destroy:yes | exclude-efi | root-only | skip>
-#   <root_partition_size:Numbers only (GiB)>"
 readonly HELP="USAGE:
   ${0} [OPTIONS]
 OPTIONS:
