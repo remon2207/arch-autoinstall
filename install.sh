@@ -97,7 +97,7 @@ packagelist="base \
   stylua \
   nfs-utils"
 
-NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
+NET_INTERFACE=$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
 IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
