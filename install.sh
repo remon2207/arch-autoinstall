@@ -103,7 +103,7 @@ readonly NET_INTERFACE
 IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
 readonly IP_ADDRESS
 
-opt_str='microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
+opt_str='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
   root-password:,partition-destroy:,root-size:'
 OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
 eval set -- "${OPTIONS}"
