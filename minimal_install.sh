@@ -210,9 +210,7 @@ EOF
 
 enable_services() {
   arch-chroot /mnt systemctl enable reflector.timer
-  arch-chroot /mnt systemctl enable systemd-boot-update.service
-  arch-chroot /mnt systemctl enable systemd-networkd.service
-  arch-chroot /mnt systemctl enable systemd-resolved.service
+  arch-chroot /mnt systemctl enable systemd-{boot-update,networkd,resolved}.service
 }
 
 main() {
