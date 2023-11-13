@@ -82,7 +82,6 @@ done
 
 LOADER_CONF=$(
   cat << EOF
-default      arch.conf
 timeout      10
 console-mode max
 editor       no
