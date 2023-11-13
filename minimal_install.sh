@@ -2,11 +2,6 @@
 
 set -eu
 
-if [[ $# -eq 0 ]]; then
-  echo "${HELP}"
-  exit 1
-fi
-
 readonly HELP="USAGE:
 ${0} <disk>
   <microcode:intel | amd>
@@ -15,6 +10,11 @@ ${0} <disk>
   <UserName>
   <userPasword>
   <rootPassword>"
+
+if [[ $# -eq 0 ]]; then
+  echo "${HELP}"
+  exit 1
+fi
 
 packagelist="base \
   base-devel \
