@@ -34,10 +34,11 @@ readonly NET_INTERFACE
 
 readonly DISK="${1}"
 readonly MICROCODE="${2}"
-readonly HOSTNAME="${5}"
-readonly USERNAME="${6}"
-readonly USER_PASSWORD="${7}"
-readonly ROOT_PASSWORD="${8}"
+readonly GPU="${3}"
+readonly HOSTNAME="${4}"
+readonly USERNAME="${5}"
+readonly USER_PASSWORD="${6}"
+readonly ROOT_PASSWORD="${7}"
 
 LOADER_CONF=$(
   cat << EOF
