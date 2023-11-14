@@ -93,9 +93,6 @@ packagelist="base \
 NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
-IP_ADDRESS=$(ip -o -4 a show "${NET_INTERFACE}" | awk -F '[ /]' '{print $7}')
-readonly IP_ADDRESS
-
 opt_str='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
   root-password:,partition-destroy:,root-size:'
 OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
@@ -187,7 +184,6 @@ HOSTS=$(
   cat << EOF
 127.0.0.1       localhost
 ::1             localhost
-${IP_ADDRESS}   ${HOST_NAME}.home    ${HOST_NAME}
 EOF
 )
 readonly HOSTS
@@ -394,7 +390,7 @@ replacement() {
   arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
-  arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=ignore/' /etc/systemd/logind.conf
+  arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=reboot/' /etc/systemd/logind.conf
   arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
   arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
