@@ -227,7 +227,6 @@ selection_arguments() {
       xautolock \
       polkit \
       scrot \
-      lxappearance-gtk3 \
       feh \
       picom \
       dunst \
@@ -267,6 +266,7 @@ selection_arguments() {
       gnome-keyring \
       gnome-backgrounds \
       gnome-calculator \
+      gnome-shell-extension-appindicator \
       gedit \
       mutter \
       file-roller \
@@ -275,8 +275,7 @@ selection_arguments() {
       gvfs \
       dconf-editor \
       eog \
-      networkmanager \
-      gnome-shell-extension-appindicator"
+      networkmanager"
   elif [[ "${DE}" == 'kde' ]]; then
     packagelist="${packagelist} \
       plasma-meta \
