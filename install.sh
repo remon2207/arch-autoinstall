@@ -342,7 +342,7 @@ partitioning() {
 
 installation() {
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-  sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+  sed -i 's/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
@@ -356,9 +356,9 @@ configuration() {
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   arch-chroot /mnt hwclock --systohc --utc
   arch-chroot /mnt timedatectl set-ntp true
-  arch-chroot /mnt sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-  arch-chroot /mnt sed -i 's/#ja_JP.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen
-  arch-chroot /mnt sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+  arch-chroot /mnt sed -i 's/#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  arch-chroot /mnt sed -i 's/#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  arch-chroot /mnt sed -i 's/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
@@ -388,22 +388,22 @@ add_to_group() {
 }
 
 replacement() {
-  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' -e \
-    's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
-  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' -e \
+  arch-chroot /mnt sed -i 's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
+    's/^#\(FallbackNTP=\)/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
+  arch-chroot /mnt sed -i 's/^# \(--country\) France,Germany/\1 Japan/' -e \
     's/^--latest 5/# &/' -e \
-    's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+    's/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
   # shellcheck disable=SC2016
-  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' -e \
-    's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' -e \
-    's/^#BUILDDIR/BUILDDIR/' -e \
-    's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' -e \
-    's/^COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q --threads=0 -)/' -e \
-    's/^COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' -e \
-    's/^COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(lbzip2 -c -f)/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^#HandlePowerKey=.*/HandlePowerKey=reboot/' /etc/systemd/logind.conf
-  arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=.*/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
-  arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
+  arch-chroot /mnt sed -i 's/\(-march=\)x86-64 -mtune=generic/\1skylake/' -e \
+    's/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' -e \
+    's/^#\(BUILDDIR\)/\1/' -e \
+    's/^\(COMPRESSXZ=\)(xz -c -z -)/\1(xz -c -z --threads=0 -)/' -e \
+    's/^\(COMPRESSZST=\)(zstd -c -z -q -)/\1(zstd -c -z -q --threads=0 -)/' -e \
+    's/^\(COMPRESSGZ=\)(gzip -c -f -n)/\1(pigz -c -f -n)/' -e \
+    's/^\(COMPRESSBZ2=\)(bzip2 -c -f)/\1(lbzip2 -c -f)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#\(HandlePowerKey=\).*/\1reboot/' /etc/systemd/logind.conf
+  arch-chroot /mnt sed -i 's/^#\(DefaultTimeoutStopSec=\).*/\110s/' /etc/systemd/system.conf
+  arch-chroot /mnt sed -i 's/^#\(Color\)//1/' /etc/pacman.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${ENVIRONMENT}" >> /mnt/etc/environment
 
