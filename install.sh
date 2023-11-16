@@ -91,13 +91,13 @@ packagelist="base \
   stylua \
   nfs-utils"
 
-NET_INTERFACE="$(ip -br link show | grep ' UP ' | awk '{print $1}')"
+NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
 readonly OPT_STR='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
   root-password:,partition-destroy:,root-size:'
 
-OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
+OPTIONS=$(getopt -o '' -l "${OPT_STR}" -- "${@}")
 eval set -- "${OPTIONS}"
 
 while true; do
@@ -173,21 +173,21 @@ LIBVA_DRIVER_NAME='i965'
 VDPAU_DRIVER='va_gl'"
 fi
 
-LOADER_CONF="$(
+LOADER_CONF=$(
   cat << EOF
 timeout      10
 console-mode max
 editor       no
 EOF
-)"
+)
 readonly LOADER_CONF
 
-HOSTS="$(
+HOSTS=$(
   cat << EOF
 127.0.0.1       localhost
 ::1             localhost
 EOF
-)"
+)
 readonly HOSTS
 
 readonly WIRED="[Match]
@@ -413,26 +413,26 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  ROOT_PARTUUID="$(blkid -s PARTUUID -o value "${DISK}2")"
+  ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
   readonly ROOT_PARTUUID
 
-  VMLINUZ="$(find /mnt/boot -iname "vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')"
+  VMLINUZ=$(find /mnt/boot -iname "vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
   readonly VMLINUZ
 
-  UCODE="$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')"
+  UCODE=$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')
   readonly UCODE
 
-  INITRAMFS="$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')"
+  INITRAMFS=$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS
 
-  INITRAMFS_FALLBACK="$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')"
+  INITRAMFS_FALLBACK=$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS_FALLBACK
 
   readonly NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
   readonly AMD_PARAMS='rw panic=180 i915.modeset=0'
   readonly INTEL_PARAMS='rw panic=180'
 
-  NVIDIA_CONF="$(
+  NVIDIA_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -440,10 +440,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} loglevel=3
 EOF
-  )"
+  )
   readonly NVIDIA_CONF
 
-  NVIDIA_FALLBACK_CONF="$(
+  NVIDIA_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -451,10 +451,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} debug
 EOF
-  )"
+  )
   readonly NVIDIA_FALLBACK_CONF
 
-  AMD_CONF="$(
+  AMD_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -462,10 +462,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} loglevel=3
 EOF
-  )"
+  )
   readonly AMD_CONF
 
-  AMD_FALLBACK_CONF="$(
+  AMD_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -473,10 +473,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} debug
 EOF
-  )"
+  )
   readonly AMD_FALLBACK_CONF
 
-  INTEL_CONF="$(
+  INTEL_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -484,10 +484,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} loglevel=3
 EOF
-  )"
+  )
   readonly INTEL_CONF
 
-  INTEL_FALLBACK_CONF="$(
+  INTEL_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -495,7 +495,7 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} debug
 EOF
-  )"
+  )
   readonly INTEL_FALLBACK_CONF
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf

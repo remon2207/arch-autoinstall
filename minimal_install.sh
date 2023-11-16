@@ -37,12 +37,12 @@ packagelist="base \
   man-pages \
   reflector"
 
-NET_INTERFACE="$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')"
+NET_INTERFACE=$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
 readonly OPT_STR='disk:,microcode:,gpu:,host-name:,user-name:,user-password:,root-password:'
 
-OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
+OPTIONS=$(getopt -o '' -l "${OPT_STR}" -- "${@}")
 eval set -- "${OPTIONS}"
 
 while true; do
@@ -83,13 +83,13 @@ while true; do
   shift
 done
 
-LOADER_CONF="$(
+LOADER_CONF=$(
   cat << EOF
 timeout      10
 console-mode max
 editor       no
 EOF
-)"
+)
 readonly LOADER_CONF
 
 readonly HOSTS='127.0.0.1 localhost
@@ -193,22 +193,22 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  ROOT_PARTUUID="$(blkid -s PARTUUID -o value "${DISK}2")"
+  ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
   readonly ROOT_PARTUUID
 
-  VMLINUZ="$(find /mnt/boot -iname 'vmlinuz*linux-zen*' -type f | awk -F '/' '{print $4}')"
+  VMLINUZ=$(find /mnt/boot -iname 'vmlinuz*linux-zen*' -type f | awk -F '/' '{print $4}')
   readonly VMLINUZ
 
-  UCODE="$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')"
+  UCODE=$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')
   readonly UCODE
 
-  INITRAMFS="$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | head -n 1 | awk -F '/' '{print $4}')"
+  INITRAMFS=$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | head -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS
 
-  INITRAMFS_FALLBACK="$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | tail -n 1 | awk -F '/' '{print $4}')"
+  INITRAMFS_FALLBACK=$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | tail -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS_FALLBACK
 
-  AMD_CONF="$(
+  AMD_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -216,10 +216,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0
 EOF
-  )"
+  )
   readonly AMD_CONF
 
-  AMD_FALLBACK_CONF="$(
+  AMD_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -227,10 +227,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0
 EOF
-  )"
+  )
   readonly AMD_FALLBACK_CONF
 
-  INTEL_CONF="$(
+  INTEL_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -238,10 +238,10 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
 EOF
-  )"
+  )
   readonly INTEL_CONF
 
-  INTEL_FALLBACK_CONF="$(
+  INTEL_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -249,7 +249,7 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180
 EOF
-  )"
+  )
   readonly INTEL_FALLBACK_CONF
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
