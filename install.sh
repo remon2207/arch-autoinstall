@@ -356,8 +356,8 @@ configuration() {
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   arch-chroot /mnt hwclock --systohc --utc
   arch-chroot /mnt timedatectl set-ntp true
-  arch-chroot /mnt sed -i 's/#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
-  arch-chroot /mnt sed -i 's/#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  arch-chroot /mnt sed -i 's/^#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  arch-chroot /mnt sed -i 's/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
   arch-chroot /mnt sed -i 's/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
