@@ -412,16 +412,16 @@ boot_loader() {
   ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
   readonly ROOT_PARTUUID
 
-  VMLINUZ=$(find /mnt/boot/*vmlinuz* | awk -F '/' '{print $4}')
+  VMLINUZ=$(find /mnt/boot -iname 'vmlinuz*linux-zen*' -type f | awk -F '/' '{print $4}')
   readonly VMLINUZ
 
-  UCODE=$(find /mnt/boot/*ucode* | awk -F '/' '{print $4}')
+  UCODE=$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')
   readonly UCODE
 
-  INITRAMFS=$(find /mnt/boot/*initramfs* | tail -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS=$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | head -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS
 
-  INITRAMFS_FALLBACK=$(find /mnt/boot/*initramfs* | head -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS_FALLBACK=$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | tail -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS_FALLBACK
 
   readonly NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
