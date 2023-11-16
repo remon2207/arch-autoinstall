@@ -343,6 +343,7 @@ partitioning() {
 installation() {
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+  # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
     sed -i 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /mnt/etc/mkinitcpio.conf
@@ -388,21 +389,22 @@ add_to_group() {
 }
 
 replacement() {
-  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' /etc/systemd/timesyncd.conf
-  arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
-  arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=90s/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
-  arch-chroot /mnt sed -i 's/^#HandlePowerKey=poweroff/HandlePowerKey=reboot/' /etc/systemd/logind.conf
-  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q --threads=0 -)/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(lbzip2 -c -f)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' -e \
+    's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
+  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' -e \
+    's/^--latest 5/# &/' -e \
+    's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
+  # shellcheck disable=SC2016
+  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' -e \
+    's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' -e \
+    's/^#BUILDDIR/BUILDDIR/' -e \
+    's/^COMPRESSXZ=(xz -c -z -)/COMPRESSXZ=(xz -c -z --threads=0 -)/' -e \
+    's/^COMPRESSZST=(zstd -c -z -q -)/COMPRESSZST=(zstd -c -z -q --threads=0 -)/' -e \
+    's/^COMPRESSGZ=(gzip -c -f -n)/COMPRESSGZ=(pigz -c -f -n)/' -e \
+    's/^COMPRESSBZ2=(bzip2 -c -f)/COMPRESSBZ2=(lbzip2 -c -f)/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#HandlePowerKey=.*/HandlePowerKey=reboot/' /etc/systemd/logind.conf
+  arch-chroot /mnt sed -i 's/^#DefaultTimeoutStopSec=.*/DefaultTimeoutStopSec=10s/' /etc/systemd/system.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
-  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed -i 's/^--latest 5/# &/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${ENVIRONMENT}" >> /mnt/etc/environment
 

@@ -143,6 +143,7 @@ partitioning() {
 installation() {
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   sed -i 's/^#ParallelDownloads/ParallelDownloads/' /etc/pacman.conf
+  # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
@@ -174,15 +175,16 @@ create_user() {
 }
 
 replacement() {
-  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' /etc/systemd/timesyncd.conf
-  arch-chroot /mnt sed -i 's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
-  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' /etc/makepkg.conf
-  arch-chroot /mnt sed -i 's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^#NTP=/NTP=ntp.nict.jp/' -e \
+    's/^#FallbackNTP=/FallbackNTP=ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
+  # shellcheck disable=SC2016
+  arch-chroot /mnt sed -i 's/-march=x86-64 -mtune=generic/-march=skylake/' -e \
+    's/^#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(($(nproc)+1))"/' -e \
+    's/^#BUILDDIR/BUILDDIR/' /etc/makepkg.conf
+  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' -e \
+    's/^--latest 5/# &/' -e \
+    's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   arch-chroot /mnt sed -i 's/^#Color/Color/' /etc/pacman.conf
-  arch-chroot /mnt sed -i 's/^# --country France,Germany/--country Japan/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed -i 's/^--latest 5/# &/' /etc/xdg/reflector/reflector.conf
-  arch-chroot /mnt sed -i 's/^--sort age/--sort rate/' /etc/xdg/reflector/reflector.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
 
   arch-chroot /mnt pacman -Syy
