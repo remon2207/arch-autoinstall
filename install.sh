@@ -73,7 +73,6 @@ packagelist="base \
   silicon \
   starship \
   lsd \
-  eza \
   profile-sync-daemon \
   vivaldi \
   vivaldi-ffmpeg-codecs \
