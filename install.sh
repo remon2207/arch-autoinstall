@@ -25,10 +25,12 @@ if [[ $# -eq 0 ]]; then
   exit 1
 fi
 
+readonly KERNEL='linux-zen'
+
 packagelist="base \
   base-devel \
-  linux-zen \
-  linux-zen-headers \
+  ${KERNEL} \
+  ${KERNEL}-headers \
   linux-firmware \
   vi \
   neovim \
@@ -92,9 +94,10 @@ packagelist="base \
 NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
-opt_str='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
+readonly OPT_STR='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
   root-password:,partition-destroy:,root-size:'
-OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
+
+OPTIONS=$(getopt -o '' -l "${OPT_STR}" -- "${@}")
 eval set -- "${OPTIONS}"
 
 while true; do
@@ -343,7 +346,7 @@ installation() {
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
     sed -i 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /mnt/etc/mkinitcpio.conf
-    arch-chroot /mnt mkinitcpio -p linux-zen
+    arch-chroot /mnt mkinitcpio -p "${KERNEL}"
   fi
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
@@ -412,16 +415,16 @@ boot_loader() {
   ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
   readonly ROOT_PARTUUID
 
-  VMLINUZ=$(find /mnt/boot -iname 'vmlinuz*linux-zen*' -type f | awk -F '/' '{print $4}')
+  VMLINUZ=$(find /mnt/boot -iname "vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
   readonly VMLINUZ
 
   UCODE=$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')
   readonly UCODE
 
-  INITRAMFS=$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | head -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS=$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS
 
-  INITRAMFS_FALLBACK=$(find /mnt/boot -iname 'initramfs*linux-zen*' -type f | tail -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS_FALLBACK=$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS_FALLBACK
 
   readonly NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'

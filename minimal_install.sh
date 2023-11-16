@@ -22,10 +22,12 @@ if [[ $# -eq 0 ]]; then
   exit 1
 fi
 
+readonly KERNEL='linux-zen'
+
 packagelist="base \
   base-devel \
-  linux-zen \
-  linux-zen-headers \
+  ${KERNEL} \
+  ${KERNEL}-headers \
   linux-firmware \
   vi \
   sudo \
@@ -38,8 +40,9 @@ packagelist="base \
 NET_INTERFACE=$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')
 readonly NET_INTERFACE
 
-opt_str='disk:,microcode:,gpu:,host-name:,user-name:,user-password:,root-password:'
-OPTIONS=$(getopt -o '' -l "${opt_str}" -- "${@}")
+readonly OPT_STR='disk:,microcode:,gpu:,host-name:,user-name:,user-password:,root-password:'
+
+OPTIONS=$(getopt -o '' -l "${OPT_STR}" -- "${@}")
 eval set -- "${OPTIONS}"
 
 while true; do
