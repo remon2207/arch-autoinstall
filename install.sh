@@ -384,8 +384,7 @@ create_user() {
 }
 
 add_to_group() {
-  arch-chroot /mnt gpasswd -a "${USER_NAME}" docker
-  arch-chroot /mnt gpasswd -a "${USER_NAME}" vboxusers
+  for groups in docker vboxusers; do arch-chroot /mnt gpasswd -a "${USER_NAME}" "${groups}"; done
 }
 
 replacement() {
