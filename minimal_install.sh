@@ -92,8 +92,13 @@ EOF
 )
 readonly LOADER_CONF
 
-readonly HOSTS='127.0.0.1 localhost
-::1 localhost'
+HOSTS=$(
+  cat << EOF
+127.0.0.1       localhost
+::1             localhost
+EOF
+)
+readonly HOSTS
 
 readonly WIRED="[Match]
 Name=${NET_INTERFACE}
