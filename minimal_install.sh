@@ -213,10 +213,10 @@ boot_loader() {
   UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
   readonly UCODE
 
-  INITRAMFS=$(find /mnt/boot -name "initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS
 
-  INITRAMFS_FALLBACK=$(find /mnt/boot -name "initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS_FALLBACK
 
   AMD_CONF=$(
