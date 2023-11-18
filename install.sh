@@ -352,7 +352,7 @@ installation() {
   # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
-    sed -i -e 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /mnt/etc/mkinitcpio.conf
+    arch-chroot /mnt sed -i -e 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /etc/mkinitcpio.conf
     arch-chroot /mnt mkinitcpio -p "${KERNEL}"
   fi
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -419,26 +419,21 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
-  readonly ROOT_PARTUUID
+  local -r ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
 
-  VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
-  readonly VMLINUZ
+  local -r VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
 
-  UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
-  readonly UCODE
+  local -r UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
 
-  INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
-  readonly INITRAMFS
+  local -r INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
 
-  INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
-  readonly INITRAMFS_FALLBACK
+  local -r INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
 
-  readonly NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
-  readonly AMD_PARAMS='rw panic=180 i915.modeset=0'
-  readonly INTEL_PARAMS='rw panic=180'
+  local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
+  local -r AMD_PARAMS='rw panic=180 i915.modeset=0'
+  local -r INTEL_PARAMS='rw panic=180'
 
-  NVIDIA_CONF=$(
+  local -r NVIDIA_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -447,9 +442,8 @@ initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} loglevel=3
 EOF
   )
-  readonly NVIDIA_CONF
 
-  NVIDIA_FALLBACK_CONF=$(
+  local -r NVIDIA_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -458,9 +452,8 @@ initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} debug
 EOF
   )
-  readonly NVIDIA_FALLBACK_CONF
 
-  AMD_CONF=$(
+  local -r AMD_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -469,9 +462,8 @@ initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} loglevel=3
 EOF
   )
-  readonly AMD_CONF
 
-  AMD_FALLBACK_CONF=$(
+  local -r AMD_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -480,9 +472,8 @@ initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} debug
 EOF
   )
-  readonly AMD_FALLBACK_CONF
 
-  INTEL_CONF=$(
+  local -r INTEL_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -491,9 +482,8 @@ initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} loglevel=3
 EOF
   )
-  readonly INTEL_CONF
 
-  INTEL_FALLBACK_CONF=$(
+  local -r INTEL_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -502,7 +492,6 @@ initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} debug
 EOF
   )
-  readonly INTEL_FALLBACK_CONF
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
   if [[ "${GPU}" == 'nvidia' ]]; then

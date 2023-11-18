@@ -204,22 +204,17 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
-  readonly ROOT_PARTUUID
+  local -r ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
 
-  VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
-  readonly VMLINUZ
+  local -r VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
 
-  UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
-  readonly UCODE
+  local -r UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
 
-  INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
-  readonly INITRAMFS
+  local -r INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
 
-  INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
-  readonly INITRAMFS_FALLBACK
+  local -r INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
 
-  AMD_CONF=$(
+  local -r AMD_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -228,9 +223,8 @@ initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0
 EOF
   )
-  readonly AMD_CONF
 
-  AMD_FALLBACK_CONF=$(
+  local -r AMD_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -239,9 +233,8 @@ initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0
 EOF
   )
-  readonly AMD_FALLBACK_CONF
 
-  INTEL_CONF=$(
+  local -r INTEL_CONF=$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -250,9 +243,8 @@ initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
 EOF
   )
-  readonly INTEL_CONF
 
-  INTEL_FALLBACK_CONF=$(
+  local -r INTEL_FALLBACK_CONF=$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -261,7 +253,6 @@ initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180
 EOF
   )
-  readonly INTEL_FALLBACK_CONF
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
   if [[ "${GPU}" == 'amd' ]]; then
