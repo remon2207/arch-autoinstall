@@ -422,16 +422,16 @@ boot_loader() {
   ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
   readonly ROOT_PARTUUID
 
-  VMLINUZ=$(find /mnt/boot -iname "vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
+  VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
   readonly VMLINUZ
 
-  UCODE=$(find /mnt/boot -iname '*ucode*' -type f | awk -F '/' '{print $4}')
+  UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
   readonly UCODE
 
-  INITRAMFS=$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS
 
-  INITRAMFS_FALLBACK=$(find /mnt/boot -iname "initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
+  INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
   readonly INITRAMFS_FALLBACK
 
   readonly NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
