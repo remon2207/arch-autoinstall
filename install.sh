@@ -197,6 +197,12 @@ Name=${NET_INTERFACE}
 DHCP=yes
 DNS=192.168.1.202"
 
+EFI_PART_TYPE=$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')
+readonly EFI_PART_TYPE
+
+NORMAL_PART_TYPE=$(sgdisk -L | grep '8300' | awk '{print $2,$3}')
+readonly NORMAL_PART_TYPE
+
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
     echo 'microcode error'
@@ -306,9 +312,9 @@ time_setting() {
 partitioning() {
   if [[ "${PARTITION_DESTROY}" == 'yes' ]]; then
     sgdisk -Z "${DISK}"
-    sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' "${DISK}"
-    sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c '0:Linux filesystem' "${DISK}"
-    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${DISK}"
+    sgdisk -n 0::+512M -t 0:ef00 -c "0:${EFI_PART_TYPE}" "${DISK}"
+    sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
+    sgdisk -n 0:: -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
 
     # format
     mkfs.fat -F 32 "${DISK}1"
@@ -317,8 +323,8 @@ partitioning() {
   elif [[ "${PARTITION_DESTROY}" == 'exclude-efi' ]]; then
     sgdisk -d 3 "${DISK}"
     sgdisk -d 2 "${DISK}"
-    sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c '0:EFI system partition' "${DISK}"
-    sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${DISK}"
+    sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
+    sgdisk -n 0:: -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
 
     # format
     mkfs.ext4 "${DISK}2"

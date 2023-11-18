@@ -103,6 +103,12 @@ DHCP=yes
 DNS=8.8.8.8
 DNS=8.8.4.4"
 
+EFI_PART_TYPE=$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')
+readonly EFI_PART_TYPE
+
+NORMAL_PART_TYPE=$(sgdisk -L | grep '8300' | awk '{print $2,$3}')
+readonly NORMAL_PART_TYPE
+
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
     echo 'microcode error'
@@ -128,8 +134,8 @@ time_setting() {
 
 partitioning() {
   sgdisk -Z "${DISK}"
-  sgdisk -n 0::+512M -t 0:ef00 -c '0:EFI system partition' "${DISK}"
-  sgdisk -n 0:: -t 0:8300 -c '0:Linux filesystem' "${DISK}"
+  sgdisk -n 0::+512M -t 0:ef00 -c "0:${EFI_PART_TYPE}" "${DISK}"
+  sgdisk -n 0:: -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
 
   # format
   mkfs.fat -F 32 "${DISK}1"
