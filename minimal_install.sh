@@ -17,7 +17,7 @@ OPTIONS:
 EOF
 }
 
-if [[ ${#} -eq 0 ]]; then
+if [[ ${#} -ne 14 ]]; then
   usage
   exit 1
 fi
