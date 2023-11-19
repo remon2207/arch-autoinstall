@@ -369,7 +369,8 @@ configuration() {
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
   echo "${HOST_NAME}" > /mnt/etc/hostname
-  arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
+  # arch-chroot /mnt bash -c "echo '%wheel ALL=(ALL:ALL) ALL' | EDITOR='tee -a' visudo"
+  arch-chroot /mnt sed -i -e 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' arch-chroot /mnt visudo
 }
 
 networking() {
