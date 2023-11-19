@@ -35,7 +35,7 @@ packagelist="base \
   man-pages \
   reflector"
 
-NET_INTERFACE="$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')"
+NET_INTERFACE="$(ip -br link show | awk 'NR==2 {print $1}')"
 readonly NET_INTERFACE
 
 readonly USER_NAME='remon'
