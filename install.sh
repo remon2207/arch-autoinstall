@@ -422,15 +422,10 @@ boot_loader() {
   arch-chroot /mnt bootctl install
 
   local -r ROOT_PARTUUID="$(blkid -s PARTUUID -o value "${DISK}2")"
-
   local -r VMLINUZ="$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')"
-
   local -r UCODE="$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')"
-
   local -r INITRAMFS="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')"
-
   local -r INITRAMFS_FALLBACK="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')"
-
   local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
   local -r AMD_PARAMS='rw panic=180 i915.modeset=0'
   local -r INTEL_PARAMS='rw panic=180'
