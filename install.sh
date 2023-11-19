@@ -205,16 +205,16 @@ readonly NORMAL_PART_TYPE
 
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
-    echo 'microcode error'
+    echo -e '\e[31mmicrocode typo\e[m'
     exit 1
   elif [[ "${DE}" != 'i3' ]] && [[ "${DE}" != 'xfce' ]] && [[ "${DE}" != 'gnome' ]] && [[ "${DE}" != 'kde' ]]; then
-    echo 'de error'
+    echo -e '\e[31mde typo\e[m'
     exit 1
   elif [[ "${GPU}" != 'nvidia' ]] && [[ "${GPU}" != 'amd' ]] && [[ "${GPU}" != 'intel' ]]; then
-    echo 'gpu error'
+    echo -e '\e[31mgpu typo\e[m'
     exit 1
   elif [[ "${PARTITION_DESTROY}" != 'yes' ]] && [[ "${PARTITION_DESTROY}" != 'exclude-efi' ]] && [[ "${PARTITION_DESTROY}" != 'root-only' ]] && [[ "${PARTITION_DESTROY}" != 'skip' ]]; then
-    echo 'partition table error'
+    echo -e '\e[31mpartition-destroy typo\e[m'
     exit 1
   fi
 }

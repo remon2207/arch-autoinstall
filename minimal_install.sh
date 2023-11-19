@@ -116,10 +116,10 @@ readonly NORMAL_PART_TYPE
 
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
-    echo 'microcode error'
+    echo -e '\e[31mmicrocode typo\e[m'
     exit 1
   elif [[ "${GPU}" != 'amd' ]] && [[ "${GPU}" != 'intel' ]]; then
-    echo 'gpu error'
+    echo -e '\e[31mgpu typo\e[m'
     exit 1
   fi
 }
