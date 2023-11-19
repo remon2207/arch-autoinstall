@@ -91,13 +91,13 @@ packagelist="base \
   stylua \
   nfs-utils"
 
-NET_INTERFACE=$(ip -br link show | grep ' UP ' | awk '{print $1}')
+NET_INTERFACE="$(ip -br link show | grep ' UP ' | awk '{print $1}')"
 readonly NET_INTERFACE
 
 readonly OPT_STR='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
   root-password:,partition-destroy:,root-size:'
 
-OPTIONS=$(getopt -o '' -l "${OPT_STR}" -- "${@}")
+OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
 eval set -- "${OPTIONS}"
 
 while true; do
@@ -173,21 +173,21 @@ LIBVA_DRIVER_NAME='i965'
 VDPAU_DRIVER='va_gl'"
 fi
 
-LOADER_CONF=$(
+LOADER_CONF="$(
   cat << EOF
 timeout      10
 console-mode max
 editor       no
 EOF
-)
+)"
 readonly LOADER_CONF
 
-HOSTS=$(
+HOSTS="$(
   cat << EOF
 127.0.0.1       localhost
 ::1             localhost
 EOF
-)
+)"
 readonly HOSTS
 
 readonly WIRED="[Match]
@@ -197,10 +197,10 @@ Name=${NET_INTERFACE}
 DHCP=yes
 DNS=192.168.1.202"
 
-EFI_PART_TYPE=$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')
+EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
 readonly EFI_PART_TYPE
 
-NORMAL_PART_TYPE=$(sgdisk -L | grep '8300' | awk '{print $2,$3}')
+NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
 readonly NORMAL_PART_TYPE
 
 check_variables() {
@@ -419,21 +419,21 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  local -r ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
+  local -r ROOT_PARTUUID="$(blkid -s PARTUUID -o value "${DISK}2")"
 
-  local -r VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
+  local -r VMLINUZ="$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')"
 
-  local -r UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
+  local -r UCODE="$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')"
 
-  local -r INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
+  local -r INITRAMFS="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')"
 
-  local -r INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
+  local -r INITRAMFS_FALLBACK="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')"
 
   local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
   local -r AMD_PARAMS='rw panic=180 i915.modeset=0'
   local -r INTEL_PARAMS='rw panic=180'
 
-  local -r NVIDIA_CONF=$(
+  local -r NVIDIA_CONF="$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -441,9 +441,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} loglevel=3
 EOF
-  )
+  )"
 
-  local -r NVIDIA_FALLBACK_CONF=$(
+  local -r NVIDIA_FALLBACK_CONF="$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -451,9 +451,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${NVIDIA_PARAMS} debug
 EOF
-  )
+  )"
 
-  local -r AMD_CONF=$(
+  local -r AMD_CONF="$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -461,9 +461,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} loglevel=3
 EOF
-  )
+  )"
 
-  local -r AMD_FALLBACK_CONF=$(
+  local -r AMD_FALLBACK_CONF="$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -471,9 +471,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} debug
 EOF
-  )
+  )"
 
-  local -r INTEL_CONF=$(
+  local -r INTEL_CONF="$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -481,9 +481,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} loglevel=3
 EOF
-  )
+  )"
 
-  local -r INTEL_FALLBACK_CONF=$(
+  local -r INTEL_FALLBACK_CONF="$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -491,7 +491,7 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} debug
 EOF
-  )
+  )"
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
   if [[ "${GPU}" == 'nvidia' ]]; then

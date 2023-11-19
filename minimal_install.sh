@@ -37,12 +37,12 @@ packagelist="base \
   man-pages \
   reflector"
 
-NET_INTERFACE=$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')
+NET_INTERFACE="$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')"
 readonly NET_INTERFACE
 
 readonly OPT_STR='disk:,microcode:,gpu:,host-name:,user-name:,user-password:,root-password:'
 
-OPTIONS=$(getopt -o '' -l "${OPT_STR}" -- "${@}")
+OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
 eval set -- "${OPTIONS}"
 
 while true; do
@@ -83,21 +83,21 @@ while true; do
   shift
 done
 
-LOADER_CONF=$(
+LOADER_CONF="$(
   cat << EOF
 timeout      10
 console-mode max
 editor       no
 EOF
-)
+)"
 readonly LOADER_CONF
 
-HOSTS=$(
+HOSTS="$(
   cat << EOF
 127.0.0.1       localhost
 ::1             localhost
 EOF
-)
+)"
 readonly HOSTS
 
 readonly WIRED="[Match]
@@ -108,10 +108,10 @@ DHCP=yes
 DNS=8.8.8.8
 DNS=8.8.4.4"
 
-EFI_PART_TYPE=$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')
+EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
 readonly EFI_PART_TYPE
 
-NORMAL_PART_TYPE=$(sgdisk -L | grep '8300' | awk '{print $2,$3}')
+NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
 readonly NORMAL_PART_TYPE
 
 check_variables() {
@@ -204,17 +204,17 @@ replacement() {
 boot_loader() {
   arch-chroot /mnt bootctl install
 
-  local -r ROOT_PARTUUID=$(blkid -s PARTUUID -o value "${DISK}2")
+  local -r ROOT_PARTUUID="$(blkid -s PARTUUID -o value "${DISK}2")"
 
-  local -r VMLINUZ=$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')
+  local -r VMLINUZ="$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')"
 
-  local -r UCODE=$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')
+  local -r UCODE="$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')"
 
-  local -r INITRAMFS=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')
+  local -r INITRAMFS="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')"
 
-  local -r INITRAMFS_FALLBACK=$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')
+  local -r INITRAMFS_FALLBACK="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')"
 
-  local -r AMD_CONF=$(
+  local -r AMD_CONF="$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -222,9 +222,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0
 EOF
-  )
+  )"
 
-  local -r AMD_FALLBACK_CONF=$(
+  local -r AMD_FALLBACK_CONF="$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -232,9 +232,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0
 EOF
-  )
+  )"
 
-  local -r INTEL_CONF=$(
+  local -r INTEL_CONF="$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -242,9 +242,9 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS}
 options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
 EOF
-  )
+  )"
 
-  local -r INTEL_FALLBACK_CONF=$(
+  local -r INTEL_FALLBACK_CONF="$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -252,7 +252,7 @@ initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
 options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180
 EOF
-  )
+  )"
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
   if [[ "${GPU}" == 'amd' ]]; then
