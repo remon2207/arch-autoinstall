@@ -10,14 +10,12 @@ OPTIONS:
   --disk                 Path of disk
   --microcode            [intel, amd]
   --gpu                  [intel, amd]
-  --host-name            host name
-  --user-name            user name
   --user-password        Password of user
   --root-password        Password of root
 EOF
 }
 
-if [[ ${#} -ne 14 ]]; then
+if [[ ${#} -ne 10 ]]; then
   usage
   exit 1
 fi
@@ -40,7 +38,9 @@ packagelist="base \
 NET_INTERFACE="$(ip -br link show | head -n 2 | grep ' UP ' | awk '{print $1}')"
 readonly NET_INTERFACE
 
-readonly OPT_STR='disk:,microcode:,gpu:,host-name:,user-name:,user-password:,root-password:'
+readonly USER_NAME='remon'
+
+readonly OPT_STR='disk:,microcode:,gpu:,user-password:,root-password:'
 
 OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
 eval set -- "${OPTIONS}"
@@ -57,14 +57,6 @@ while true; do
     ;;
   '--gpu')
     readonly GPU="${2}"
-    shift
-    ;;
-  '--host-name')
-    readonly HOST_NAME="${2}"
-    shift
-    ;;
-  '--user-name')
-    readonly USER_NAME="${2}"
     shift
     ;;
   '--user-password')
@@ -170,7 +162,7 @@ configuration() {
   arch-chroot /mnt sed -e 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' arch-chroot /mnt visudo &> /dev/null
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
-  echo "${HOST_NAME}" > /mnt/etc/hostname
+  echo 'virtualbox' > /mnt/etc/hostname
 }
 
 networking() {

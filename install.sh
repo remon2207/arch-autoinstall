@@ -11,8 +11,6 @@ OPTIONS:
   --microcode            [intel, amd]
   --de                   [i3, xfce, gnome, kde]
   --gpu                  [nvidia, amd, intel]
-  --host-name            host name
-  --user-name            user name
   --user-password        Password of user
   --root-password        Password of root
   --partition-destroy    [yes, exclude-efi, root-only, skip]
@@ -20,7 +18,7 @@ OPTIONS:
 EOF
 }
 
-if [[ ${#} -ne 20 ]]; then
+if [[ ${#} -ne 16 ]]; then
   usage
   exit 1
 fi
@@ -94,8 +92,9 @@ packagelist="base \
 NET_INTERFACE="$(ip -br link show | grep ' UP ' | awk '{print $1}')"
 readonly NET_INTERFACE
 
-readonly OPT_STR='disk:,microcode:,de:,gpu:,host-name:,user-name:,user-password:,\
-  root-password:,partition-destroy:,root-size:'
+readonly USER_NAME='remon'
+
+readonly OPT_STR='disk:,microcode:,de:,gpu:,user-password:,root-password:,partition-destroy:,root-size:'
 
 OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
 eval set -- "${OPTIONS}"
@@ -116,14 +115,6 @@ while true; do
     ;;
   '--gpu')
     readonly GPU="${2}"
-    shift
-    ;;
-  '--host-name')
-    readonly HOST_NAME="${2}"
-    shift
-    ;;
-  '--user-name')
-    readonly USER_NAME="${2}"
     shift
     ;;
   '--user-password')
@@ -163,7 +154,7 @@ QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='radeonsi'
-# VDPAU_DRIVER=''"
+VDPAU_DRIVER='radeonsi'"
 elif [[ "${GPU}" == 'intel' ]]; then
   readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
@@ -368,7 +359,7 @@ configuration() {
   arch-chroot /mnt locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
-  echo "${HOST_NAME}" > /mnt/etc/hostname
+  echo 'archlinux' > /mnt/etc/hostname
   arch-chroot /mnt sed -e 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' arch-chroot /mnt visudo &> /dev/null
 }
 
