@@ -38,7 +38,7 @@ packagelist="base \
 NET_INTERFACE="$(ip -br link show | awk 'NR==2 {print $1}')"
 readonly NET_INTERFACE
 
-readonly USER_NAME='remon'
+readonly USER_NAME='virt'
 
 readonly OPT_STR='disk:,microcode:,gpu:,user-password:,root-password:'
 
@@ -253,8 +253,8 @@ EOF
 }
 
 enable_services() {
-  arch-chroot /mnt systemctl enable reflector.timer
   arch-chroot /mnt systemctl enable systemd-{boot-update,networkd,resolved}.service
+  arch-chroot /mnt systemctl enable reflector.timer
 }
 
 main() {
