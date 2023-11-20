@@ -12,8 +12,6 @@
 --microcode <microcode> \
 --de <de> \
 --gpu <gpu> \
---host-name <host-name> \
---user-name <user-name> \
 --user-password <user-password> \
 --root-password <root-password> \
 --partition-destroy <partition-destroy> \
@@ -24,8 +22,6 @@
 --microcode intel \
 --de gnome \
 --gpu nvidia \
---host-name archlinux \
---user-name master \
 --user-password 12345 \
 --root-password q1w2e3r4t5y6 \
 --partition-destroy yes \
@@ -38,8 +34,6 @@
 ./arch-autoinstall/minimal_install.sh --disk <disk> \
 --microcode <microcode> \
 --gpu <gpu> \
---host-name <virtualbox> \
---user-name <user-name> \
 --user-password <user-password> \
 --root-password <root-password>
 
@@ -47,8 +41,6 @@
 ./arch-autoinstall/minimal_install.sh --disk /dev/sda \
 --microcode intel \
 --gpu intel \
---host-name virtualbox \
---user-name virt \
 --user-password virt \
 --root-password root
 ```
