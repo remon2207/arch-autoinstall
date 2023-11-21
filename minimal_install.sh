@@ -8,8 +8,8 @@ USAGE:
   ${0} <OPTIONS>
 OPTIONS:
   -d        Path of disk
-  -m        [intel, amd]
-  -g        [intel, amd]
+  -m        microcode [intel, amd]
+  -g        gpu [intel, amd]
   -u        Password of user
   -r        Password of root
   -h        See Help

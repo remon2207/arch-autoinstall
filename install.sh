@@ -8,13 +8,13 @@ USAGE:
   ${0} <OPTIONS>
 OPTIONS:
   -d        Path of disk
-  -m        [intel, amd]
-  -e        [i3, xfce, gnome, kde]
-  -g        [nvidia, amd, intel]
+  -m        microcode [intel, amd]
+  -e        desktop environment or window manager [i3, xfce, gnome, kde]
+  -g        gpu [nvidia, amd, intel]
   -u        Password of user
   -r        Password of root
-  -p        [yes, exclude-efi, root-only, skip]
-  -s        Only the size you want to allocate to the root (omit units)
+  -p        partition configration [yes, exclude-efi, root-only, skip]
+  -s        size of root, Only the size you want to allocate to the root (omit units)
   -h        See Help
 EOF
 }
