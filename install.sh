@@ -7,14 +7,15 @@ usage() {
 USAGE:
   ${0} <OPTIONS>
 OPTIONS:
-  --disk                 Path of disk
-  --microcode            [intel, amd]
-  --de                   [i3, xfce, gnome, kde]
-  --gpu                  [nvidia, amd, intel]
-  --user-password        Password of user
-  --root-password        Password of root
-  --partition-destroy    [yes, exclude-efi, root-only, skip]
-  --root-size            Only the size you want to allocate to the root (omit units)
+  -d        Path of disk
+  -m        [intel, amd]
+  -e        [i3, xfce, gnome, kde]
+  -g        [nvidia, amd, intel]
+  -u        Password of user
+  -r        Password of root
+  -p        [yes, exclude-efi, root-only, skip]
+  -s        Only the size you want to allocate to the root (omit units)
+  -h        See Help
 EOF
 }
 
@@ -94,51 +95,41 @@ readonly NET_INTERFACE
 
 readonly USER_NAME='remon'
 
-readonly OPT_STR='disk:,microcode:,de:,gpu:,user-password:,root-password:,partition-destroy:,root-size:'
-
-OPTIONS="$(getopt -o '' -l "${OPT_STR}" -- "${@}")"
-eval set -- "${OPTIONS}"
-
-while true; do
-  case "${1}" in
-  '--disk')
-    readonly DISK="${2}"
-    shift
+while getopts 'd:m:e:g:u:r:p:s:h' opt; do
+  case "${opt}" in
+  'd')
+    readonly DISK="${OPTARG}"
     ;;
-  '--microcode')
-    readonly MICROCODE="${2}"
-    shift
+  'm')
+    readonly MICROCODE="${OPTARG}"
     ;;
-  '--de')
-    readonly DE="${2}"
-    shift
+  'e')
+    readonly DE="${OPTARG}"
     ;;
-  '--gpu')
-    readonly GPU="${2}"
-    shift
+  'g')
+    readonly GPU="${OPTARG}"
     ;;
-  '--user-password')
-    readonly USER_PASSWORD="${2}"
-    shift
+  'u')
+    readonly USER_PASSWORD="${OPTARG}"
     ;;
-  '--root-password')
-    readonly ROOT_PASSWORD="${2}"
-    shift
+  'r')
+    readonly ROOT_PASSWORD="${OPTARG}"
     ;;
-  '--partition-destroy')
-    readonly PARTITION_DESTROY="${2}"
-    shift
+  'p')
+    readonly PARTITION_DESTROY="${OPTARG}"
     ;;
-  '--root-size')
-    readonly ROOT_SIZE=${2}
-    shift
+  's')
+    readonly ROOT_SIZE="${OPTARG}"
     ;;
-  '--')
-    shift
-    break
+  'h')
+    usage
+    exit 0
+    ;;
+  '*')
+    usage
+    exit 1
     ;;
   esac
-  shift
 done
 
 if [[ "${GPU}" == 'nvidia' ]]; then
