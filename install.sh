@@ -8,9 +8,9 @@ USAGE:
   ${0} <OPTIONS>
 OPTIONS:
   -d        Path of disk
-  -m        microcode [intel, amd]
+  -m        microcode value [intel, amd]
   -e        desktop environment or window manager [i3, xfce, gnome, kde]
-  -g        gpu [nvidia, amd, intel]
+  -g        gpu value [nvidia, amd, intel]
   -u        Password of user
   -r        Password of root
   -p        partition configration [yes, exclude-efi, root-only, skip]
