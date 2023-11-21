@@ -113,6 +113,7 @@ installation() {
 }
 
 configuration() {
+  arch-chroot /mnt reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   arch-chroot /mnt ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   arch-chroot /mnt hwclock --systohc --utc
   arch-chroot /mnt sed -i -e 's/^#\(en_US.UTF-8 UTF-8\)/\1/' -e \
@@ -158,7 +159,7 @@ create_user() {
 
 replacement() {
   arch-chroot /mnt sed -i -e 's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
-    's/^#\(FallbackNTP=\)/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
+    's/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   # shellcheck disable=SC2016
   arch-chroot /mnt sed -i -e 's/\(-march=\)x86-64 -mtune=generic/\1skylake/' -e \
     's/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' -e \
