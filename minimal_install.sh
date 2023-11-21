@@ -36,11 +36,6 @@ packagelist="base \
   man-pages \
   reflector"
 
-NET_INTERFACE="$(ip -br link show | awk 'NR==2 {print $1}')"
-readonly NET_INTERFACE
-
-readonly USER_NAME='virt'
-
 while getopts 'd:m:g:u:r:h' opt; do
   case "${opt}" in
   'd')
@@ -69,37 +64,6 @@ while getopts 'd:m:g:u:r:h' opt; do
   esac
 done
 
-LOADER_CONF="$(
-  cat << EOF
-timeout      10
-console-mode max
-editor       no
-EOF
-)"
-readonly LOADER_CONF
-
-HOSTS="$(
-  cat << EOF
-127.0.0.1       localhost
-::1             localhost
-EOF
-)"
-readonly HOSTS
-
-readonly WIRED="[Match]
-Name=${NET_INTERFACE}
-
-[Network]
-DHCP=yes
-DNS=8.8.8.8
-DNS=8.8.4.4"
-
-EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
-readonly EFI_PART_TYPE
-
-NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
-readonly NORMAL_PART_TYPE
-
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
     echo -e '\e[31mmicrocode typo\e[m'
@@ -124,6 +88,9 @@ time_setting() {
 }
 
 partitioning() {
+  local -r EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
+  local -r NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
+
   sgdisk -Z "${DISK}"
   sgdisk -n 0::+512M -t 0:ef00 -c "0:${EFI_PART_TYPE}" "${DISK}"
   sgdisk -n 0:: -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
@@ -160,12 +127,31 @@ configuration() {
 }
 
 networking() {
+  local -r NET_INTERFACE="$(ip -br link show | awk 'NR==2 {print $1}')"
+
+  local -r HOSTS="$(
+    cat << EOF
+127.0.0.1       localhost
+::1             localhost
+EOF
+  )"
+
+  local -r WIRED="[Match]
+Name=${NET_INTERFACE}
+
+[Network]
+DHCP=yes
+DNS=8.8.8.8
+DNS=8.8.4.4"
+
   echo "${HOSTS}" >> /mnt/etc/hosts
   echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
   ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 }
 
 create_user() {
+  local -r USER_NAME='virt'
+
   echo "root:${ROOT_PASSWORD}" | arch-chroot /mnt chpasswd
   arch-chroot /mnt useradd -m -G wheel -s /bin/bash "${USER_NAME}"
   echo "${USER_NAME}:${USER_PASSWORD}" | arch-chroot /mnt chpasswd
@@ -195,6 +181,14 @@ boot_loader() {
   local -r UCODE="$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')"
   local -r INITRAMFS="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')"
   local -r INITRAMFS_FALLBACK="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')"
+
+  local -r LOADER_CONF="$(
+    cat << EOF
+timeout      10
+console-mode max
+editor       no
+EOF
+  )"
 
   local -r AMD_CONF="$(
     cat << EOF

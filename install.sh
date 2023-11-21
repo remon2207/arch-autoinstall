@@ -25,6 +25,7 @@ if [[ ${#} -ne 16 ]]; then
 fi
 
 readonly KERNEL='linux-zen'
+readonly USER_NAME='remon'
 
 packagelist="base \
   base-devel \
@@ -90,11 +91,6 @@ packagelist="base \
   stylua \
   nfs-utils"
 
-NET_INTERFACE="$(ip -br link show | grep ' UP ' | awk '{print $1}')"
-readonly NET_INTERFACE
-
-readonly USER_NAME='remon'
-
 while getopts 'd:m:e:g:u:r:p:s:h' opt; do
   case "${opt}" in
   'd')
@@ -131,59 +127,6 @@ while getopts 'd:m:e:g:u:r:p:s:h' opt; do
     ;;
   esac
 done
-
-if [[ "${GPU}" == 'nvidia' ]]; then
-  readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-
-LIBVA_DRIVER_NAME='vdpau'
-VDPAU_DRIVER='nvidia'"
-elif [[ "${GPU}" == 'amd' ]]; then
-  readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-
-LIBVA_DRIVER_NAME='radeonsi'
-VDPAU_DRIVER='radeonsi'"
-elif [[ "${GPU}" == 'intel' ]]; then
-  readonly ENVIRONMENT="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-
-LIBVA_DRIVER_NAME='i965'
-VDPAU_DRIVER='va_gl'"
-fi
-
-LOADER_CONF="$(
-  cat << EOF
-timeout      10
-console-mode max
-editor       no
-EOF
-)"
-readonly LOADER_CONF
-
-HOSTS="$(
-  cat << EOF
-127.0.0.1       localhost
-::1             localhost
-EOF
-)"
-readonly HOSTS
-
-readonly WIRED="[Match]
-Name=${NET_INTERFACE}
-
-[Network]
-DHCP=yes
-DNS=192.168.1.202"
-
-EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
-readonly EFI_PART_TYPE
-
-NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
-readonly NORMAL_PART_TYPE
 
 check_variables() {
   if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
@@ -292,7 +235,11 @@ time_setting() {
 }
 
 partitioning() {
+  local -r NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
+
   if [[ "${PARTITION_DESTROY}" == 'yes' ]]; then
+    local -r EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
+
     sgdisk -Z "${DISK}"
     sgdisk -n 0::+512M -t 0:ef00 -c "0:${EFI_PART_TYPE}" "${DISK}"
     sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
@@ -355,6 +302,22 @@ configuration() {
 }
 
 networking() {
+  local -r NET_INTERFACE="$(ip -br link show | grep ' UP ' | awk '{print $1}')"
+
+  local -r HOSTS="$(
+    cat << EOF
+127.0.0.1       localhost
+::1             localhost
+EOF
+  )"
+
+  local -r WIRED="[Match]
+Name=${NET_INTERFACE}
+
+[Network]
+DHCP=yes
+DNS=192.168.1.202"
+
   echo "${HOSTS}" >> /mnt/etc/hosts
 
   if [[ "${DE}" == 'i3' ]] || [[ "${DE}" == 'xfce' ]]; then
@@ -378,6 +341,29 @@ add_to_group() {
 }
 
 replacement() {
+  if [[ "${GPU}" == 'nvidia' ]]; then
+    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
+QT_IM_MODULE='fcitx5'
+XMODIFIERS='@im=fcitx5'
+
+LIBVA_DRIVER_NAME='vdpau'
+VDPAU_DRIVER='nvidia'"
+  elif [[ "${GPU}" == 'amd' ]]; then
+    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
+QT_IM_MODULE='fcitx5'
+XMODIFIERS='@im=fcitx5'
+
+LIBVA_DRIVER_NAME='radeonsi'
+VDPAU_DRIVER='radeonsi'"
+  elif [[ "${GPU}" == 'intel' ]]; then
+    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
+QT_IM_MODULE='fcitx5'
+XMODIFIERS='@im=fcitx5'
+
+LIBVA_DRIVER_NAME='i965'
+VDPAU_DRIVER='va_gl'"
+  fi
+
   arch-chroot /mnt sed -i -e 's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
     's/^#\(FallbackNTP=\)/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   arch-chroot /mnt sed -i -e 's/^# \(--country\) France,Germany/\1 Japan/' -e \
@@ -411,6 +397,14 @@ boot_loader() {
   local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
   local -r AMD_PARAMS='rw panic=180 i915.modeset=0'
   local -r INTEL_PARAMS='rw panic=180'
+
+  local -r LOADER_CONF="$(
+    cat << EOF
+timeout      10
+console-mode max
+editor       no
+EOF
+  )"
 
   local -r NVIDIA_CONF="$(
     cat << EOF
@@ -488,6 +482,7 @@ EOF
 enable_services() {
   arch-chroot /mnt systemctl enable {iptables,docker,systemd-boot-update}.service
   arch-chroot /mnt systemctl enable {fstrim,reflector}.timer
+
   if [[ "${DE}" == 'i3' ]] || [[ "${DE}" == 'xfce' ]]; then
     arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
   fi
