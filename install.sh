@@ -13,7 +13,7 @@ USAGE:
 OPTIONS:
   -d        Path of disk
   -e        desktop environment or window manager [i3, xfce, gnome, kde]
-  -g        gpu value [nvidia, amd, intel]
+  -g        gpu value [nvidia, amd]
   -u        Password of user
   -r        Password of root
   -p        partition configration [yes, exclude-efi, root-only, skip]
@@ -138,7 +138,6 @@ check_variables() {
   esac
   case "${GPU}" in
   'nvidia') ;;
-  'intel') ;;
   'amd') ;;
   *)
     echo -e '\e[31mgpu typo\e[m' && exit 1
@@ -243,9 +242,6 @@ selection_arguments() {
   'nvidia')
     packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
     ;;
-  'intel')
-    packagelist="${packagelist} libvdpau-va-gl libva-intel-driver"
-    ;;
   'amd')
     packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
     ;;
@@ -302,22 +298,35 @@ partitioning() {
 }
 
 installation() {
+  local -r NUMBER_HOOKS="$(grep -n '^HOOKS' /etc/mkinitcpio.conf)"
+  local -r NUMBER="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $1}')"
+  local -r HOOKS_ORG="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $2}')"
+  local -r NEW_NUMBER="$(("${NUMBER}" + 1))"
+
   reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   sed -i -e 's/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
-  if [[ "${GPU}" == 'nvidia' ]]; then
-    NUMBER_HOOKS="$(grep -n '^HOOKS' /etc/mkinitcpio.conf)" && readonly NUMBER_HOOKS
-    NUMBER="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $1}')" && readonly NUMBER
-    HOOKS_ORG="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $2}')" && readonly HOOKS_ORG
-    NEW_NUMBER="$(("${NUMBER}" + 1))" && readonly NEW_NUMBER
-    NEW_HOOKS="$(echo "${HOOKS_ORG}" | sed -e 's/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/' -e 's/consolefont //')" && readonly NEW_HOOKS
 
-    to_arch sed -i -e 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' -e \
+  case "${GPU}" in
+  'nvidia')
+    local -r NVIDIA_HOOKS="$(echo "${HOOKS_ORG}" | sed -e "${NUMBER}s/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/")"
+
+    to_arch sed -i -e \
+      's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' -e \
       "${NUMBER}s/^/#/" -e \
-      "${NEW_NUMBER}i ${NEW_HOOKS}" /etc/mkinitcpio.conf
+      "${NEW_NUMBER}i ${NVIDIA_HOOKS}" /etc/mkinitcpio.conf
     to_arch mkinitcpio -p "${KERNEL}"
-  fi
+    ;;
+  'amd')
+    local -r AMD_HOOKS="$(echo "${HOOKS_ORG}" | sed -e "${NUMBER}s/\(.*\)consolefont \(.*\)/\1\2/")"
+
+    to_arch sed -i -e \
+      "${NUMBER}s/^/#/" -e \
+      "${NEW_NUMBER}i ${AMD_HOOKS}" /etc/mkinitcpio.conf
+    to_arch mkinitcpio -p "${KERNEL}"
+    ;;
+  esac
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
@@ -385,14 +394,6 @@ XMODIFIERS='@im=fcitx5'
 LIBVA_DRIVER_NAME='vdpau'
 VDPAU_DRIVER='nvidia'"
     ;;
-  'intel')
-    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-
-LIBVA_DRIVER_NAME='i965'
-VDPAU_DRIVER='va_gl'"
-    ;;
   'amd')
     local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
@@ -403,13 +404,16 @@ VDPAU_DRIVER='radeonsi'"
     ;;
   esac
 
-  to_arch sed -i -e 's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
+  to_arch sed -i -e \
+    's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
     's/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
-  to_arch sed -i -e 's/^# \(--country\) France,Germany/\1 Japan/' -e \
+  to_arch sed -i -e \
+    's/^# \(--country\) France,Germany/\1 Japan/' -e \
     's/^--latest 5/# &/' -e \
     's/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
   # shellcheck disable=SC2016
-  to_arch sed -i -e 's/\(-march=\)x86-64 -mtune=generic/\1skylake/' -e \
+  to_arch sed -i -e \
+    's/\(-march=\)x86-64 -mtune=generic/\1skylake/' -e \
     's/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' -e \
     's/^#\(BUILDDIR\)/\1/' -e \
     's/^\(COMPRESSXZ=\)(xz -c -z -)/\1(xz -c -z --threads=0 -)/' -e \
@@ -513,10 +517,6 @@ EOF
   'nvidia')
     echo "${NVIDIA_CONF}" > /mnt/boot/loader/entries/arch.conf
     echo "${NVIDIA_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-    ;;
-  'intel')
-    echo "${INTEL_CONF}" > /mnt/boot/loader/entries/arch.conf
-    echo "${INTEL_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
     ;;
   'amd')
     echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
