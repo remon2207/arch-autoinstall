@@ -446,7 +446,7 @@ boot_loader() {
 
   local -r LOADER_CONF="$(
     cat << EOF
-timeout      10
+timeout      15
 console-mode max
 editor       no
 EOF
