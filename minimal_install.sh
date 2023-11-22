@@ -66,7 +66,8 @@ configuration() {
   to_arch reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   to_arch ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   to_arch hwclock --systohc --utc
-  to_arch sed -i -e 's/^#\(en_US.UTF-8 UTF-8\)/\1/' -e \
+  to_arch sed -i -e \
+    's/^#\(en_US.UTF-8 UTF-8\)/\1/' -e \
     's/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
   to_arch sed -i -e 's/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   to_arch locale-gen
@@ -108,13 +109,16 @@ create_user() {
 }
 
 replacement() {
-  to_arch sed -i -e 's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
+  to_arch sed -i -e \
+    's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
     's/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   # shellcheck disable=SC2016
-  to_arch sed -i -e 's/\(-march=\)x86-64 -mtune=generic/\1skylake/' -e \
+  to_arch sed -i -e \
+    's/\(-march=\)x86-64 -mtune=generic/\1skylake/' -e \
     's/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' -e \
     's/^#\(BUILDDIR\)/\1/' /etc/makepkg.conf
-  to_arch sed -i -e 's/^# \(--country\) France,Germany/\1 Japan/' -e \
+  to_arch sed -i -e \
+    's/^# \(--country\) France,Germany/\1 Japan/' -e \
     's/^--latest 5/# &/' -e \
     's/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
   to_arch sed -i -e 's/^#\(Color\)/\1/' /etc/pacman.conf
