@@ -129,53 +129,82 @@ while getopts 'd:m:e:g:u:r:p:s:h' opt; do
 done
 
 check_variables() {
-  if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
+  case "${MICROCODE}" in
+  'intel') ;;
+  'amd') ;;
+  *)
     echo -e '\e[31mmicrocode typo\e[m'
     exit 1
-  elif [[ "${DE}" != 'i3' ]] && [[ "${DE}" != 'xfce' ]] && [[ "${DE}" != 'gnome' ]] && [[ "${DE}" != 'kde' ]]; then
+    ;;
+  esac
+  case "${DE}" in
+  'i3') ;;
+  'xfce') ;;
+  'gnome') ;;
+  'kde') ;;
+  *)
     echo -e '\e[31mde typo\e[m'
     exit 1
-  elif [[ "${GPU}" != 'nvidia' ]] && [[ "${GPU}" != 'amd' ]] && [[ "${GPU}" != 'intel' ]]; then
+    ;;
+  esac
+  case "${GPU}" in
+  'nvidia') ;;
+  'intel') ;;
+  'amd') ;;
+  *)
     echo -e '\e[31mgpu typo\e[m'
     exit 1
-  elif [[ "${PARTITION_DESTROY}" != 'yes' ]] && [[ "${PARTITION_DESTROY}" != 'exclude-efi' ]] && [[ "${PARTITION_DESTROY}" != 'root-only' ]] && [[ "${PARTITION_DESTROY}" != 'skip' ]]; then
+    ;;
+  esac
+  case "${PARTITION_DESTROY}" in
+  'yes') ;;
+  'exclude-efi') ;;
+  'root-only') ;;
+  'skip') ;;
+  *)
     echo -e '\e[31mpartition-destroy typo\e[m'
     exit 1
-  fi
+    ;;
+  esac
 }
 
 selection_arguments() {
-  if [[ "${MICROCODE}" == 'intel' ]]; then
+  case "${MICROCODE}" in
+  'intel')
     packagelist="${packagelist} intel-ucode"
-  elif [[ "${MICROCODE}" == 'amd' ]]; then
+    ;;
+  'amd')
     packagelist="${packagelist} amd-ucode"
-  fi
+    ;;
+  esac
 
-  if [[ "${DE}" == 'i3' ]]; then
+  case "${DE}" in
+  'i3')
     packagelist="${packagelist} \
-      i3-wm \
-      i3lock \
-      rofi \
-      polybar \
-      xautolock \
-      polkit \
-      scrot \
-      feh \
-      picom \
-      dunst \
-      gnome-keyring \
-      qt5ct \
-      kvantum \
-      arc-gtk-theme \
-      papirus-icon-theme \
-      pavucontrol \
-      alacritty \
-      kitty \
-      wezterm \
-      tmux \
-      ttf-font-awesome \
-      ranger"
-  elif [[ "${DE}" == 'xfce' ]]; then
+        i3-wm \
+        i3lock \
+        rofi \
+        polybar \
+        xautolock \
+        polkit \
+        scrot \
+        feh \
+        picom \
+        dunst \
+        gnome-keyring \
+        qt5ct \
+        kvantum \
+        arc-gtk-theme \
+        papirus-icon-theme \
+        pavucontrol \
+        alacritty \
+        kitty \
+        wezterm \
+        tmux \
+        ttf-font-awesome \
+        ranger"
+    ;;
+  'xfce')
     packagelist="${packagelist} \
       xfce4 \
       xfce4-goodies \
@@ -189,7 +218,8 @@ selection_arguments() {
       lightdm \
       lightdm-gtk-greeter \
       lightdm-gtk-greeter-settings"
-  elif [[ "${DE}" == 'gnome' ]]; then
+    ;;
+  'gnome')
     packagelist="${packagelist} \
       gnome-control-center \
       gnome-shell \
@@ -209,7 +239,8 @@ selection_arguments() {
       dconf-editor \
       eog \
       networkmanager"
-  elif [[ "${DE}" == 'kde' ]]; then
+    ;;
+  'kde')
     packagelist="${packagelist} \
       plasma-meta \
       packagekit-qt5 \
@@ -218,15 +249,20 @@ selection_arguments() {
       gwenview \
       spectacle \
       kate"
-  fi
+    ;;
+  esac
 
-  if [[ "${GPU}" == 'nvidia' ]]; then
+  case "${GPU}" in
+  'nvidia')
     packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
-  elif [[ "${GPU}" == 'amd' ]]; then
-    packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
-  elif [[ "${GPU}" == 'intel' ]]; then
+    ;;
+  'intel')
     packagelist="${packagelist} libvdpau-va-gl libva-intel-driver"
-  fi
+    ;;
+  'amd')
+    packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
+    ;;
+  esac
 }
 
 time_setting() {
@@ -237,7 +273,8 @@ time_setting() {
 partitioning() {
   local -r NORMAL_PART_TYPE="$(sgdisk -L | grep '8300' | awk '{print $2,$3}')"
 
-  if [[ "${PARTITION_DESTROY}" == 'yes' ]]; then
+  case "${PARTITION_DESTROY}" in
+  'yes')
     local -r EFI_PART_TYPE="$(sgdisk -L | grep 'ef00' | awk '{print $6,$7,$8}')"
 
     sgdisk -Z "${DISK}"
@@ -249,7 +286,8 @@ partitioning() {
     mkfs.fat -F 32 "${DISK}1"
     mkfs.ext4 "${DISK}2"
     mkfs.ext4 "${DISK}3"
-  elif [[ "${PARTITION_DESTROY}" == 'exclude-efi' ]]; then
+    ;;
+  'exclude-efi')
     sgdisk -d 3 "${DISK}"
     sgdisk -d 2 "${DISK}"
     sgdisk -n "0::+${ROOT_SIZE}G" -t 0:8300 -c "0:${NORMAL_PART_TYPE}" "${DISK}"
@@ -258,16 +296,17 @@ partitioning() {
     # format
     mkfs.ext4 "${DISK}2"
     mkfs.ext4 "${DISK}3"
-  elif [[ "${PARTITION_DESTROY}" == 'root-only' ]]; then
+    ;;
+  'root-only')
     # format
     mkfs.ext4 "${DISK}2"
-  elif [[ "${PARTITION_DESTROY}" == 'skip' ]]; then
-    echo 'Skip partitioning'
-
+    ;;
+  'skip')
     # format
     mkfs.ext4 "${DISK}2"
     mkfs.ext4 "${DISK}3"
-  fi
+    ;;
+  esac
 
   # mount
   mount "${DISK}2" /mnt
@@ -320,12 +359,15 @@ DNS=192.168.1.202"
 
   echo "${HOSTS}" >> /mnt/etc/hosts
 
-  if [[ "${DE}" == 'i3' ]] || [[ "${DE}" == 'xfce' ]]; then
+  case "${DE}" in
+  'i3' | 'xfce')
     ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
     echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
-  else
+    ;;
+  *)
     ln -sf /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
-  fi
+    ;;
+  esac
 }
 
 create_user() {
@@ -341,28 +383,32 @@ add_to_group() {
 }
 
 replacement() {
-  if [[ "${GPU}" == 'nvidia' ]]; then
+  case "${GPU}" in
+  'nvidia')
     local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='vdpau'
 VDPAU_DRIVER='nvidia'"
-  elif [[ "${GPU}" == 'amd' ]]; then
-    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-
-LIBVA_DRIVER_NAME='radeonsi'
-VDPAU_DRIVER='radeonsi'"
-  elif [[ "${GPU}" == 'intel' ]]; then
+    ;;
+  'intel')
     local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='i965'
 VDPAU_DRIVER='va_gl'"
-  fi
+    ;;
+  'amd')
+    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
+QT_IM_MODULE='fcitx5'
+XMODIFIERS='@im=fcitx5'
+
+LIBVA_DRIVER_NAME='radeonsi'
+VDPAU_DRIVER='radeonsi'"
+    ;;
+  esac
 
   arch-chroot /mnt sed -i -e 's/^#\(NTP=\)/\1ntp.nict.jp/' -e \
     's/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
@@ -467,32 +513,41 @@ EOF
   )"
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
-  if [[ "${GPU}" == 'nvidia' ]]; then
+
+  case "${GPU}" in
+  'nvidia')
     echo "${NVIDIA_CONF}" > /mnt/boot/loader/entries/arch.conf
     echo "${NVIDIA_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-  elif [[ "${GPU}" == 'amd' ]]; then
-    echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
-    echo "${AMD_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-  elif [[ "${GPU}" == 'intel' ]]; then
+    ;;
+  'intel')
     echo "${INTEL_CONF}" > /mnt/boot/loader/entries/arch.conf
     echo "${INTEL_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-  fi
+    ;;
+  'amd')
+    echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
+    echo "${AMD_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
+    ;;
+  esac
 }
 
 enable_services() {
   arch-chroot /mnt systemctl enable {iptables,docker,systemd-boot-update}.service
   arch-chroot /mnt systemctl enable {fstrim,reflector}.timer
 
-  if [[ "${DE}" == 'i3' ]] || [[ "${DE}" == 'xfce' ]]; then
+  case "${DE}" in
+  'i3')
     arch-chroot /mnt systemctl enable systemd-{networkd,resolved}.service
-  fi
-  if [[ "${DE}" == 'xfce' ]]; then
-    arch-chroot /mnt systemctl enable lightdm.service
-  elif [[ "${DE}" == 'gnome' ]]; then
+    ;;
+  'xfce')
+    arch-chroot /mnt systemctl enable {lightdm,systemd-{networkd,resolved}}.service
+    ;;
+  'gnome')
     arch-chroot /mnt systemctl enable {gdm,NetworkManager}.service
-  elif [[ "${DE}" == 'kde' ]]; then
+    ;;
+  'kde')
     arch-chroot /mnt systemctl enable {sddm,NetworkManager}.service
-  fi
+    ;;
+  esac
 }
 
 main() {
