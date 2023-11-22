@@ -114,7 +114,7 @@ while getopts 'd:e:g:u:r:p:s:h' opt; do
     readonly ROOT_SIZE="${OPTARG}"
     ;;
   'h')
-    usage
+    usage && exit 0
     ;;
   *)
     usage && exit 1
