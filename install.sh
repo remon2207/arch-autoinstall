@@ -425,7 +425,7 @@ VDPAU_DRIVER='radeonsi'"
     's/^\(COMPRESSBZ2=\)(bzip2 -c -f)/\1(lbzip2 -c -f)/' /etc/makepkg.conf
   arch-chroot /mnt sed -i -e 's/^#\(HandlePowerKey=\).*/\1reboot/' /etc/systemd/logind.conf
   arch-chroot /mnt sed -i -e 's/^#\(DefaultTimeoutStopSec=\).*/\110s/' /etc/systemd/system.conf
-  arch-chroot /mnt sed -i -e 's/^#\(Color\)//1/' /etc/pacman.conf
+  arch-chroot /mnt sed -i -e 's/^#\(Color\)/\1/' /etc/pacman.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${ENVIRONMENT}" >> /mnt/etc/environment
 
