@@ -16,10 +16,7 @@ OPTIONS:
 EOF
 }
 
-if [[ ${#} -eq 0 ]]; then
-  usage
-  exit 1
-fi
+[[ ${#} -eq 0 ]] && usage && exit 1
 
 readonly KERNEL='linux-zen'
 
@@ -54,12 +51,10 @@ while getopts 'd:m:g:u:r:h' opt; do
     readonly ROOT_PASSWORD="${OPTARG}"
     ;;
   'h')
-    usage
-    exit 0
+    usage && exit 0
     ;;
   *)
-    usage
-    exit 1
+    usage && exit 1
     ;;
   esac
 done
@@ -69,16 +64,14 @@ check_variables() {
   'intel') ;;
   'amd') ;;
   *)
-    echo -e '\e[31mmicrocode typo\e[m'
-    exit 1
+    echo -e '\e[31mmicrocode typo\e[m' && exit 1
     ;;
   esac
   case "${GPU}" in
   'intel') ;;
   'amd') ;;
   *)
-    echo -e '\e[31mgpu typo\e[m'
-    exit 1
+    echo -e '\e[31mgpu typo\e[m' && exit 1
     ;;
   esac
 }
@@ -256,8 +249,7 @@ EOF
 }
 
 enable_services() {
-  arch-chroot /mnt systemctl enable systemd-{boot-update,networkd,resolved}.service
-  arch-chroot /mnt systemctl enable reflector.timer
+  arch-chroot /mnt systemctl enable systemd-{boot-update,networkd,resolved}.service reflector.timer
 }
 
 main() {

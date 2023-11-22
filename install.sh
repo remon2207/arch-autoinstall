@@ -19,10 +19,7 @@ OPTIONS:
 EOF
 }
 
-if [[ ${#} -eq 0 ]]; then
-  usage
-  exit 1
-fi
+[[ ${#} -eq 0 ]] && usage && exit 1
 
 readonly KERNEL='linux-zen'
 readonly USER_NAME='remon'
@@ -118,12 +115,10 @@ while getopts 'd:m:e:g:u:r:p:s:h' opt; do
     readonly ROOT_SIZE="${OPTARG}"
     ;;
   'h')
-    usage
-    exit 0
+    usage && exit 0
     ;;
   *)
-    usage
-    exit 1
+    usage && exit 1
     ;;
   esac
 done
@@ -133,8 +128,7 @@ check_variables() {
   'intel') ;;
   'amd') ;;
   *)
-    echo -e '\e[31mmicrocode typo\e[m'
-    exit 1
+    echo -e '\e[31mmicrocode typo\e[m' && exit 1
     ;;
   esac
   case "${DE}" in
@@ -143,8 +137,7 @@ check_variables() {
   'gnome') ;;
   'kde') ;;
   *)
-    echo -e '\e[31mde typo\e[m'
-    exit 1
+    echo -e '\e[31mde typo\e[m' && exit 1
     ;;
   esac
   case "${GPU}" in
@@ -152,8 +145,7 @@ check_variables() {
   'intel') ;;
   'amd') ;;
   *)
-    echo -e '\e[31mgpu typo\e[m'
-    exit 1
+    echo -e '\e[31mgpu typo\e[m' && exit 1
     ;;
   esac
   case "${PARTITION_DESTROY}" in
@@ -162,8 +154,7 @@ check_variables() {
   'root-only') ;;
   'skip') ;;
   *)
-    echo -e '\e[31mpartition-destroy typo\e[m'
-    exit 1
+    echo -e '\e[31mpartition-destroy typo\e[m' && exit 1
     ;;
   esac
 }
@@ -377,9 +368,7 @@ create_user() {
 }
 
 add_to_group() {
-  for groups in docker vboxusers; do
-    arch-chroot /mnt gpasswd -a "${USER_NAME}" "${groups}"
-  done
+  for groups in docker vboxusers; do arch-chroot /mnt gpasswd -a "${USER_NAME}" "${groups}"; done
 }
 
 replacement() {
@@ -531,8 +520,7 @@ EOF
 }
 
 enable_services() {
-  arch-chroot /mnt systemctl enable {iptables,docker,systemd-boot-update}.service
-  arch-chroot /mnt systemctl enable {fstrim,reflector}.timer
+  arch-chroot /mnt systemctl enable {iptables,docker,systemd-boot-update}.service {fstrim,reflector}.timer
 
   case "${DE}" in
   'i3')
