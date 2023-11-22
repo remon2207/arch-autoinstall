@@ -320,7 +320,7 @@ configuration() {
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
   echo 'archlinux' > /mnt/etc/hostname
-  to_arch sed -e 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' arch-chroot /mnt visudo &> /dev/null
+  to_arch sed -e 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo &> /dev/null
 }
 
 networking() {
