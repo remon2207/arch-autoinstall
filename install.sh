@@ -4,12 +4,12 @@ set -eu
 
 usage() {
   cat << EOF
-  USAGE:
-    If used git clone command.
-      ${0} <OPTIONS>
+USAGE:
+  If used git clone command.
+    ${0} <OPTIONS>
 
-    wget, curl, etc.
-      bash $(basename "${0}") <OPTIONS>
+  wget, curl, etc.
+    bash $(basename "${0}") <OPTIONS>
 OPTIONS:
   -d        Path of disk
   -e        desktop environment or window manager [i3, xfce, gnome, kde]
