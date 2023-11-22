@@ -4,8 +4,12 @@ set -eu
 
 usage() {
   cat << EOF
-USAGE:
-  ${0} <OPTIONS>
+  USAGE:
+    If used git clone command.
+      ${0} <OPTIONS>
+
+    wget, curl, etc.
+      bash $(basename "${0}") <OPTIONS>
 OPTIONS:
   -d        Path of disk
   -e        desktop environment or window manager [i3, xfce, gnome, kde]
@@ -303,7 +307,7 @@ installation() {
   # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
-    NUMBER_HOOKS="$(grep -n '^HOOKS' ./mkinitcpio.conf)" && readonly NUMBER_HOOKS
+    NUMBER_HOOKS="$(grep -n '^HOOKS' /etc/mkinitcpio.conf)" && readonly NUMBER_HOOKS
     NUMBER="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $1}')" && readonly NUMBER
     HOOKS_ORG="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $2}')" && readonly HOOKS_ORG
     NEW_NUMBER="$(("${NUMBER}" + 1))" && readonly NEW_NUMBER
