@@ -310,7 +310,8 @@ installation() {
 
   case "${GPU}" in
   'nvidia')
-    local -r NVIDIA_HOOKS="$(echo "${HOOKS_ORG}" | sed -e "${NUMBER}s/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/")"
+    # shellcheck disable=SC2001
+    local -r NVIDIA_HOOKS="$(echo "${HOOKS_ORG}" | sed -e 's/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/')"
 
     to_arch sed -i -e \
       's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' -e \
@@ -319,7 +320,8 @@ installation() {
     to_arch mkinitcpio -p "${KERNEL}"
     ;;
   'amd')
-    local -r AMD_HOOKS="$(echo "${HOOKS_ORG}" | sed -e "${NUMBER}s/\(.*\)consolefont \(.*\)/\1\2/")"
+    # shellcheck disable=SC2001
+    local -r AMD_HOOKS="$(echo "${HOOKS_ORG}" | sed -e 's/\(.*\)consolefont \(.*\)/\1\2/')"
 
     to_arch sed -i -e \
       "${NUMBER}s/^/#/" -e \
