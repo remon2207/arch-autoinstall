@@ -441,7 +441,6 @@ boot_loader() {
   local -r INITRAMFS_FALLBACK="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'END {print $4}')"
   local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
   local -r AMD_PARAMS='rw panic=180 i915.modeset=0'
-  local -r INTEL_PARAMS='rw panic=180'
 
   local -r LOADER_CONF="$(
     cat << EOF
