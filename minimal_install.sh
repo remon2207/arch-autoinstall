@@ -124,13 +124,15 @@ replacement() {
 }
 
 boot_loader() {
+  find_boot() { find /mnt/boot -type f -name "${1}"; }
+
   to_arch bootctl install
 
   local -r ROOT_PARTUUID="$(blkid -s PARTUUID -o value "${DISK}2")"
-  local -r VMLINUZ="$(find /mnt/boot -name "*vmlinuz*${KERNEL}*" -type f | awk -F '/' '{print $4}')"
-  local -r UCODE="$(find /mnt/boot -name '*ucode*' -type f | awk -F '/' '{print $4}')"
-  local -r INITRAMFS="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | head -n 1 | awk -F '/' '{print $4}')"
-  local -r INITRAMFS_FALLBACK="$(find /mnt/boot -name "*initramfs*${KERNEL}*" -type f | tail -n 1 | awk -F '/' '{print $4}')"
+  local -r VMLINUZ="$(find_boot "*vmlinuz*${KERNEL}*" | awk -F '/' '{print $4}')"
+  local -r UCODE="$(find_boot '*ucode*' | awk -F '/' '{print $4}')"
+  local -r INITRAMFS="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'NR==1 {print $4}')"
+  local -r INITRAMFS_FALLBACK="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'END {print $4}')"
 
   local -r LOADER_CONF="$(
     cat << EOF
