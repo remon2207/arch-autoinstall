@@ -2,17 +2,6 @@
 
 set -eu
 
-usage() {
-  cat << EOF
-USAGE:
-  ${0} <OPTIONS>
-OPTIONS:
-  -h        See Help
-EOF
-}
-
-[[ ${#} -eq 0 ]] && usage && exit 1
-
 to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
