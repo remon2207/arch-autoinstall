@@ -491,26 +491,6 @@ options  root=PARTUUID=${ROOT_PARTUUID} ${AMD_PARAMS} debug
 EOF
   )"
 
-  local -r INTEL_CONF="$(
-    cat << EOF
-title    Arch Linux
-linux    /${VMLINUZ}
-initrd   /${UCODE}
-initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} loglevel=3
-EOF
-  )"
-
-  local -r INTEL_FALLBACK_CONF="$(
-    cat << EOF
-title    Arch Linux (fallback initramfs)
-linux    /${VMLINUZ}
-initrd   /${UCODE}
-initrd   /${INITRAMFS_FALLBACK}
-options  root=PARTUUID=${ROOT_PARTUUID} ${INTEL_PARAMS} debug
-EOF
-  )"
-
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
 
   case "${GPU}" in
