@@ -303,7 +303,15 @@ installation() {
   # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
   if [[ "${GPU}" == 'nvidia' ]]; then
-    to_arch sed -i -e 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' /etc/mkinitcpio.conf
+    NUMBER_HOOKS="$(grep -n '^HOOKS' ./mkinitcpio.conf)" && readonly NUMBER_HOOKS
+    NUMBER="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $1}')" && readonly NUMBER
+    HOOKS_ORG="$(echo "${NUMBER_HOOKS}" | awk -F ':' '{print $2}')" && readonly HOOKS_ORG
+    NEW_NUMBER="$(("${NUMBER}" + 1))" && readonly NEW_NUMBER
+    NEW_HOOKS="$(echo "${HOOKS_ORG}" | sed -e 's/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/' -e 's/consolefont //')" && readonly NEW_HOOKS
+
+    to_arch sed -i -e 's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' -e \
+      "${NUMBER}s/^/#/" -e \
+      "${NEW_NUMBER}i ${NEW_HOOKS}" /etc/mkinitcpio.conf
     to_arch mkinitcpio -p "${KERNEL}"
   fi
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
@@ -548,7 +556,3 @@ main() {
 }
 
 main "${@}"
-
-echo '======================================================'
-echo "Remove 'kms' and 'consolefont' in /etc/mkinitcpio.conf"
-echo '======================================================'
