@@ -317,7 +317,6 @@ installation() {
       's/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' -e \
       "${NUMBER}s/^/#/" -e \
       "${NEW_NUMBER}i ${NVIDIA_HOOKS}" /etc/mkinitcpio.conf
-    to_arch mkinitcpio -p "${KERNEL}"
     ;;
   'amd')
     # shellcheck disable=SC2001
@@ -326,9 +325,10 @@ installation() {
     to_arch sed -i -e \
       "${NUMBER}s/^/#/" -e \
       "${NEW_NUMBER}i ${AMD_HOOKS}" /etc/mkinitcpio.conf
-    to_arch mkinitcpio -p "${KERNEL}"
     ;;
   esac
+
+  to_arch mkinitcpio -p "${KERNEL}"
   genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
 }
 
@@ -443,7 +443,7 @@ boot_loader() {
   local -r INITRAMFS="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'NR==1 {print $4}')"
   local -r INITRAMFS_FALLBACK="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'END {print $4}')"
   local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
-  local -r AMD_PARAMS='rw panic=180 i915.modeset=0'
+  local -r AMD_PARAMS='rw panic=180'
 
   local -r LOADER_CONF="$(
     cat << EOF

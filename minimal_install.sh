@@ -137,6 +137,7 @@ boot_loader() {
   local -r UCODE="$(find_boot '*ucode*' | awk -F '/' '{print $4}')"
   local -r INITRAMFS="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'NR==1 {print $4}')"
   local -r INITRAMFS_FALLBACK="$(find_boot "*initramfs*${KERNEL}*" | awk -F '/' 'END {print $4}')"
+  local -r KERNEL_PARAMS='rw panic=180'
 
   local -r LOADER_CONF="$(
     cat << EOF
@@ -152,7 +153,7 @@ title    Arch Linux
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
+options  root=PARTUUID=${ROOT_PARTUUID} ${KERNEL_PARAMS} loglevel=3
 EOF
   )"
 
@@ -162,7 +163,7 @@ title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
 initrd   /${UCODE}
 initrd   /${INITRAMFS_FALLBACK}
-options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180
+options  root=PARTUUID=${ROOT_PARTUUID} ${KERNEL_PARAMS} debug
 EOF
   )"
 
