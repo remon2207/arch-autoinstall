@@ -334,7 +334,8 @@ configuration() {
   to_arch reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
   to_arch ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   to_arch hwclock --systohc --utc
-  to_arch sed -i -e 's/^#\(en_US.UTF-8 UTF-8\)/\1/' -e \
+  to_arch sed -i -e \
+    's/^#\(en_US.UTF-8 UTF-8\)/\1/' -e \
     's/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
   to_arch sed -i -e 's/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   to_arch locale-gen
