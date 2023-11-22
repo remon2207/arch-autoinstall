@@ -121,7 +121,7 @@ while getopts 'd:m:e:g:u:r:p:s:h' opt; do
     usage
     exit 0
     ;;
-  '*')
+  *)
     usage
     exit 1
     ;;
