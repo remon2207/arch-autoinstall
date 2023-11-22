@@ -19,7 +19,7 @@ OPTIONS:
 EOF
 }
 
-if [[ ${#} -ne 16 ]]; then
+if [[ ${#} -eq 0 ]]; then
   usage
   exit 1
 fi
