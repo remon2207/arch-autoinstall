@@ -7,11 +7,6 @@ usage() {
 USAGE:
   ${0} <OPTIONS>
 OPTIONS:
-  -d        Path of disk
-  -m        microcode value [intel, amd]
-  -g        gpu value [intel, amd]
-  -u        Password of user
-  -r        Password of root
   -h        See Help
 EOF
 }
@@ -21,6 +16,8 @@ EOF
 to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
+readonly DISK='/dev/sda'
+CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk -F '[ (]' 'NR==1 {print $3}')" && readonly CPU_INFO
 
 packagelist="base \
   base-devel \
@@ -35,55 +32,12 @@ packagelist="base \
   man-pages \
   reflector"
 
-while getopts 'd:m:g:u:r:h' opt; do
-  case "${opt}" in
-  'd')
-    readonly DISK="${OPTARG}"
-    ;;
-  'm')
-    readonly MICROCODE="${OPTARG}"
-    ;;
-  'g')
-    readonly GPU="${OPTARG}"
-    ;;
-  'u')
-    readonly USER_PASSWORD="${OPTARG}"
-    ;;
-  'r')
-    readonly ROOT_PASSWORD="${OPTARG}"
-    ;;
-  'h')
-    usage && exit 0
-    ;;
-  *)
-    usage && exit 1
-    ;;
-  esac
-done
-
-check_variables() {
-  case "${MICROCODE}" in
-  'intel') ;;
-  'amd') ;;
-  *)
-    echo -e '\e[31mmicrocode typo\e[m' && exit 1
-    ;;
-  esac
-  case "${GPU}" in
-  'intel') ;;
-  'amd') ;;
-  *)
-    echo -e '\e[31mgpu typo\e[m' && exit 1
-    ;;
-  esac
-}
-
 selection_arguments() {
-  case "${MICROCODE}" in
-  'intel')
+  case "${CPU_INFO}" in
+  'Intel')
     packagelist="${packagelist} intel-ucode"
     ;;
-  'amd')
+  'AMD')
     packagelist="${packagelist} amd-ucode"
     ;;
   esac
@@ -159,9 +113,9 @@ DNS=8.8.4.4"
 create_user() {
   local -r USER_NAME='virt'
 
-  echo "root:${ROOT_PASSWORD}" | to_arch chpasswd
+  echo 'root:root' | to_arch chpasswd
   to_arch useradd -m -G wheel -s /bin/bash "${USER_NAME}"
-  echo "${USER_NAME}:${USER_PASSWORD}" | to_arch chpasswd
+  echo "${USER_NAME}:virt" | to_arch chpasswd
 }
 
 replacement() {
@@ -197,27 +151,7 @@ editor       no
 EOF
   )"
 
-  local -r AMD_CONF="$(
-    cat << EOF
-title    Arch Linux
-linux    /${VMLINUZ}
-initrd   /${UCODE}
-initrd   /${INITRAMFS}
-options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180 i915.modeset=0
-EOF
-  )"
-
-  local -r AMD_FALLBACK_CONF="$(
-    cat << EOF
-title    Arch Linux (fallback initramfs)
-linux    /${VMLINUZ}
-initrd   /${UCODE}
-initrd   /${INITRAMFS_FALLBACK}
-options  root=PARTUUID=${ROOT_PARTUUID} rw debug panic=180 i915.modeset=0
-EOF
-  )"
-
-  local -r INTEL_CONF="$(
+  local -r ENTRIES_CONF="$(
     cat << EOF
 title    Arch Linux
 linux    /${VMLINUZ}
@@ -227,7 +161,7 @@ options  root=PARTUUID=${ROOT_PARTUUID} rw loglevel=3 panic=180
 EOF
   )"
 
-  local -r INTEL_FALLBACK_CONF="$(
+  local -r ENTRIES_CONF_FALLBACK="$(
     cat << EOF
 title    Arch Linux (fallback initramfs)
 linux    /${VMLINUZ}
@@ -238,16 +172,8 @@ EOF
   )"
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
-  case "${GPU}" in
-  'amd')
-    echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
-    echo "${AMD_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-    ;;
-  'intel')
-    echo "${INTEL_CONF}" > /mnt/boot/loader/entries/arch.conf
-    echo "${INTEL_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-    ;;
-  esac
+  echo "${ENTRIES_CONF}" > /mnt/boot/loader/entries/arch.conf
+  echo "${ENTRIES_CONF_FALLBACK}" > /mnt/boot/loader/entries/arch_fallback.conf
 }
 
 enable_services() {
@@ -255,7 +181,6 @@ enable_services() {
 }
 
 main() {
-  check_variables
   selection_arguments
   time_setting
   partitioning
