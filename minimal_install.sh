@@ -16,7 +16,7 @@ OPTIONS:
 EOF
 }
 
-if [[ ${#} -ne 10 ]]; then
+if [[ ${#} -eq 0 ]]; then
   usage
   exit 1
 fi
@@ -65,21 +65,33 @@ while getopts 'd:m:g:u:r:h' opt; do
 done
 
 check_variables() {
-  if [[ "${MICROCODE}" != 'intel' ]] && [[ "${MICROCODE}" != 'amd' ]]; then
+  case "${MICROCODE}" in
+  'intel') ;;
+  'amd') ;;
+  *)
     echo -e '\e[31mmicrocode typo\e[m'
     exit 1
-  elif [[ "${GPU}" != 'amd' ]] && [[ "${GPU}" != 'intel' ]]; then
+    ;;
+  esac
+  case "${GPU}" in
+  'intel') ;;
+  'amd') ;;
+  *)
     echo -e '\e[31mgpu typo\e[m'
     exit 1
-  fi
+    ;;
+  esac
 }
 
 selection_arguments() {
-  if [[ "${MICROCODE}" == 'intel' ]]; then
+  case "${MICROCODE}" in
+  'intel')
     packagelist="${packagelist} intel-ucode"
-  elif [[ "${MICROCODE}" == 'amd' ]]; then
+    ;;
+  'amd')
     packagelist="${packagelist} amd-ucode"
-  fi
+    ;;
+  esac
 }
 
 time_setting() {
@@ -231,13 +243,16 @@ EOF
   )"
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
-  if [[ "${GPU}" == 'amd' ]]; then
+  case "${GPU}" in
+  'amd')
     echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
     echo "${AMD_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-  elif [[ "${GPU}" == 'intel' ]]; then
+    ;;
+  'intel')
     echo "${INTEL_CONF}" > /mnt/boot/loader/entries/arch.conf
     echo "${INTEL_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
-  fi
+    ;;
+  esac
 }
 
 enable_services() {
