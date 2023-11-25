@@ -2,6 +2,8 @@
 
 set -eu
 
+unalias -a
+
 to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'

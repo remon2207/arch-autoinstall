@@ -24,6 +24,8 @@ EOF
 
 [[ ${#} -eq 0 ]] && usage && exit 1
 
+unalias -a
+
 to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
