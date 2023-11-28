@@ -169,28 +169,28 @@ selection_arguments() {
   case "${DE}" in
   'i3')
     packagelist="${packagelist} \
-        i3-wm \
-        i3lock \
-        rofi \
-        polybar \
-        xautolock \
-        polkit \
-        scrot \
-        feh \
-        picom \
-        dunst \
-        gnome-keyring \
-        qt5ct \
-        kvantum \
-        arc-gtk-theme \
-        papirus-icon-theme \
-        pavucontrol \
-        alacritty \
-        kitty \
-        wezterm \
-        tmux \
-        ttf-font-awesome \
-        ranger"
+      i3-wm \
+      i3lock \
+      rofi \
+      polybar \
+      xautolock \
+      polkit \
+      scrot \
+      feh \
+      picom \
+      dunst \
+      gnome-keyring \
+      qt5ct \
+      kvantum \
+      arc-gtk-theme \
+      papirus-icon-theme \
+      pavucontrol \
+      alacritty \
+      kitty \
+      wezterm \
+      tmux \
+      ttf-font-awesome \
+      ranger"
     ;;
   'xfce')
     packagelist="${packagelist} \
