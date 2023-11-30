@@ -381,7 +381,7 @@ DNS=192.168.1.202"
 
 create_user() {
   echo "root:${ROOT_PASSWORD}" | to_arch chpasswd
-  to_arch useradd --create-home --groups 'wheel' --shell /bin/bash "${USER_NAME}"
+  to_arch useradd --create-home --groups 'wheel' --shell '/bin/bash' "${USER_NAME}"
   echo "${USER_NAME}:${USER_PASSWORD}" | to_arch chpasswd
 }
 

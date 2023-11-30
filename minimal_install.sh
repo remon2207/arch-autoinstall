@@ -106,7 +106,7 @@ create_user() {
   local -r USER_NAME='virt'
 
   echo 'root:root' | to_arch chpasswd
-  to_arch useradd --create-home --groups 'wheel' --shell /bin/bash "${USER_NAME}"
+  to_arch useradd --create-home --groups 'wheel' --shell '/bin/bash' "${USER_NAME}"
   echo "${USER_NAME}:virt" | to_arch chpasswd
 }
 
