@@ -96,8 +96,8 @@ packagelist="base \
   stylua \
   nfs-utils"
 
-while getopts 'd:e:g:u:r:p:s:h' opt; do
-  case "${opt}" in
+while getopts 'd:e:g:u:r:p:s:h' flag; do
+  case "${flag}" in
   'd')
     readonly DISK="${OPTARG}"
     ;;
