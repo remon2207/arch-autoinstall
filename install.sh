@@ -446,6 +446,7 @@ boot_loader() {
   local -r INITRAMFS_FALLBACK="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
   local -r NVIDIA_PARAMS='rw panic=180 i915.modeset=0 nouveau.modeset=0 nvidia_drm.modeset=1'
   local -r AMD_PARAMS='rw panic=180'
+  local -r ENTRIES='/mnt/boot/loader/entries'
 
   local -r LOADER_CONF="$(
     cat << EOF
@@ -499,12 +500,12 @@ EOF
 
   case "${GPU}" in
   'nvidia')
-    echo "${NVIDIA_CONF}" > /mnt/boot/loader/entries/arch.conf
-    echo "${NVIDIA_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
+    echo "${NVIDIA_CONF}" > "${ENTRIES}/arch.conf"
+    echo "${NVIDIA_FALLBACK_CONF}" > "${ENTRIES}/arch_fallback.conf"
     ;;
   'amd')
-    echo "${AMD_CONF}" > /mnt/boot/loader/entries/arch.conf
-    echo "${AMD_FALLBACK_CONF}" > /mnt/boot/loader/entries/arch_fallback.conf
+    echo "${AMD_CONF}" > "${ENTRIES}/arch.conf"
+    echo "${AMD_FALLBACK_CONF}" > "${ENTRIES}/arch_fallback.conf"
     ;;
   esac
 }

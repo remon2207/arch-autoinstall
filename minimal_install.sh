@@ -140,6 +140,7 @@ boot_loader() {
   local -r INITRAMFS="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
   local -r INITRAMFS_FALLBACK="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
   local -r KERNEL_PARAMS='rw panic=180'
+  local -r ENTRIES='/mnt/boot/loader/entries'
 
   local -r LOADER_CONF="$(
     cat << EOF
@@ -170,8 +171,8 @@ EOF
   )"
 
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
-  echo "${ENTRIES_CONF}" > /mnt/boot/loader/entries/arch.conf
-  echo "${ENTRIES_CONF_FALLBACK}" > /mnt/boot/loader/entries/arch_fallback.conf
+  echo "${ENTRIES_CONF}" > "${ENTRIES}/arch.conf"
+  echo "${ENTRIES_CONF_FALLBACK}" > "${ENTRIES}/arch_fallback.conf"
 }
 
 enable_services() {
