@@ -73,7 +73,7 @@ configuration() {
     --expression='s/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
   to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   to_arch locale-gen
-  to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo &> /dev/null
+  to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='/usr/bin/tee' to_arch visudo &> /dev/null
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
   echo 'virtualbox' > /mnt/etc/hostname
