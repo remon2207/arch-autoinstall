@@ -295,7 +295,7 @@ partitioning() {
 
   # mount
   mount "${DISK}2" /mnt
-  mount --mkdir --options fmask=0077,dmask=0077 "${DISK}1" /mnt/boot
+  mount --mkdir --options 'fmask=0077,dmask=0077' "${DISK}1" /mnt/boot
   mount --mkdir "${DISK}3" /mnt/home
 }
 
@@ -305,7 +305,7 @@ installation() {
   local -r HOOKS_ORG="$(echo "${NUMBER_HOOKS}" | awk --field-separator=':' '{print $2}')"
   local -r NEW_NUMBER="$(("${NUMBER}" + 1))"
 
-  reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+  reflector --country 'Japan' --age 24 --protocol 'https' --sort 'rate' --save /etc/pacman.d/mirrorlist
   sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   # shellcheck disable=SC2086
   pacstrap -K /mnt ${packagelist}
@@ -331,11 +331,11 @@ installation() {
   esac
 
   to_arch mkinitcpio -p "${KERNEL}"
-  genfstab -t PARTUUID /mnt >> /mnt/etc/fstab
+  genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
 }
 
 configuration() {
-  to_arch reflector --country Japan --age 24 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+  to_arch reflector --country 'Japan' --age 24 --protocol 'https' --sort 'rate' --save /etc/pacman.d/mirrorlist
   to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   to_arch hwclock --systohc --utc
   to_arch sed --in-place \
@@ -381,7 +381,7 @@ DNS=192.168.1.202"
 
 create_user() {
   echo "root:${ROOT_PASSWORD}" | to_arch chpasswd
-  to_arch useradd --create-home --groups wheel --shell /bin/bash "${USER_NAME}"
+  to_arch useradd --create-home --groups 'wheel' --shell /bin/bash "${USER_NAME}"
   echo "${USER_NAME}:${USER_PASSWORD}" | to_arch chpasswd
 }
 
@@ -435,11 +435,11 @@ VDPAU_DRIVER='radeonsi'"
 }
 
 boot_loader() {
-  find_boot() { find /mnt/boot -type f -name "${1}"; }
+  find_boot() { find /mnt/boot -type 'f' -name "${1}"; }
 
   to_arch bootctl install
 
-  local -r ROOT_PARTUUID="$(blkid --match-tag PARTUUID --output value "${DISK}2")"
+  local -r ROOT_PARTUUID="$(blkid --match-tag 'PARTUUID' --output 'value' "${DISK}2")"
   local -r VMLINUZ="$(find_boot "*vmlinuz*${KERNEL}*" | awk --field-separator='/' '{print $4}')"
   local -r UCODE="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
   local -r INITRAMFS="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
