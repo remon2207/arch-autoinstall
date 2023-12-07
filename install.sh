@@ -170,7 +170,6 @@ selection_arguments() {
   'i3')
     packagelist="${packagelist} \
       i3-wm \
-      i3lock \
       rofi \
       polybar \
       xautolock \
