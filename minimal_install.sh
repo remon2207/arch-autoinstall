@@ -4,7 +4,7 @@ set -eu
 
 unalias -a
 
-to_arch() { arch-chroot /mnt "${@}"; }
+to-arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
 readonly DISK='/dev/sda'
@@ -65,15 +65,15 @@ installation() {
 }
 
 configuration() {
-  to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
-  to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
-  to_arch hwclock --systohc --utc
-  to_arch sed --in-place \
+  to-arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+  to-arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+  to-arch hwclock --systohc --utc
+  to-arch sed --in-place \
     --expression='s/^#\(en_US.UTF-8 UTF-8\)/\1/' \
     --expression='s/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
-  to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
-  to_arch locale-gen
-  to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='/usr/bin/tee' to_arch visudo &> /dev/null
+  to-arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
+  to-arch locale-gen
+  to-arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='/usr/bin/tee' to-arch visudo &> /dev/null
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
   echo 'virtualbox' > /mnt/etc/hostname
@@ -105,34 +105,34 @@ DNS=8.8.4.4"
 create_user() {
   local -r USER_NAME='virt'
 
-  echo 'root:root' | to_arch chpasswd
-  to_arch useradd --create-home --groups='wheel' --shell='/bin/bash' "${USER_NAME}"
-  echo "${USER_NAME}:virt" | to_arch chpasswd
+  echo 'root:root' | to-arch chpasswd
+  to-arch useradd --create-home --groups='wheel' --shell='/bin/bash' "${USER_NAME}"
+  echo "${USER_NAME}:virt" | to-arch chpasswd
 }
 
 replacement() {
-  to_arch sed --in-place \
+  to-arch sed --in-place \
     --expression='s/^#\(NTP=\)/\1ntp.nict.jp/' \
     --expression='s/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   # shellcheck disable=SC2016
-  to_arch sed --in-place \
+  to-arch sed --in-place \
     --expression='s/\(-march=\)x86-64 -mtune=generic/\1skylake/' \
     --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
     --expression='s/^#\(BUILDDIR\)/\1/' /etc/makepkg.conf
-  to_arch sed --in-place \
+  to-arch sed --in-place \
     --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
     --expression='s/^--latest 5/# &/' \
     --expression='s/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
-  to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
+  to-arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
 
-  to_arch pacman -Syy
+  to-arch pacman -Syy
 }
 
 boot_loader() {
   find_boot() { find /mnt/boot -type 'f' -name "${1}"; }
 
-  to_arch bootctl install
+  to-arch bootctl install
 
   local -r ROOT_PARTUUID="$(blkid --match-tag='PARTUUID' --output='value' "${DISK}2")"
   local -r VMLINUZ="$(find_boot "*vmlinuz*${KERNEL}*" | awk --field-separator='/' '{print $4}')"
@@ -176,7 +176,7 @@ EOF
 }
 
 enable_services() {
-  to_arch systemctl enable systemd-{boot-update,networkd,resolved}.service reflector.timer
+  to-arch systemctl enable systemd-{boot-update,networkd,resolved}.service reflector.timer
 }
 
 main() {
