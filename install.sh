@@ -430,7 +430,7 @@ VDPAU_DRIVER='radeonsi'"
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${ENVIRONMENT}" >> /mnt/etc/environment
 
-  to-arch pacman -Syy
+  to-arch pacman --sync --refresh --refresh
 }
 
 boot_loader() {
