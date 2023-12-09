@@ -126,7 +126,7 @@ replacement() {
   to-arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
 
-  to-arch pacman -Syy
+  to-arch pacman --sync --refresh --refresh
 }
 
 boot_loader() {
