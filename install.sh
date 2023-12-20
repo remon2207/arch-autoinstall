@@ -362,15 +362,24 @@ EOF
 Name=${NET_INTERFACE}
 
 [Network]
-DHCP=yes
+DHCP=yes"
+
+  local -r RESOLVED="[Resolve]
 DNS=192.168.1.202"
+
+  local -r RESOLVED_FALLBACK="[Resolve]
+FallbackDNS=8.8.8.8 8.8.4.4 2001:4860:4860::8888 2001:4860:4860::8844"
 
   echo "${HOSTS}" >> /mnt/etc/hosts
 
   case "${DE}" in
   'i3' | 'xfce')
+    mkdir /etc/systemd/resolved.conf.d
     ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+
     echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
+    echo "${RESOLVED}" > /mnt/etc/systemd/resolved.conf.d/dns_servers.conf
+    echo "${RESOLVED_FALLBACK}" > /mnt/etc/systemd/resolved.conf.d/fallback_dns.conf
     ;;
   *)
     ln --symbolic --force /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf

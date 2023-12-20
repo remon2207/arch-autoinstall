@@ -93,13 +93,17 @@ EOF
 Name=${NET_INTERFACE}
 
 [Network]
-DHCP=yes
-DNS=8.8.8.8
-DNS=8.8.4.4"
+DHCP=yes"
+
+  local -r RESOLVED="[Resolve]
+DNS=8.8.8.8 8.8.4.4"
+
+  mkdir /etc/systemd/resolved.conf.d
+  ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
   echo "${HOSTS}" >> /mnt/etc/hosts
   echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
-  ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+  echo "${RESOLVED}" > /etc/systemd/resolved.conf.d/dns_servers.conf
 }
 
 create_user() {
