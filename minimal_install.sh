@@ -96,7 +96,7 @@ Name=${NET_INTERFACE}
 DHCP=yes"
 
   local -r RESOLVED="[Resolve]
-DNS=8.8.8.8 8.8.4.4"
+DNS=2001:4860:4860::8888 2001:4860:4860::8844"
 
   mkdir /etc/systemd/resolved.conf.d
   ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
