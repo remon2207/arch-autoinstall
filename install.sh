@@ -98,77 +98,77 @@ packagelist="base \
 
 while getopts 'd:e:g:u:r:p:s:h' opt; do
   case "${opt}" in
-  'd')
-    readonly DISK="${OPTARG}"
-    ;;
-  'e')
-    readonly DE="${OPTARG}"
-    ;;
-  'g')
-    readonly GPU="${OPTARG}"
-    ;;
-  'u')
-    readonly USER_PASSWORD="${OPTARG}"
-    ;;
-  'r')
-    readonly ROOT_PASSWORD="${OPTARG}"
-    ;;
-  'p')
-    readonly PARTITION_DESTROY="${OPTARG}"
-    ;;
-  's')
-    readonly ROOT_SIZE="${OPTARG}"
-    ;;
-  'h')
-    usage && exit 0
-    ;;
-  *)
-    usage && exit 1
-    ;;
+    'd')
+      readonly DISK="${OPTARG}"
+      ;;
+    'e')
+      readonly DE="${OPTARG}"
+      ;;
+    'g')
+      readonly GPU="${OPTARG}"
+      ;;
+    'u')
+      readonly USER_PASSWORD="${OPTARG}"
+      ;;
+    'r')
+      readonly ROOT_PASSWORD="${OPTARG}"
+      ;;
+    'p')
+      readonly PARTITION_DESTROY="${OPTARG}"
+      ;;
+    's')
+      readonly ROOT_SIZE="${OPTARG}"
+      ;;
+    'h')
+      usage && exit 0
+      ;;
+    *)
+      usage && exit 1
+      ;;
   esac
 done
 
 check_variables() {
   case "${DE}" in
-  'i3') ;;
-  'xfce') ;;
-  'gnome') ;;
-  'kde') ;;
-  *)
-    echo -e '\e[31mde typo\e[m' && exit 1
-    ;;
+    'i3') ;;
+    'xfce') ;;
+    'gnome') ;;
+    'kde') ;;
+    *)
+      echo -e '\e[31mde typo\e[m' && exit 1
+      ;;
   esac
   case "${GPU}" in
-  'nvidia') ;;
-  'amd') ;;
-  *)
-    echo -e '\e[31mgpu typo\e[m' && exit 1
-    ;;
+    'nvidia') ;;
+    'amd') ;;
+    *)
+      echo -e '\e[31mgpu typo\e[m' && exit 1
+      ;;
   esac
   case "${PARTITION_DESTROY}" in
-  'yes') ;;
-  'exclude-efi') ;;
-  'root-only') ;;
-  'skip') ;;
-  *)
-    echo -e '\e[31mpartition-destroy typo\e[m' && exit 1
-    ;;
+    'yes') ;;
+    'exclude-efi') ;;
+    'root-only') ;;
+    'skip') ;;
+    *)
+      echo -e '\e[31mpartition-destroy typo\e[m' && exit 1
+      ;;
   esac
 }
 
 selection_arguments() {
   case "${CPU_INFO}" in
-  'Intel')
-    packagelist="${packagelist} intel-ucode"
-    ;;
-  'AMD')
-    packagelist="${packagelist} amd-ucode"
-    ;;
+    'Intel')
+      packagelist="${packagelist} intel-ucode"
+      ;;
+    'AMD')
+      packagelist="${packagelist} amd-ucode"
+      ;;
   esac
 
   case "${DE}" in
-  'i3')
-    packagelist="${packagelist} \
+    'i3')
+      packagelist="${packagelist} \
       i3-wm \
       rofi \
       polybar \
@@ -190,9 +190,9 @@ selection_arguments() {
       tmux \
       ttf-font-awesome \
       ranger"
-    ;;
-  'xfce')
-    packagelist="${packagelist} \
+      ;;
+    'xfce')
+      packagelist="${packagelist} \
       xfce4 \
       xfce4-goodies \
       gnome-keyring \
@@ -205,9 +205,9 @@ selection_arguments() {
       lightdm \
       lightdm-gtk-greeter \
       lightdm-gtk-greeter-settings"
-    ;;
-  'gnome')
-    packagelist="${packagelist} \
+      ;;
+    'gnome')
+      packagelist="${packagelist} \
       gnome-control-center \
       gnome-shell \
       gnome-tweaks \
@@ -226,9 +226,9 @@ selection_arguments() {
       dconf-editor \
       eog \
       networkmanager"
-    ;;
-  'kde')
-    packagelist="${packagelist} \
+      ;;
+    'kde')
+      packagelist="${packagelist} \
       plasma-meta \
       packagekit-qt5 \
       dolphin \
@@ -236,16 +236,16 @@ selection_arguments() {
       gwenview \
       spectacle \
       kate"
-    ;;
+      ;;
   esac
 
   case "${GPU}" in
-  'nvidia')
-    packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
-    ;;
-  'amd')
-    packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
-    ;;
+    'nvidia')
+      packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
+      ;;
+    'amd')
+      packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
+      ;;
   esac
 }
 
@@ -258,38 +258,38 @@ partitioning() {
   local -r NORMAL_PART_TYPE="$(sgdisk --list-types | grep '8300' | awk '{print $2,$3}')"
 
   case "${PARTITION_DESTROY}" in
-  'yes')
-    local -r EFI_PART_TYPE="$(sgdisk --list-types | grep 'ef00' | awk '{print $6,$7,$8}')"
+    'yes')
+      local -r EFI_PART_TYPE="$(sgdisk --list-types | grep 'ef00' | awk '{print $6,$7,$8}')"
 
-    sgdisk --zap-all "${DISK}"
-    sgdisk --new='0::+512M' --typecode='0:ef00' --change-name="0:${EFI_PART_TYPE}" "${DISK}"
-    sgdisk --new="0::+${ROOT_SIZE}G" --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
-    sgdisk --new='0::' --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
+      sgdisk --zap-all "${DISK}"
+      sgdisk --new='0::+512M' --typecode='0:ef00' --change-name="0:${EFI_PART_TYPE}" "${DISK}"
+      sgdisk --new="0::+${ROOT_SIZE}G" --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
+      sgdisk --new='0::' --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
 
-    # format
-    mkfs.fat -F 32 "${DISK}1"
-    mkfs.ext4 "${DISK}2"
-    mkfs.ext4 "${DISK}3"
-    ;;
-  'exclude-efi')
-    sgdisk --delete=3 "${DISK}"
-    sgdisk --delete=2 "${DISK}"
-    sgdisk --new="0::+${ROOT_SIZE}G" --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
-    sgdisk --new='0::' --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
+      # format
+      mkfs.fat -F 32 "${DISK}1"
+      mkfs.ext4 "${DISK}2"
+      mkfs.ext4 "${DISK}3"
+      ;;
+    'exclude-efi')
+      sgdisk --delete=3 "${DISK}"
+      sgdisk --delete=2 "${DISK}"
+      sgdisk --new="0::+${ROOT_SIZE}G" --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
+      sgdisk --new='0::' --typecode='0:8300' --change-name="0:${NORMAL_PART_TYPE}" "${DISK}"
 
-    # format
-    mkfs.ext4 "${DISK}2"
-    mkfs.ext4 "${DISK}3"
-    ;;
-  'root-only')
-    # format
-    mkfs.ext4 "${DISK}2"
-    ;;
-  'skip')
-    # format
-    mkfs.ext4 "${DISK}2"
-    mkfs.ext4 "${DISK}3"
-    ;;
+      # format
+      mkfs.ext4 "${DISK}2"
+      mkfs.ext4 "${DISK}3"
+      ;;
+    'root-only')
+      # format
+      mkfs.ext4 "${DISK}2"
+      ;;
+    'skip')
+      # format
+      mkfs.ext4 "${DISK}2"
+      mkfs.ext4 "${DISK}3"
+      ;;
   esac
 
   # mount
@@ -310,23 +310,23 @@ installation() {
   pacstrap -K /mnt ${packagelist}
 
   case "${GPU}" in
-  'nvidia')
-    # shellcheck disable=SC2001
-    local -r NVIDIA_HOOKS="$(echo "${HOOKS_ORG}" | sed --expression='s/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/')"
+    'nvidia')
+      # shellcheck disable=SC2001
+      local -r NVIDIA_HOOKS="$(echo "${HOOKS_ORG}" | sed --expression='s/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/')"
 
-    to-arch sed --in-place \
-      --expression='s/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' \
-      --expression="${NUMBER}s/^/#/" \
-      --expression="${NEW_NUMBER}i ${NVIDIA_HOOKS}" /etc/mkinitcpio.conf
-    ;;
-  'amd')
-    # shellcheck disable=SC2001
-    local -r AMD_HOOKS="$(echo "${HOOKS_ORG}" | sed --expression='s/\(.*\)consolefont \(.*\)/\1\2/')"
+      to-arch sed --in-place \
+        --expression='s/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' \
+        --expression="${NUMBER}s/^/#/" \
+        --expression="${NEW_NUMBER}i ${NVIDIA_HOOKS}" /etc/mkinitcpio.conf
+      ;;
+    'amd')
+      # shellcheck disable=SC2001
+      local -r AMD_HOOKS="$(echo "${HOOKS_ORG}" | sed --expression='s/\(.*\)consolefont \(.*\)/\1\2/')"
 
-    to-arch sed --in-place \
-      --expression="${NUMBER}s/^/#/" \
-      --expression="${NEW_NUMBER}i ${AMD_HOOKS}" /etc/mkinitcpio.conf
-    ;;
+      to-arch sed --in-place \
+        --expression="${NUMBER}s/^/#/" \
+        --expression="${NEW_NUMBER}i ${AMD_HOOKS}" /etc/mkinitcpio.conf
+      ;;
   esac
 
   to-arch mkinitcpio -p "${KERNEL}"
@@ -373,17 +373,17 @@ FallbackDNS=2001:4860:4860::8888 2001:4860:4860::8844 8.8.8.8 8.8.4.4"
   echo "${HOSTS}" >> /mnt/etc/hosts
 
   case "${DE}" in
-  'i3' | 'xfce')
-    mkdir /etc/systemd/resolved.conf.d
-    ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
+    'i3' | 'xfce')
+      mkdir /etc/systemd/resolved.conf.d
+      ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
-    echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
-    echo "${RESOLVED}" > /mnt/etc/systemd/resolved.conf.d/dns_servers.conf
-    echo "${RESOLVED_FALLBACK}" > /mnt/etc/systemd/resolved.conf.d/fallback_dns.conf
-    ;;
-  *)
-    ln --symbolic --force /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
-    ;;
+      echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
+      echo "${RESOLVED}" > /mnt/etc/systemd/resolved.conf.d/dns_servers.conf
+      echo "${RESOLVED_FALLBACK}" > /mnt/etc/systemd/resolved.conf.d/fallback_dns.conf
+      ;;
+    *)
+      ln --symbolic --force /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
+      ;;
   esac
 }
 
@@ -399,22 +399,22 @@ add_to_group() {
 
 replacement() {
   case "${GPU}" in
-  'nvidia')
-    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
+    'nvidia')
+      local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='vdpau'
 VDPAU_DRIVER='nvidia'"
-    ;;
-  'amd')
-    local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
+      ;;
+    'amd')
+      local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
 
 LIBVA_DRIVER_NAME='radeonsi'
 VDPAU_DRIVER='radeonsi'"
-    ;;
+      ;;
   esac
 
   to-arch sed --in-place \
@@ -507,14 +507,14 @@ EOF
   echo "${LOADER_CONF}" > /mnt/boot/loader/loader.conf
 
   case "${GPU}" in
-  'nvidia')
-    echo "${NVIDIA_CONF}" > "${ENTRIES}/arch.conf"
-    echo "${NVIDIA_FALLBACK_CONF}" > "${ENTRIES}/arch_fallback.conf"
-    ;;
-  'amd')
-    echo "${AMD_CONF}" > "${ENTRIES}/arch.conf"
-    echo "${AMD_FALLBACK_CONF}" > "${ENTRIES}/arch_fallback.conf"
-    ;;
+    'nvidia')
+      echo "${NVIDIA_CONF}" > "${ENTRIES}/arch.conf"
+      echo "${NVIDIA_FALLBACK_CONF}" > "${ENTRIES}/arch_fallback.conf"
+      ;;
+    'amd')
+      echo "${AMD_CONF}" > "${ENTRIES}/arch.conf"
+      echo "${AMD_FALLBACK_CONF}" > "${ENTRIES}/arch_fallback.conf"
+      ;;
   esac
 }
 
@@ -522,18 +522,18 @@ enable_services() {
   to-arch systemctl enable {iptables,docker,systemd-boot-update}.service {fstrim,reflector}.timer
 
   case "${DE}" in
-  'i3')
-    to-arch systemctl enable systemd-{networkd,resolved}.service
-    ;;
-  'xfce')
-    to-arch systemctl enable {lightdm,systemd-{networkd,resolved}}.service
-    ;;
-  'gnome')
-    to-arch systemctl enable {gdm,NetworkManager}.service
-    ;;
-  'kde')
-    to-arch systemctl enable {sddm,NetworkManager}.service
-    ;;
+    'i3')
+      to-arch systemctl enable systemd-{networkd,resolved}.service
+      ;;
+    'xfce')
+      to-arch systemctl enable {lightdm,systemd-{networkd,resolved}}.service
+      ;;
+    'gnome')
+      to-arch systemctl enable {gdm,NetworkManager}.service
+      ;;
+    'kde')
+      to-arch systemctl enable {sddm,NetworkManager}.service
+      ;;
   esac
 }
 

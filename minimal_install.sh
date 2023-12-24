@@ -25,12 +25,12 @@ packagelist="base \
 
 selection_arguments() {
   case "${CPU_INFO}" in
-  'Intel')
-    packagelist="${packagelist} intel-ucode"
-    ;;
-  'AMD')
-    packagelist="${packagelist} amd-ucode"
-    ;;
+    'Intel')
+      packagelist="${packagelist} intel-ucode"
+      ;;
+    'AMD')
+      packagelist="${packagelist} amd-ucode"
+      ;;
   esac
 }
 
