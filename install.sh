@@ -255,11 +255,15 @@ time_setting() {
 }
 
 partitioning() {
-  local -r NORMAL_PART_TYPE="$(sgdisk --list-types | grep '8300' | awk '{print $2,$3}')"
+  local -r NORMAL_PART_TYPE="$(sgdisk --list-types \
+    | grep '8300' \
+    | awk '{print $2,$3}')"
 
   case "${PARTITION_DESTROY}" in
     'yes')
-      local -r EFI_PART_TYPE="$(sgdisk --list-types | grep 'ef00' | awk '{print $6,$7,$8}')"
+      local -r EFI_PART_TYPE="$(sgdisk --list-types \
+        | grep 'ef00' \
+        | awk '{print $6,$7,$8}')"
 
       sgdisk --zap-all "${DISK}"
       sgdisk --new='0::+512M' --typecode='0:ef00' --change-name="0:${EFI_PART_TYPE}" "${DISK}"
@@ -349,7 +353,9 @@ configuration() {
 }
 
 networking() {
-  local -r NET_INTERFACE="$(ip -br link show | grep ' UP ' | awk '{print $1}')"
+  local -r NET_INTERFACE="$(ip -br link show \
+    | grep ' UP ' \
+    | awk '{print $1}')"
 
   local -r HOSTS="$(
     cat << EOF

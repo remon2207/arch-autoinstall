@@ -40,8 +40,12 @@ time_setting() {
 }
 
 partitioning() {
-  local -r EFI_PART_TYPE="$(sgdisk --list-types | grep 'ef00' | awk '{print $6,$7,$8}')"
-  local -r NORMAL_PART_TYPE="$(sgdisk --list-types | grep '8300' | awk '{print $2,$3}')"
+  local -r EFI_PART_TYPE="$(sgdisk --list-types \
+    | grep 'ef00' \
+    | awk '{print $6,$7,$8}')"
+  local -r NORMAL_PART_TYPE="$(sgdisk --list-types \
+    | grep '8300' \
+    | awk '{print $2,$3}')"
 
   sgdisk --zap-all "${DISK}"
   sgdisk --new='0::+512M' -typecode='0:ef00' --change-name="0:${EFI_PART_TYPE}" "${DISK}"
