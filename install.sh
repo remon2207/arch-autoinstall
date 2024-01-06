@@ -380,7 +380,7 @@ FallbackDNS=2001:4860:4860::8888 2001:4860:4860::8844 8.8.8.8 8.8.4.4"
 
   case "${DE}" in
     'i3' | 'xfce')
-      mkdir /etc/systemd/resolved.conf.d
+      to-arch mkdir /etc/systemd/resolved.conf.d
       ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
       echo "${WIRED}" > /mnt/etc/systemd/network/20-wired.network
