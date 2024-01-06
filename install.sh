@@ -298,7 +298,7 @@ partitioning() {
 
   # mount
   mount "${DISK}2" /mnt
-  mount --mkdir --options='fmask=0077,dmask=0077' "${DISK}1" /mnt/boot
+  mount --mkdir "${DISK}1" /mnt/boot
   mount --mkdir "${DISK}3" /mnt/home
 }
 
