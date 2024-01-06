@@ -50,6 +50,10 @@ packagelist="base \
   curl \
   fzf \
   git \
+  git-delta \
+  httpie \
+  procs \
+  duf \
   openssh \
   btop \
   nvtop \
@@ -184,10 +188,7 @@ selection_arguments() {
       arc-gtk-theme \
       papirus-icon-theme \
       pavucontrol \
-      alacritty \
       kitty \
-      wezterm \
-      tmux \
       ttf-font-awesome \
       ranger"
       ;;
@@ -409,6 +410,7 @@ replacement() {
       local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
+GLFW_IM_MODULE='ibus'
 
 LIBVA_DRIVER_NAME='vdpau'
 VDPAU_DRIVER='nvidia'"
@@ -417,6 +419,7 @@ VDPAU_DRIVER='nvidia'"
       local -r ENVIRONMENT="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
+GLFW_IM_MODULE='ibus'
 
 LIBVA_DRIVER_NAME='radeonsi'
 VDPAU_DRIVER='radeonsi'"
