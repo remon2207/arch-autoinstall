@@ -48,11 +48,11 @@ packagelist="base \
   sudo \
   zsh \
   curl \
-  wget \
   fzf \
   git \
   openssh \
-  htop \
+  btop \
+  nvtop \
   nmap \
   man-db \
   man-pages \
