@@ -64,6 +64,7 @@ packagelist="base \
   wireplumber \
   pipewire \
   pipewire-pulse \
+  pipewire-alsa \
   noto-fonts \
   noto-fonts-cjk \
   noto-fonts-emoji \
