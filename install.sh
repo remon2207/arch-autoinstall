@@ -366,11 +366,11 @@ Name=${net_interface}
 [Network]
 DHCP=yes"
 
-  local -r resolved="[Resolve]
-DNS=192.168.1.202"
+  local -r resolved='[Resolve]
+DNS=192.168.1.202'
 
-  local -r resolved_fallback="[Resolve]
-FallbackDNS=2400:4053:2b41:2a00:280:87ff:fef7:86fa 192.168.1.1"
+  local -r resolved_fallback='[Resolve]
+FallbackDNS=2400:4053:2b41:2a00:280:87ff:fef7:86fa 192.168.1.1'
 
   echo "${hosts}" >> /mnt/etc/hosts
 
@@ -412,7 +412,6 @@ LIBVA_DRIVER_NAME='vdpau'
 VDPAU_DRIVER='nvidia'"
       ;;
     'amd')
-      # shellcheck disable=2034
       local -r environment="GTK_IM_MODULE='fcitx5'
 QT_IM_MODULE='fcitx5'
 XMODIFIERS='@im=fcitx5'
@@ -422,6 +421,13 @@ LIBVA_DRIVER_NAME='radeonsi'
 VDPAU_DRIVER='radeonsi'"
       ;;
   esac
+
+  local -r fstab_tmp='
+# ramdisk
+tmpfs /home/remon/.cache tmpfs rw,async,nodev,nosuid,noatime,size=1G,mode=0755,uid=1000,gid=1000 0 0
+tmpfs /home/remon/tmp    tmpfs rw,async,nodev,nosuid,noatime,size=1G,mode=0755,uid=1000,gid=1000 0 0
+
+'
 
   to_arch sed --in-place \
     --expression='s/^#\(NTP=\)/\1ntp.nict.jp/' \
@@ -444,6 +450,7 @@ VDPAU_DRIVER='radeonsi'"
   to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${environment}" >> /mnt/etc/environment
+  echo "${fstab_tmp}" >> /mnt/etc/fstab
 
   to_arch pacman --sync --refresh --refresh
 }
