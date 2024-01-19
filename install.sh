@@ -70,6 +70,9 @@ packagelist="base \
   noto-fonts-emoji \
   noto-fonts-extra \
   nerd-fonts \
+  inter-font \
+  ttf-hack \
+  otf-ipafont \
   fcitx5-im \
   fcitx5-mozc \
   up \
