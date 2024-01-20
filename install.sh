@@ -190,6 +190,8 @@ selection_arguments() {
       papirus-icon-theme \
       pavucontrol \
       kitty \
+      wezterm \
+      alacritty \
       ttf-font-awesome \
       ranger"
       ;;
