@@ -194,6 +194,7 @@ selection_arguments() {
       wezterm \
       alacritty \
       ttf-font-awesome \
+      archlinux-wallpaper \
       ranger"
       ;;
     'xfce')
