@@ -71,8 +71,8 @@ packagelist="base \
   noto-fonts-extra \
   nerd-fonts \
   ttf-hack \
-  inter-font \
   ttf-liberation \
+  inter-font \
   fcitx5-im \
   fcitx5-mozc \
   up \
