@@ -72,6 +72,7 @@ packagelist="base \
   nerd-fonts \
   ttf-hack \
   inter-font \
+  ttf-liberation \
   fcitx5-im \
   fcitx5-mozc \
   up \
