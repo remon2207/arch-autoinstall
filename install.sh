@@ -70,11 +70,10 @@ packagelist="base \
   noto-fonts-emoji \
   noto-fonts-extra \
   nerd-fonts \
-  ttf-hack \
+  inter-font \
   ttf-liberation \
   fcitx5-im \
   fcitx5-mozc \
-  up \
   docker \
   docker-compose \
   github-cli \
@@ -192,8 +191,7 @@ selection_arguments() {
       papirus-icon-theme \
       pavucontrol \
       kitty \
-      wezterm \
-      alacritty \
+      w3m \
       ttf-font-awesome \
       archlinux-wallpaper \
       ranger"
