@@ -69,6 +69,7 @@ packagelist="base \
   noto-fonts-cjk \
   noto-fonts-emoji \
   noto-fonts-extra \
+  ttf-hack \
   inter-font \
   ttf-liberation \
   ttf-hack-nerd \
