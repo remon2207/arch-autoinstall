@@ -89,7 +89,6 @@ packagelist="base \
   profile-sync-daemon \
   pigz \
   lbzip2 \
-  pv \
   lazygit \
   shfmt \
   shellcheck \
