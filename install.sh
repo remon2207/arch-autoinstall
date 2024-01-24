@@ -69,9 +69,9 @@ packagelist="base \
   noto-fonts-cjk \
   noto-fonts-emoji \
   noto-fonts-extra \
-  nerd-fonts \
   inter-font \
   ttf-liberation \
+  ttf-hack-nerd \
   fcitx5-im \
   fcitx5-mozc \
   docker \
@@ -87,8 +87,6 @@ packagelist="base \
   starship \
   lsd \
   profile-sync-daemon \
-  vivaldi \
-  vivaldi-ffmpeg-codecs \
   pigz \
   lbzip2 \
   pv \
