@@ -422,12 +422,6 @@ VDPAU_DRIVER='radeonsi'"
       ;;
   esac
 
-  local -r fstab_tmp='
-# ramdisk
-tmpfs /home/remon/tmp    tmpfs rw,async,nodev,nosuid,noatime,size=1G,mode=0755,uid=1000,gid=1000 0 0
-
-'
-
   to_arch sed --in-place \
     --expression='s/^#\(NTP=\)/\1ntp.nict.jp/' \
     --expression='s/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
@@ -449,7 +443,6 @@ tmpfs /home/remon/tmp    tmpfs rw,async,nodev,nosuid,noatime,size=1G,mode=0755,u
   to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
   echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
   echo "${environment}" >> /mnt/etc/environment
-  echo "${fstab_tmp}" >> /mnt/etc/fstab
 
   to_arch pacman --sync --refresh --refresh
 }
