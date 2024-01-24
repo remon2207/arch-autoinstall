@@ -428,7 +428,6 @@ VDPAU_DRIVER='radeonsi'"
 
   local -r fstab_tmp='
 # ramdisk
-tmpfs /home/remon/.cache tmpfs rw,async,nodev,nosuid,noatime,size=1G,mode=0755,uid=1000,gid=1000 0 0
 tmpfs /home/remon/tmp    tmpfs rw,async,nodev,nosuid,noatime,size=1G,mode=0755,uid=1000,gid=1000 0 0
 
 '
