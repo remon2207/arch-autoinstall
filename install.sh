@@ -60,7 +60,6 @@ packagelist="base \
   nmap \
   man-db \
   man-pages \
-  xdg-user-dirs \
   wireplumber \
   pipewire \
   pipewire-pulse \
