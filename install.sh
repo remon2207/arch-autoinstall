@@ -41,7 +41,6 @@ packagelist="base \
   neovim \
   go \
   fd \
-  sd \
   tldr \
   ripgrep \
   bat \
@@ -51,9 +50,6 @@ packagelist="base \
   fzf \
   git \
   git-delta \
-  httpie \
-  procs \
-  duf \
   openssh \
   btop \
   nvtop \
@@ -68,7 +64,6 @@ packagelist="base \
   noto-fonts-cjk \
   noto-fonts-emoji \
   noto-fonts-extra \
-  ttf-roboto \
   ttf-roboto-mono-nerd \
   tree \
   fcitx5-im \
