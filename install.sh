@@ -68,6 +68,8 @@ packagelist="base \
   noto-fonts-cjk \
   noto-fonts-emoji \
   noto-fonts-extra \
+  ttf-roboto \
+  ttf-roboto-mono-nerd \
   tree \
   fcitx5-im \
   fcitx5-mozc \
