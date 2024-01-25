@@ -39,9 +39,7 @@ packagelist="base \
   linux-firmware \
   vi \
   neovim \
-  go \
   fd \
-  tldr \
   ripgrep \
   bat \
   sudo \
@@ -53,7 +51,6 @@ packagelist="base \
   openssh \
   btop \
   nvtop \
-  nmap \
   man-db \
   man-pages \
   wireplumber \
@@ -64,7 +61,7 @@ packagelist="base \
   noto-fonts-cjk \
   noto-fonts-emoji \
   noto-fonts-extra \
-  ttf-roboto-mono-nerd \
+  ttf-noto-nerd \
   tree \
   fcitx5-im \
   fcitx5-mozc \
