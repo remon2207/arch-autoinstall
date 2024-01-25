@@ -30,7 +30,7 @@ to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
 readonly USER_NAME='remon'
-readonly CPU_INFO && CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')"
+CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')" && readonly CPU_INFO
 
 packagelist="base \
   base-devel \
@@ -68,10 +68,7 @@ packagelist="base \
   noto-fonts-cjk \
   noto-fonts-emoji \
   noto-fonts-extra \
-  ttf-hack \
-  inter-font \
-  ttf-liberation \
-  ttf-hack-nerd \
+  tree \
   fcitx5-im \
   fcitx5-mozc \
   docker \
