@@ -62,6 +62,8 @@ packagelist="base \
   noto-fonts-emoji \
   noto-fonts-extra \
   ttf-noto-nerd \
+  ttf-hack \
+  inter-font \
   tree \
   fcitx5-im \
   fcitx5-mozc \
