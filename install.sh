@@ -180,7 +180,7 @@ selection_arguments() {
       arc-gtk-theme \
       papirus-icon-theme \
       pavucontrol \
-      kitty \
+      wezterm \
       w3m \
       archlinux-wallpaper \
       ranger"
