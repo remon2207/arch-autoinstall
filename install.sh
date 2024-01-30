@@ -182,7 +182,6 @@ selection_arguments() {
       pavucontrol \
       kitty \
       w3m \
-      ttf-font-awesome \
       archlinux-wallpaper \
       ranger"
       ;;
