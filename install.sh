@@ -46,6 +46,7 @@ packagelist="base \
   zsh \
   curl \
   fzf \
+  fuse2 \
   git \
   git-delta \
   openssh \
