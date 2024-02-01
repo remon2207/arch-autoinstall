@@ -78,7 +78,7 @@ configuration() {
   to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='/usr/bin/tee' to_arch visudo &> /dev/null
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
-  echo 'virtualbox' > /mnt/etc/hostname
+  echo 'virtualbox.home' > /mnt/etc/hostname
 }
 
 networking() {
