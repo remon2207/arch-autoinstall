@@ -30,7 +30,9 @@ to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
 readonly USER_NAME='remon'
-CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')" && readonly CPU_INFO
+
+CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')"
+readonly CPU_INFO
 
 packagelist="base \
   base-devel \
@@ -49,6 +51,7 @@ packagelist="base \
   fuse2 \
   git \
   git-delta \
+  jq \
   openssh \
   btop \
   nvtop \
@@ -65,7 +68,6 @@ packagelist="base \
   ttf-noto-nerd \
   ttf-hack \
   inter-font \
-  tree \
   fcitx5-im \
   fcitx5-mozc \
   docker \
@@ -117,10 +119,14 @@ while getopts 'd:e:g:u:r:p:s:h' opt; do
       readonly ROOT_SIZE="${OPTARG}"
       ;;
     'h')
-      usage && exit 0
+      usage
+
+      exit 0
       ;;
     *)
-      usage && exit 1
+      usage
+
+      exit 1
       ;;
   esac
 done
@@ -194,7 +200,6 @@ selection_arguments() {
       gvfs \
       qt5ct \
       kvantum \
-      blueman \
       papirus-icon-theme \
       arc-gtk-theme \
       lightdm \
@@ -227,7 +232,7 @@ selection_arguments() {
       plasma-meta \
       packagekit-qt5 \
       dolphin \
-      konsole \
+      wezterm \
       gwenview \
       spectacle \
       kate"
@@ -336,8 +341,8 @@ configuration() {
   to_arch locale-gen
   echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
   echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
-  echo 'archlinux.home' > /mnt/etc/hostname
-  to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='/usr/bin/tee' to_arch visudo &> /dev/null
+  echo 'archlinux' > /mnt/etc/hostname
+  to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo &> /dev/null
 }
 
 networking() {
@@ -349,6 +354,7 @@ networking() {
     cat << EOF
 127.0.0.1       localhost
 ::1             localhost
+127.0.1.1       archlinux.home archlinux
 EOF
   )"
 
@@ -522,15 +528,15 @@ enable_services() {
     'i3')
       to_arch systemctl enable systemd-{networkd,resolved}.service
       ;;
-    'xfce')
-      to_arch systemctl enable {lightdm,systemd-{networkd,resolved}}.service
-      ;;
-    'gnome')
-      to_arch systemctl enable {gdm,NetworkManager}.service
-      ;;
-    'kde')
-      to_arch systemctl enable {sddm,NetworkManager}.service
-      ;;
+      # 'xfce')
+      #   to_arch systemctl enable {lightdm,systemd-{networkd,resolved}}.service
+      #   ;;
+      # 'gnome')
+      #   to_arch systemctl enable {gdm,NetworkManager}.service
+      #   ;;
+      # 'kde')
+      #   to_arch systemctl enable {sddm,NetworkManager}.service
+      #   ;;
   esac
 }
 
