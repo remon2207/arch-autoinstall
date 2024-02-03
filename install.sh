@@ -189,7 +189,6 @@ selection_arguments() {
       pavucontrol \
       wezterm \
       w3m \
-      archlinux-wallpaper \
       ranger"
       ;;
     'xfce')
@@ -364,22 +363,13 @@ Name=${net_interface}
 [Network]
 DHCP=yes"
 
-  local -r resolved='[Resolve]
-DNS=192.168.1.202'
-
-  local -r resolved_fallback='[Resolve]
-FallbackDNS=2400:4053:2b41:2a00:280:87ff:fef7:86fa 192.168.1.1'
-
   echo "${hosts}" >> /mnt/etc/hosts
 
   case "${DE}" in
     'i3' | 'xfce')
-      to_arch mkdir /etc/systemd/resolved.conf.d
       ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
       echo "${wired}" > /mnt/etc/systemd/network/20-wired.network
-      echo "${resolved}" > /mnt/etc/systemd/resolved.conf.d/dns_servers.conf
-      echo "${resolved_fallback}" > /mnt/etc/systemd/resolved.conf.d/fallback_dns.conf
       ;;
     *)
       ln --symbolic --force /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
