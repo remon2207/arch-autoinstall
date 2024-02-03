@@ -66,8 +66,7 @@ packagelist="base \
   noto-fonts-emoji \
   noto-fonts-extra \
   ttf-noto-nerd \
-  ttf-hack \
-  inter-font \
+  ttf-hack-nerd \
   fcitx5-im \
   fcitx5-mozc \
   docker \
@@ -419,7 +418,7 @@ VDPAU_DRIVER='radeonsi'"
     --expression='s/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
   # shellcheck disable=SC2016
   to_arch sed --in-place \
-    --expression='s/\(-march=\)x86-64 -mtune=generic/\1skylake/' \
+    --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
     --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
     --expression='s/^#\(BUILDDIR\)/\1/' \
     --expression='s/^\(COMPRESSXZ=\)(xz -c -z -)/\1(xz -c -z --threads=0 -)/' \

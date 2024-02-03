@@ -119,7 +119,7 @@ replacement() {
     --expression='s/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   # shellcheck disable=SC2016
   to_arch sed --in-place \
-    --expression='s/\(-march=\)x86-64 -mtune=generic/\1skylake/' \
+    --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
     --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
     --expression='s/^#\(BUILDDIR\)/\1/' /etc/makepkg.conf
   to_arch sed --in-place \
