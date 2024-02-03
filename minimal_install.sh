@@ -18,7 +18,6 @@ packagelist="base \
   vi \
   sudo \
   curl \
-  wget \
   man-db \
   man-pages \
   reflector"
@@ -88,7 +87,7 @@ networking() {
     cat << EOF
 127.0.0.1       localhost
 ::1             localhost
-127.0.1.1       virtualbox.home virtualbox
+127.0.1.1       virtualbox
 EOF
   )"
 
@@ -98,7 +97,6 @@ Name=${net_interface}
 [Network]
 DHCP=yes"
 
-  mkdir /etc/systemd/resolved.conf.d
   ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
   echo "${hosts}" >> /mnt/etc/hosts

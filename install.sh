@@ -74,6 +74,7 @@ packagelist="base \
   github-cli \
   discord \
   neofetch \
+  wezterm \
   reflector \
   xorg \
   xorg-apps \
@@ -186,7 +187,6 @@ selection_arguments() {
       arc-gtk-theme \
       papirus-icon-theme \
       pavucontrol \
-      wezterm \
       w3m \
       ranger"
       ;;
@@ -230,7 +230,6 @@ selection_arguments() {
       plasma-meta \
       packagekit-qt5 \
       dolphin \
-      wezterm \
       gwenview \
       spectacle \
       kate"
@@ -352,7 +351,7 @@ networking() {
     cat << EOF
 127.0.0.1       localhost
 ::1             localhost
-127.0.1.1       archlinux.home archlinux
+127.0.1.1       archlinux
 EOF
   )"
 
@@ -517,15 +516,15 @@ enable_services() {
     'i3')
       to_arch systemctl enable systemd-{networkd,resolved}.service
       ;;
-      # 'xfce')
-      #   to_arch systemctl enable {lightdm,systemd-{networkd,resolved}}.service
-      #   ;;
-      # 'gnome')
-      #   to_arch systemctl enable {gdm,NetworkManager}.service
-      #   ;;
-      # 'kde')
-      #   to_arch systemctl enable {sddm,NetworkManager}.service
-      #   ;;
+    'xfce')
+      to_arch systemctl enable {lightdm,systemd-{networkd,resolved}}.service
+      ;;
+    'gnome')
+      to_arch systemctl enable {gdm,NetworkManager}.service
+      ;;
+    'kde')
+      to_arch systemctl enable {sddm,NetworkManager}.service
+      ;;
   esac
 }
 
