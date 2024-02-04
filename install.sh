@@ -181,7 +181,6 @@ selection_arguments() {
       feh \
       picom \
       dunst \
-      gnome-keyring \
       qt5ct \
       kvantum \
       arc-gtk-theme \
@@ -194,7 +193,6 @@ selection_arguments() {
       packagelist="${packagelist} \
       xfce4 \
       xfce4-goodies \
-      gnome-keyring \
       gvfs \
       qt5ct \
       kvantum \
