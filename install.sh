@@ -66,7 +66,6 @@ packagelist="base \
   noto-fonts-emoji \
   noto-fonts-extra \
   ttf-noto-nerd \
-  ttf-hack-nerd \
   fcitx5-im \
   fcitx5-mozc \
   docker \
@@ -300,7 +299,7 @@ installation() {
 
   reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
   sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
-  # shellcheck disable=SC2086
+  # shellcheck disable=2086
   pacstrap -K /mnt ${packagelist}
 
   case "${GPU}" in
@@ -413,7 +412,7 @@ VDPAU_DRIVER='radeonsi'"
     --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
     --expression='s/^--latest 5/# &/' \
     --expression='s/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
-  # shellcheck disable=SC2016
+  # shellcheck disable=2016
   to_arch sed --in-place \
     --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
     --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \

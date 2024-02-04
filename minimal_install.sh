@@ -60,7 +60,7 @@ partitioning() {
 installation() {
   reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
   sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
-  # shellcheck disable=SC2086
+  # shellcheck disable=2086
   pacstrap -K /mnt ${packagelist}
   genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
 }
@@ -115,7 +115,7 @@ replacement() {
   to_arch sed --in-place \
     --expression='s/^#\(NTP=\)/\1ntp.nict.jp/' \
     --expression='s/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
-  # shellcheck disable=SC2016
+  # shellcheck disable=2016
   to_arch sed --in-place \
     --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
     --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
