@@ -320,7 +320,7 @@ installation() {
       ;;
   esac
 
-  to_arch mkinitcpio -P "${KERNEL}"
+  to_arch mkinitcpio -P
   genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
 }
 
