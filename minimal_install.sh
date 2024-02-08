@@ -8,7 +8,8 @@ to_arch() { arch-chroot /mnt "${@}"; }
 
 readonly KERNEL='linux-zen'
 readonly DISK='/dev/sda'
-readonly CPU_INFO && CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')"
+CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')"
+readonly CPU_INFO
 
 packagelist="base \
   base-devel \
