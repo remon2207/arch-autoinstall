@@ -440,7 +440,7 @@ boot_loader() {
   local -r ucode="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
   local -r initramfs="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
   local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
-  local -r nvidia_params='rw panic=180 nvidia_drm.modeset=1'
+  local -r nvidia_params='rw panic=180 nvidia_drm.modeset=1 nvidia_drm.fbdev=1'
   local -r amd_params='rw panic=180'
   local -r entries='/mnt/boot/loader/entries'
 
