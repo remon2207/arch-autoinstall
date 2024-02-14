@@ -344,19 +344,23 @@ networking() {
     | grep ' UP ' \
     | awk '{print $1}')"
 
-  local -r hosts="$(
-    cat << EOF
-127.0.0.1       localhost
-::1             localhost
-127.0.1.1       archlinux
-EOF
-  )"
+  local -r ipv4="$(ip -4 -oneline address \
+    | awk --field-separator='[ /]*' 'NR==2 {print $4}')"
+
+  local -r ipv6="$(ip -6 -oneline address \
+    | awk --field-separator='[ /]*' 'NR==2 {print $4}')"
+
+  local -r hosts="127.0.0.1 localhost
+::1 localhost
+${ipv4} archlinux.home archlinux
+${ipv6} archlinux.home archlinux"
 
   local -r wired="[Match]
 Name=${net_interface}
 
 [Network]
-DHCP=yes"
+Address=${ipv4}/24
+Gateway=192.168.1.1"
 
   echo "${hosts}" >> /mnt/etc/hosts
 
@@ -444,53 +448,33 @@ boot_loader() {
   local -r amd_params='rw panic=180'
   local -r entries='/mnt/boot/loader/entries'
 
-  local -r loader_conf="$(
-    cat << EOF
-timeout      15
+  local -r loader_conf='timeout 15
 console-mode max
-editor       no
-EOF
-  )"
+editor no'
 
-  local -r nvidia_conf="$(
-    cat << EOF
-title    Arch Linux
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs}
-options  root=PARTUUID=${root_partuuid} ${nvidia_params} loglevel=3
-EOF
-  )"
+  local -r nvidia_conf="title Arch Linux
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs}
+options root=PARTUUID=${root_partuuid} ${nvidia_params} loglevel=3"
 
-  local -r nvidia_fallback_conf="$(
-    cat << EOF
-title    Arch Linux (fallback initramfs)
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs_fallback}
-options  root=PARTUUID=${root_partuuid} ${nvidia_params} debug
-EOF
-  )"
+  local -r nvidia_fallback_conf="title Arch Linux (fallback initramfs)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
 
-  local -r amd_conf="$(
-    cat << EOF
-title    Arch Linux
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs}
-options  root=PARTUUID=${root_partuuid} ${amd_params} loglevel=3
-EOF
-  )"
+  local -r amd_conf="title Arch Linux
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs}
+options root=PARTUUID=${root_partuuid} ${amd_params} loglevel=3"
 
-  local -r amd_fallback_conf="$(
-    cat << EOF
-title    Arch Linux (fallback initramfs)
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs_fallback}
-options  root=PARTUUID=${root_partuuid} ${amd_params} debug
-EOF
-  )"
+  local -r amd_fallback_conf="title Arch Linux (fallback initramfs)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${amd_params} debug"
 
   echo "${loader_conf}" > /mnt/boot/loader/loader.conf
 

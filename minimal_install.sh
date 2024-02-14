@@ -84,13 +84,9 @@ configuration() {
 networking() {
   local -r net_interface="$(ip -br link show | awk 'NR==2 {print $1}')"
 
-  local -r hosts="$(
-    cat << EOF
-127.0.0.1       localhost
-::1             localhost
-127.0.1.1       virtualbox
-EOF
-  )"
+  local -r hosts='127.0.0.1 localhost
+::1 localhost
+127.0.1.1 virtualbox.home virtualbox'
 
   local -r wired="[Match]
 Name=${net_interface}
@@ -117,10 +113,10 @@ replacement() {
     --expression='s/^#\(NTP=\)/\1ntp.nict.jp/' \
     --expression='s/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   # shellcheck disable=2016
-  # to_arch sed --in-place \
-  #   --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
-  #   --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
-  #   --expression='s/^#\(BUILDDIR\)/\1/' /etc/makepkg.conf
+  to_arch sed --in-place \
+    --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
+    --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
+    --expression='s/^#\(BUILDDIR\)/\1/' /etc/makepkg.conf
   to_arch sed --in-place \
     --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
     --expression='s/^--latest 5/# &/' \
@@ -144,33 +140,21 @@ boot_loader() {
   local -r kernel_params='rw panic=180'
   local -r entries='/mnt/boot/loader/entries'
 
-  local -r loader_conf="$(
-    cat << EOF
-timeout      15
+  local -r loader_conf='timeout 15
 console-mode max
-editor       no
-EOF
-  )"
+editor no'
 
-  local -r entries_conf="$(
-    cat << EOF
-title    Arch Linux
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs}
-options  root=PARTUUID=${root_partuuid} ${kernel_params} loglevel=3
-EOF
-  )"
+  local -r entries_conf="title Arch Linux
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs}
+options root=PARTUUID=${root_partuuid} ${kernel_params} loglevel=3"
 
-  local -r entries_conf_fallback="$(
-    cat << EOF
-title    Arch Linux (fallback initramfs)
-linux    /${vmlinuz}
-initrd   /${ucode}
-initrd   /${initramfs_fallback}
-options  root=PARTUUID=${root_partuuid} ${kernel_params} debug
-EOF
-  )"
+  local -r entries_conf_fallback="title Arch Linux (fallback initramfs)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${kernel_params} debug"
 
   echo "${loader_conf}" > /mnt/boot/loader/loader.conf
   echo "${entries_conf}" > "${entries}/arch.conf"
