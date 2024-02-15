@@ -55,7 +55,7 @@ partitioning() {
   mkfs.ext4 "${DISK}2"
 
   mount "${DISK}2" /mnt
-  mount --mkdir --options='fmask=0077,dmask=0077' "${DISK}1" /mnt/boot
+  mount --mkdir "${DISK}1" /mnt/boot
 }
 
 installation() {
@@ -70,9 +70,7 @@ configuration() {
   to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
   to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
   to_arch hwclock --systohc --utc
-  to_arch sed --in-place \
-    --expression='s/^#\(en_US.UTF-8 UTF-8\)/\1/' \
-    --expression='s/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
+  to_arch sed --in-place --expression='s/^#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
   to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
   to_arch locale-gen
   to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo &> /dev/null
@@ -86,7 +84,7 @@ networking() {
 
   local -r hosts='127.0.0.1 localhost
 ::1 localhost
-127.0.1.1 virtualbox.home virtualbox'
+127.0.1.1 virtualbox'
 
   local -r wired="[Match]
 Name=${net_interface}
