@@ -186,6 +186,8 @@ selection_arguments() {
       papirus-icon-theme \
       pavucontrol \
       w3m \
+      ueberzug \
+      imagemagick \
       ranger"
       ;;
     'xfce')
