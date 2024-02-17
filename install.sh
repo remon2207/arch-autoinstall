@@ -56,7 +56,6 @@ packagelist="base \
   btop \
   nvtop \
   man-db \
-  man-pages \
   wireplumber \
   pipewire \
   pipewire-pulse \

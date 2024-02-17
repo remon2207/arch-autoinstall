@@ -11,18 +11,6 @@ readonly DISK='/dev/sda'
 CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')"
 readonly CPU_INFO
 
-# packagelist="base \
-#   base-devel \
-#   ${KERNEL} \
-#   ${KERNEL}-headers \
-#   linux-firmware \
-#   vi \
-#   sudo \
-#   curl \
-#   man-db \
-#   man-pages \
-#   reflector"
-
 packagelist="base \
   base-devel \
   ${KERNEL} \
@@ -31,6 +19,7 @@ packagelist="base \
   vi \
   sudo \
   curl \
+  man-db \
   reflector"
 
 selection_arguments() {
