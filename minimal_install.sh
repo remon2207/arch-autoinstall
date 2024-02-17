@@ -48,7 +48,7 @@ partitioning() {
     | awk '{print $2,$3}')"
 
   sgdisk --zap-all "${DISK}"
-  sgdisk --new='0::+512M' -typecode='0:ef00' --change-name="0:${efi_part_type}" "${DISK}"
+  sgdisk --new='0::+1G' -typecode='0:ef00' --change-name="0:${efi_part_type}" "${DISK}"
   sgdisk --new='0::' --typecode='0:8300' --change-name="0:${normal_part_type}" "${DISK}"
 
   mkfs.fat -F 32 "${DISK}1"
