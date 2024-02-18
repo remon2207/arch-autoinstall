@@ -72,7 +72,7 @@ packagelist="base \
   github-cli \
   discord \
   neofetch \
-  wezterm \
+  kitty \
   reflector \
   xorg \
   xorg-apps \
@@ -185,8 +185,6 @@ selection_arguments() {
       papirus-icon-theme \
       pavucontrol \
       w3m \
-      ueberzug \
-      imagemagick \
       ranger"
       ;;
     'xfce')
