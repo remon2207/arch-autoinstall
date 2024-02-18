@@ -409,7 +409,7 @@ VDPAU_DRIVER='radeonsi'"
   to_arch cp /etc/systemd/timesyncd.conf{,.org}
   to_arch sed --in-place \
     --expression='s/^#\(NTP=\)/\1ntp.nict.jp/' \
-    --expression='s/^#\(FallbackNTP=\).*/\1ntp1.jst.mfeed.ad.jp ntp2.jst.mfeed.ad.jp ntp3.jst.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
+    --expression='s/^#\(FallbackNTP=\).*/\1ntp1.v6.mfeed.ad.jp ntp2.v6.mfeed.ad.jp ntp3.v6.mfeed.ad.jp/' /etc/systemd/timesyncd.conf
   to_arch sed --in-place \
     --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
     --expression='s/^--latest 5/# &/' \
