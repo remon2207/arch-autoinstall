@@ -352,17 +352,12 @@ networking() {
 ${ipv4} archlinux.home archlinux
 ${ipv6} archlinux.home archlinux"
 
-  #  local -r wired="[Match]
-  #Name=${net_interface}
-  #
-  #[Network]
-  #Address=${ipv4}/24
-  #Gateway=192.168.1.1"
   local -r wired="[Match]
 Name=${net_interface}
 
 [Network]
-DHCP=yes"
+Address=${ipv4}/24
+Gateway=192.168.1.1"
 
   echo "${hosts}" >> /mnt/etc/hosts
 
