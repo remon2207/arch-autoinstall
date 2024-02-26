@@ -91,6 +91,7 @@ packagelist="base \
   virtualbox-host-dkms \
   virtualbox-guest-iso \
   stylua \
+  apcupsd \
   nfs-utils"
 
 while getopts 'd:e:g:u:r:p:s:h' opt; do
@@ -175,6 +176,8 @@ selection_arguments() {
       polybar \
       xautolock \
       polkit \
+      polkit-gnome \
+      udisks2 \
       scrot \
       feh \
       picom \
