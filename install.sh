@@ -360,7 +360,8 @@ Name=${net_interface}
 
 [Network]
 Address=${ipv4}/24
-Gateway=192.168.1.1"
+Gateway=192.168.1.1
+IPv6PrivacyExtensions=yes"
 
   echo "${hosts}" >> /mnt/etc/hosts
 
