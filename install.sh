@@ -344,22 +344,19 @@ networking() {
     | grep ' UP ' \
     | awk '{print $1}')"
 
-  local -r ipv4="$(ip -4 -oneline address \
-    | awk --field-separator='[ /]*' 'NR==2 {print $4}')"
-
   local -r ipv6="$(ip -6 -oneline address \
     | awk --field-separator='[ /]*' 'NR==2 {print $4}')"
 
   local -r hosts="127.0.0.1 localhost
 ::1 localhost
-${ipv4} archlinux.home archlinux
+192.168.1.100 archlinux.home archlinux
 ${ipv6} archlinux.home archlinux"
 
   local -r wired="[Match]
 Name=${net_interface}
 
 [Network]
-Address=${ipv4}/24
+Address=192.168.1.100/24
 Gateway=192.168.1.1
 IPv6PrivacyExtensions=yes"
 
