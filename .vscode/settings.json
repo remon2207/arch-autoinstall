@@ -1,0 +1,8 @@
+{
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format",
+        "editor.formatOnSave": true
+    },
+    "shellformat.path": "/usr/bin/shfmt",
+    "shellformat.useEditorConfig": true
+}
