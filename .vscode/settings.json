@@ -4,5 +4,9 @@
         "editor.formatOnSave": true
     },
     "shellformat.path": "/usr/bin/shfmt",
-    "shellformat.useEditorConfig": true
+    "shellformat.useEditorConfig": true,
+    "cSpell.enabledFileTypes": {
+        "*": true,
+        "shellscript": false
+    }
 }
