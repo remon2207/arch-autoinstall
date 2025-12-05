@@ -58,7 +58,7 @@ partitioning() {
 }
 
 installation() {
-    reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
     pacstrap -K /mnt ${packagelist}
@@ -66,7 +66,7 @@ installation() {
 }
 
 configuration() {
-    to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    to_arch reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
     to_arch hwclock --systohc --utc
     to_arch sed --in-place --expression='s/^#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen

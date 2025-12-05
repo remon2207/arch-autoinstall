@@ -34,6 +34,66 @@ readonly USER_NAME='remon'
 CPU_INFO="$(grep 'model name' /proc/cpuinfo | awk --field-separator='[ (]' 'NR==1 {print $3}')"
 readonly CPU_INFO
 
+# packagelist="base \
+#     base-devel \
+#     ${KERNEL} \
+#     ${KERNEL}-headers \
+#     linux-firmware \
+#     vi \
+#     neovim \
+#     fd \
+#     ripgrep \
+#     bat \
+#     sudo \
+#     zsh \
+#     curl \
+#     fzf \
+#     fuse2 \
+#     git \
+#     git-delta \
+#     jq \
+#     openssh \
+#     btop \
+#     nvtop \
+#     man-db \
+#     wireplumber \
+#     pipewire \
+#     pipewire-pulse \
+#     pipewire-alsa \
+#     noto-fonts \
+#     noto-fonts-cjk \
+#     noto-fonts-emoji \
+#     noto-fonts-extra \
+#     ttf-noto-nerd \
+#     fcitx5-im \
+#     fcitx5-mozc \
+#     docker \
+#     docker-compose \
+#     github-cli \
+#     discord \
+#     neofetch \
+#     kitty \
+#     reflector \
+#     xorg \
+#     xorg-apps \
+#     xorg-xinit \
+#     silicon \
+#     starship \
+#     lsd \
+#     profile-sync-daemon \
+#     pigz \
+#     lbzip2 \
+#     lazygit \
+#     shfmt \
+#     \shellcheck \
+#     unzip \
+#     virtualbox \
+#     virtualbox-host-dkms \
+#     virtualbox-guest-iso \
+#     stylua \
+#     apcupsd \
+#     nfs-utils"
+
 packagelist="base \
     base-devel \
     ${KERNEL} \
@@ -41,17 +101,10 @@ packagelist="base \
     linux-firmware \
     vi \
     neovim \
-    fd \
-    ripgrep \
-    bat \
     sudo \
     zsh \
     curl \
-    fzf \
-    fuse2 \
     git \
-    git-delta \
-    jq \
     openssh \
     btop \
     nvtop \
@@ -65,34 +118,18 @@ packagelist="base \
     noto-fonts-emoji \
     noto-fonts-extra \
     ttf-noto-nerd \
-    fcitx5-im \
+    fcitx5 \
     fcitx5-mozc \
     docker \
     docker-compose \
     github-cli \
-    discord \
-    neofetch \
-    kitty \
     reflector \
-    xorg \
-    xorg-apps \
-    xorg-xinit \
-    silicon \
     starship \
     lsd \
     profile-sync-daemon \
-    pigz \
-    lbzip2 \
-    lazygit \
-    shfmt \
-    shellcheck \
-    unzip \
     virtualbox \
     virtualbox-host-dkms \
-    virtualbox-guest-iso \
-    stylua \
-    apcupsd \
-    nfs-utils"
+    virtualbox-guest-iso"
 
 while getopts 'd:e:g:u:r:p:s:h' opt; do
     case "${opt}" in
@@ -225,9 +262,16 @@ selection_arguments() {
                 networkmanager"
             ;;
         'kde')
+            # packagelist="${packagelist} \
+            #     plasma-meta \
+            #     packagekit-qt5 \
+            #     dolphin \
+            #     gwenview \
+            #     spectacle \
+            #     kate"
+            # ;;
             packagelist="${packagelist} \
                 plasma-meta \
-                packagekit-qt5 \
                 dolphin \
                 gwenview \
                 spectacle \
@@ -299,7 +343,7 @@ installation() {
     local -r hooks_org="$(echo "${number_hooks}" | awk --field-separator=':' '{print $2}')"
     local -r new_number="$(("${number}" + 1))"
 
-    reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
     pacstrap -K /mnt ${packagelist}
@@ -327,7 +371,7 @@ installation() {
 }
 
 configuration() {
-    to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    to_arch reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
     to_arch hwclock --systohc --utc
     to_arch sed --in-place --expression='s/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
@@ -386,26 +430,26 @@ add_to_group() {
 }
 
 replacement() {
-    case "${GPU}" in
-        'nvidia')
-            local -r environment="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-GLFW_IM_MODULE='ibus'
+#     case "${GPU}" in
+#         'nvidia')
+#             local -r environment="GTK_IM_MODULE='fcitx5'
+# QT_IM_MODULE='fcitx5'
+# XMODIFIERS='@im=fcitx5'
+# GLFW_IM_MODULE='ibus'
 
-LIBVA_DRIVER_NAME='vdpau'
-VDPAU_DRIVER='nvidia'"
-            ;;
-        'amd')
-            local -r environment="GTK_IM_MODULE='fcitx5'
-QT_IM_MODULE='fcitx5'
-XMODIFIERS='@im=fcitx5'
-GLFW_IM_MODULE='ibus'
+# LIBVA_DRIVER_NAME='vdpau'
+# VDPAU_DRIVER='nvidia'"
+#             ;;
+#         'amd')
+#             local -r environment="GTK_IM_MODULE='fcitx5'
+# QT_IM_MODULE='fcitx5'
+# XMODIFIERS='@im=fcitx5'
+# GLFW_IM_MODULE='ibus'
 
-LIBVA_DRIVER_NAME='radeonsi'
-VDPAU_DRIVER='radeonsi'"
-            ;;
-    esac
+# LIBVA_DRIVER_NAME='radeonsi'
+# VDPAU_DRIVER='radeonsi'"
+#             ;;
+#     esac
 
     to_arch cp /etc/systemd/timesyncd.conf{,.org}
     to_arch sed --in-place \
@@ -428,7 +472,7 @@ VDPAU_DRIVER='radeonsi'"
     to_arch sed --in-place --expression='s/^#\(DefaultTimeoutStopSec=\).*/\110s/' /etc/systemd/system.conf
     to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
     echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
-    echo "${environment}" >> /mnt/etc/environment
+    # echo "${environment}" >> /mnt/etc/environment
 
     to_arch pacman --sync --refresh --refresh
 }
