@@ -58,19 +58,20 @@ partitioning() {
 }
 
 installation() {
-    reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
-    sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
+    reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    pacman -Syy
+    # sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
     pacstrap -K /mnt ${packagelist}
     genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
 }
 
 configuration() {
-    to_arch reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
     to_arch hwclock --systohc --utc
     to_arch sed --in-place --expression='s/^#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
-    to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
+    # to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     to_arch locale-gen
     to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo &> /dev/null
     echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
