@@ -127,6 +127,8 @@ packagelist="base \
     starship \
     lsd \
     profile-sync-daemon \
+    pigz \
+    lbzip2 \
     virtualbox \
     virtualbox-host-dkms \
     virtualbox-guest-iso"
@@ -343,8 +345,8 @@ installation() {
     local -r hooks_org="$(echo "${number_hooks}" | awk --field-separator=':' '{print $2}')"
     local -r new_number="$(("${number}" + 1))"
 
-    reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
-    sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
+    # reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    # sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
     pacstrap -K /mnt ${packagelist}
 
@@ -371,11 +373,11 @@ installation() {
 }
 
 configuration() {
-    to_arch reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
     to_arch hwclock --systohc --utc
     to_arch sed --in-place --expression='s/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
-    to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
+    # to_arch sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     to_arch locale-gen
     echo 'LANG=ja_JP.UTF-8' > /mnt/etc/locale.conf
     echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
@@ -486,7 +488,7 @@ boot_loader() {
     local -r vmlinuz="$(find_boot "*vmlinuz*${KERNEL}*" | awk --field-separator='/' '{print $4}')"
     local -r ucode="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
     local -r initramfs="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
-    local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
+    # local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
     local -r nvidia_params='rw panic=180 nvidia_drm.modeset=1'
     local -r amd_params='rw panic=180'
     local -r entries='/mnt/boot/loader/entries'
@@ -501,11 +503,11 @@ initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${nvidia_params} loglevel=3"
 
-    local -r nvidia_fallback_conf="title Arch Linux (fallback initramfs)
-linux /${vmlinuz}
-initrd /${ucode}
-initrd /${initramfs_fallback}
-options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
+#     local -r nvidia_fallback_conf="title Arch Linux (fallback initramfs)
+# linux /${vmlinuz}
+# initrd /${ucode}
+# initrd /${initramfs_fallback}
+# options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
 
     local -r amd_conf="title Arch Linux
 linux /${vmlinuz}
@@ -513,22 +515,22 @@ initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${amd_params} loglevel=3"
 
-    local -r amd_fallback_conf="title Arch Linux (fallback initramfs)
-linux /${vmlinuz}
-initrd /${ucode}
-initrd /${initramfs_fallback}
-options root=PARTUUID=${root_partuuid} ${amd_params} debug"
+#     local -r amd_fallback_conf="title Arch Linux (fallback initramfs)
+# linux /${vmlinuz}
+# initrd /${ucode}
+# initrd /${initramfs_fallback}
+# options root=PARTUUID=${root_partuuid} ${amd_params} debug"
 
     echo "${loader_conf}" > /mnt/boot/loader/loader.conf
 
     case "${GPU}" in
         'nvidia')
             echo "${nvidia_conf}" > "${entries}/arch.conf"
-            echo "${nvidia_fallback_conf}" > "${entries}/arch_fallback.conf"
+            # echo "${nvidia_fallback_conf}" > "${entries}/arch_fallback.conf"
             ;;
         'amd')
             echo "${amd_conf}" > "${entries}/arch.conf"
-            echo "${amd_fallback_conf}" > "${entries}/arch_fallback.conf"
+            # echo "${amd_fallback_conf}" > "${entries}/arch_fallback.conf"
             ;;
     esac
 }
