@@ -54,12 +54,11 @@ partitioning() {
     mkfs.ext4 "${DISK}2"
 
     mount "${DISK}2" /mnt
-    # mount --mkdir "${DISK}1" /mnt/boot
     mount --mkdir "${DISK}1" /mnt/boot
 }
 
 installation() {
-    reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    # reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     pacman -Syy
     # sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
