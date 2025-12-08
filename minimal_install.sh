@@ -54,7 +54,8 @@ partitioning() {
     mkfs.ext4 "${DISK}2"
 
     mount "${DISK}2" /mnt
-    mount --mkdir "${DISK}1" /mnt/boot
+    # mount --mkdir "${DISK}1" /mnt/boot
+    mount --mkdir -o uid=0,gid=0,fmask=0077,dmask=0077 "${DISK}1" /mnt/boot
 }
 
 installation() {
