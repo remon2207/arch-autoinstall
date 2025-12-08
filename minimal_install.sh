@@ -70,6 +70,7 @@ installation() {
         -e "s/^#\(fallback_image.*\)/\1/" "/etc/mkinitcpio.d/${KERNEL}.preset"
 
 
+    mkinitcpio -P
     genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
     to_arch sed -i "s/\(fmask\)=0022\(,dmask\)=0022/\1=0077\2=0077/" /etc/fstab
 }
