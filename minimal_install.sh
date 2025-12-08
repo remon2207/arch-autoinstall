@@ -63,6 +63,13 @@ installation() {
     # sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
     pacstrap -K /mnt ${packagelist}
+
+    to_arch sed -i \
+        -e "s/^\(PRESETS=('default')\)/#\1/" \
+        -e "s/^#\(PRESETS=('default' 'fallback')\)/\1/" \
+        -e "s/^#\(fallback_image.*\)/\1/" "/etc/mkinitcpio.d/${KERNEL}.preset"
+
+
     genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
     to_arch sed -i "s/\(fmask\)=0022\(,dmask\)=0022/\1=0077\2=0077/" /etc/fstab
 }
@@ -136,7 +143,7 @@ boot_loader() {
     local -r vmlinuz="$(find_boot "*vmlinuz*${KERNEL}*" | awk --field-separator='/' '{print $4}')"
     local -r ucode="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
     local -r initramfs="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
-    # local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
+    local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
     local -r kernel_params='rw panic=180'
     local -r entries='/mnt/boot/loader/entries'
 
@@ -150,15 +157,15 @@ initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${kernel_params} loglevel=3"
 
-#     local -r entries_conf_fallback="title Arch Linux (fallback initramfs)
-# linux /${vmlinuz}
-# initrd /${ucode}
-# initrd /${initramfs_fallback}
-# options root=PARTUUID=${root_partuuid} ${kernel_params} debug"
+    local -r entries_conf_fallback="title Arch Linux (fallback initramfs)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${kernel_params} debug"
 
     echo "${loader_conf}" > /mnt/boot/loader/loader.conf
     echo "${entries_conf}" > "${entries}/arch.conf"
-    # echo "${entries_conf_fallback}" > "${entries}/arch_fallback.conf"
+    echo "${entries_conf_fallback}" > "${entries}/arch_fallback.conf"
 }
 
 enable_services() {
