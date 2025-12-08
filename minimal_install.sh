@@ -47,7 +47,7 @@ partitioning() {
         | awk '{print $2,$3}')"
 
     sgdisk --zap-all "${DISK}"
-    sgdisk --new='0::+1G' -typecode='0:ef00' --change-name="0:${efi_part_type}" "${DISK}"
+    sgdisk --new='0::+1G' --typecode='0:ef00' --change-name="0:${efi_part_type}" "${DISK}"
     sgdisk --new='0::' --typecode='0:8300' --change-name="0:${normal_part_type}" "${DISK}"
 
     mkfs.fat -F 32 "${DISK}1"
@@ -58,7 +58,7 @@ partitioning() {
 }
 
 installation() {
-    reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     pacman -Syy
     # sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
@@ -67,7 +67,7 @@ installation() {
 }
 
 configuration() {
-    to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    # to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
     to_arch hwclock --systohc --utc
     to_arch sed --in-place --expression='s/^#\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen
@@ -135,7 +135,7 @@ boot_loader() {
     local -r vmlinuz="$(find_boot "*vmlinuz*${KERNEL}*" | awk --field-separator='/' '{print $4}')"
     local -r ucode="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
     local -r initramfs="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
-    local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
+    # local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
     local -r kernel_params='rw panic=180'
     local -r entries='/mnt/boot/loader/entries'
 
@@ -149,15 +149,15 @@ initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${kernel_params} loglevel=3"
 
-    local -r entries_conf_fallback="title Arch Linux (fallback initramfs)
-linux /${vmlinuz}
-initrd /${ucode}
-initrd /${initramfs_fallback}
-options root=PARTUUID=${root_partuuid} ${kernel_params} debug"
+#     local -r entries_conf_fallback="title Arch Linux (fallback initramfs)
+# linux /${vmlinuz}
+# initrd /${ucode}
+# initrd /${initramfs_fallback}
+# options root=PARTUUID=${root_partuuid} ${kernel_params} debug"
 
     echo "${loader_conf}" > /mnt/boot/loader/loader.conf
     echo "${entries_conf}" > "${entries}/arch.conf"
-    echo "${entries_conf_fallback}" > "${entries}/arch_fallback.conf"
+    # echo "${entries_conf_fallback}" > "${entries}/arch_fallback.conf"
 }
 
 enable_services() {
