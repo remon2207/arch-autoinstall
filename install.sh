@@ -107,7 +107,6 @@ packagelist="base \
     git \
     openssh \
     btop \
-    nvtop \
     man-db \
     wireplumber \
     pipewire \
@@ -283,7 +282,8 @@ selection_arguments() {
 
     case "${GPU}" in
         'nvidia')
-            packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
+            # packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
+            packagelist="${packagelist} nvidia-dkms nvidia-settings"
             ;;
         'amd')
             packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
@@ -370,10 +370,11 @@ installation() {
 
     to_arch mkinitcpio -P
     genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
+    to_arch sed -i "s/\(fmask\)=0022\(,dmask\)=0022/\1=0077\2=0077/" /etc/fstab
 }
 
 configuration() {
-    to_arch reflector --country='Japan' --age=24 --protocol='https' --sort='rate' --save='/etc/pacman.d/mirrorlist'
+    # to_arch reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
     to_arch ln --symbolic --force /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
     to_arch hwclock --systohc --utc
     to_arch sed --in-place --expression='s/^#\(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen
@@ -489,7 +490,7 @@ boot_loader() {
     local -r ucode="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
     local -r initramfs="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
     # local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
-    local -r nvidia_params='rw panic=180 nvidia_drm.modeset=1'
+    local -r nvidia_params='rw panic=180'
     local -r amd_params='rw panic=180'
     local -r entries='/mnt/boot/loader/entries'
 
