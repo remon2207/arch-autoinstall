@@ -59,7 +59,7 @@ partitioning() {
 
 installation() {
     # reflector --country='Japan' --age=24 --protocol='https,http' --sort='rate' --save='/etc/pacman.d/mirrorlist'
-    pacman -Syy
+    # pacman -Syy
     # sed --in-place --expression='s/^#\(ParallelDownloads\)/\1/' /etc/pacman.conf
     # shellcheck disable=2086
     pacstrap -K /mnt ${packagelist}
