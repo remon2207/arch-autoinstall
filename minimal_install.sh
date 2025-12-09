@@ -124,7 +124,7 @@ replacement() {
         --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
         --expression='s/^--latest 5/# &/' \
         --expression='s/^\(--sort\) age/\1 rate/' \
-        --expression='s/^\(--protocol https\)/\1,http' /etc/xdg/reflector/reflector.conf
+        --expression='s/^\(--protocol https\)/\1,http/' /etc/xdg/reflector/reflector.conf
     to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
     echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
 

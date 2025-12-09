@@ -468,14 +468,20 @@ replacement() {
         --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
         --expression='s/^--latest 5/# &/' \
         --expression='s/^\(--sort\) age/\1 rate/' \
-        --expression='s/^\(--protocol https\)/\1,http' /etc/xdg/reflector/reflector.conf
+        --expression='s/^\(--protocol https\)/\1,http/' /etc/xdg/reflector/reflector.conf
     # shellcheck disable=2016
+    # to_arch sed --in-place \
+    #     --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
+    #     --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
+    #     --expression='s/^#\(BUILDDIR\)/\1/' \
+    #     --expression='s/^\(COMPRESSXZ=\)(xz -c -z -)/\1(xz -c -z --threads=0 -)/' \
+    #     --expression='s/^\(COMPRESSZST=\)(zstd -c -z -q -)/\1(zstd -c -z -q --threads=0 -)/' \
+    #     --expression='s/^\(COMPRESSGZ=\)(gzip -c -f -n)/\1(pigz -c -f -n)/' \
+    #     --expression='s/^\(COMPRESSBZ2=\)(bzip2 -c -f)/\1(lbzip2 -c -f)/' /etc/makepkg.conf
     to_arch sed --in-place \
         --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
         --expression='s/^#\(MAKEFLAGS=\).*/\1"-j$(($(nproc)+1))"/' \
         --expression='s/^#\(BUILDDIR\)/\1/' \
-        --expression='s/^\(COMPRESSXZ=\)(xz -c -z -)/\1(xz -c -z --threads=0 -)/' \
-        --expression='s/^\(COMPRESSZST=\)(zstd -c -z -q -)/\1(zstd -c -z -q --threads=0 -)/' \
         --expression='s/^\(COMPRESSGZ=\)(gzip -c -f -n)/\1(pigz -c -f -n)/' \
         --expression='s/^\(COMPRESSBZ2=\)(bzip2 -c -f)/\1(lbzip2 -c -f)/' /etc/makepkg.conf
     to_arch sed --in-place --expression='s/^#\(HandlePowerKey=\).*/\1reboot/' /etc/systemd/logind.conf
