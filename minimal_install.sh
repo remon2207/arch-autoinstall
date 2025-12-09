@@ -70,8 +70,6 @@ installation() {
         -e "s/^#\(fallback_image.*\)/\1/" \
         -e "s/^#\(fallback_options.*\)/\1/" "/etc/mkinitcpio.d/${KERNEL}.preset"
 
-
-    to_arch mkinitcpio -P
     genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
     to_arch sed -i "s/\(fmask\)=0022\(,dmask\)=0022/\1=0077\2=0077/" /etc/fstab
 }
@@ -87,7 +85,7 @@ configuration() {
     echo 'KEYMAP=us' >> /mnt/etc/vconsole.conf
     echo 'virtualbox' > /mnt/etc/hostname
     to_arch mkinitcpio -P
-    to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo
+    to_arch sed --expression='s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /etc/sudoers | EDITOR='tee' to_arch visudo &> /dev/null
 }
 
 networking() {
