@@ -91,10 +91,6 @@ configuration() {
 networking() {
     local -r net_interface="$(ip -br link show | awk 'NR==2 {print $1}')"
 
-    local -r hosts='127.0.0.1 localhost
-::1 localhost
-127.0.1.1 virtualbox'
-
     local -r wired="[Match]
 Name=${net_interface}
 
@@ -103,7 +99,6 @@ DHCP=yes"
 
     ln --symbolic --force /run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf
 
-    echo "${hosts}" >> /mnt/etc/hosts
     echo "${wired}" > /mnt/etc/systemd/network/20-wired.network
 }
 
@@ -128,7 +123,8 @@ replacement() {
     to_arch sed --in-place \
         --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
         --expression='s/^--latest 5/# &/' \
-        --expression='s/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
+        --expression='s/^\(--sort\) age/\1 rate/' \
+        --expression='s/^\(--protocol https\)/\1,http' /etc/xdg/reflector/reflector.conf
     to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
     echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
 

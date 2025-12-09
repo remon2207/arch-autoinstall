@@ -352,7 +352,7 @@ installation() {
 
     case "${GPU}" in
         'nvidia')
-            local -r nvidia_hooks="$(echo "${hooks_org}" | sed --expression='s/\(.*\)kms \(.*\)consolefont \(.*\)/\1\2\3/')"
+            local -r nvidia_hooks="$(echo "${hooks_org}" | sed --expression='s/\(.*\)kms \(.*\)sd-vconsole \(.*\)/\1\2\3/')"
 
             to_arch sed --in-place \
                 --expression='s/^MODULES=(/&nvidia nvidia_modeset nvidia_uvm nvidia_drm/' \
@@ -367,6 +367,12 @@ installation() {
                 --expression="${new_number}i ${amd_hooks}" /etc/mkinitcpio.conf
             ;;
     esac
+
+    to_arch sed -i \
+        -e "s/^\(PRESETS=('default')\)/#\1/" \
+        -e "s/^#\(PRESETS=('default' 'fallback')\)/\1/" \
+        -e "s/^#\(fallback_image.*\)/\1/" \
+        -e "s/^#\(fallback_options.*\)/\1/" "/etc/mkinitcpio.d/${KERNEL}.preset"
 
     to_arch mkinitcpio -P
     genfstab -t 'PARTUUID' /mnt >> /mnt/etc/fstab
@@ -394,9 +400,7 @@ networking() {
     local -r ipv6="$(ip -6 -oneline address \
         | awk --field-separator='[ /]*' 'NR==2 {print $4}')"
 
-    local -r hosts="127.0.0.1 localhost
-::1 localhost
-192.168.1.100 archlinux.home archlinux
+    local -r hosts="192.168.1.100 archlinux.home archlinux
 ${ipv6} archlinux.home archlinux"
 
     local -r wired="[Match]
@@ -461,7 +465,8 @@ replacement() {
     to_arch sed --in-place \
         --expression='s/^# \(--country\) France,Germany/\1 Japan/' \
         --expression='s/^--latest 5/# &/' \
-        --expression='s/^\(--sort\) age/\1 rate/' /etc/xdg/reflector/reflector.conf
+        --expression='s/^\(--sort\) age/\1 rate/' \
+        --expression='s/^\(--protocol https\)/\1,http' /etc/xdg/reflector/reflector.conf
     # shellcheck disable=2016
     to_arch sed --in-place \
         --expression='s/\(-march=\)x86-64 -mtune=generic/\1native/' \
@@ -489,7 +494,7 @@ boot_loader() {
     local -r vmlinuz="$(find_boot "*vmlinuz*${KERNEL}*" | awk --field-separator='/' '{print $4}')"
     local -r ucode="$(find_boot '*ucode*' | awk --field-separator='/' '{print $4}')"
     local -r initramfs="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'NR==1 {print $4}')"
-    # local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
+    local -r initramfs_fallback="$(find_boot "*initramfs*${KERNEL}*" | awk --field-separator='/' 'END {print $4}')"
     local -r nvidia_params='rw panic=180'
     local -r amd_params='rw panic=180'
     local -r entries='/mnt/boot/loader/entries'
@@ -504,11 +509,11 @@ initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${nvidia_params} loglevel=3"
 
-#     local -r nvidia_fallback_conf="title Arch Linux (fallback initramfs)
-# linux /${vmlinuz}
-# initrd /${ucode}
-# initrd /${initramfs_fallback}
-# options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
+    local -r nvidia_fallback_conf="title Arch Linux (fallback initramfs)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
 
     local -r amd_conf="title Arch Linux
 linux /${vmlinuz}
@@ -516,22 +521,22 @@ initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${amd_params} loglevel=3"
 
-#     local -r amd_fallback_conf="title Arch Linux (fallback initramfs)
-# linux /${vmlinuz}
-# initrd /${ucode}
-# initrd /${initramfs_fallback}
-# options root=PARTUUID=${root_partuuid} ${amd_params} debug"
+    local -r amd_fallback_conf="title Arch Linux (fallback initramfs)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${amd_params} debug"
 
     echo "${loader_conf}" > /mnt/boot/loader/loader.conf
 
     case "${GPU}" in
         'nvidia')
             echo "${nvidia_conf}" > "${entries}/arch.conf"
-            # echo "${nvidia_fallback_conf}" > "${entries}/arch_fallback.conf"
+            echo "${nvidia_fallback_conf}" > "${entries}/arch_fallback.conf"
             ;;
         'amd')
             echo "${amd_conf}" > "${entries}/arch.conf"
-            # echo "${amd_fallback_conf}" > "${entries}/arch_fallback.conf"
+            echo "${amd_fallback_conf}" > "${entries}/arch_fallback.conf"
             ;;
     esac
 }
