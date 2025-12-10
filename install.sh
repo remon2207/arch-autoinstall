@@ -119,18 +119,13 @@ packagelist="base \
     ttf-noto-nerd \
     fcitx5 \
     fcitx5-mozc \
-    docker \
-    docker-compose \
     github-cli \
     reflector \
     starship \
     lsd \
     profile-sync-daemon \
     pigz \
-    lbzip2 \
-    virtualbox \
-    virtualbox-host-dkms \
-    virtualbox-guest-iso"
+    lbzip2"
 
 while getopts 'd:e:g:u:r:p:s:h' opt; do
     case "${opt}" in
@@ -276,6 +271,7 @@ selection_arguments() {
                 dolphin \
                 gwenview \
                 spectacle \
+                konsole \
                 kate"
             ;;
     esac
@@ -433,11 +429,6 @@ create_user() {
     echo "${USER_NAME}:${USER_PASSWORD}" | to_arch chpasswd
 }
 
-add_to_group() {
-    local groups
-    for groups in docker vboxusers; do to_arch gpasswd --add "${USER_NAME}" "${groups}"; done
-}
-
 replacement() {
 #     case "${GPU}" in
 #         'nvidia')
@@ -550,7 +541,7 @@ options root=PARTUUID=${root_partuuid} ${amd_params} debug"
 }
 
 enable_services() {
-    to_arch systemctl enable {iptables,docker,systemd-boot-update}.service {fstrim,reflector}.timer
+    to_arch systemctl enable {iptables,systemd-boot-update}.service {fstrim,reflector}.timer
 
     case "${DE}" in
         'i3')
@@ -577,7 +568,6 @@ main() {
     configuration
     networking
     create_user
-    add_to_group
     replacement
     boot_loader
     enable_services
