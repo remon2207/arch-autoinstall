@@ -95,7 +95,6 @@ readonly CPU_INFO
 #     nfs-utils"
 
 packagelist="base \
-    base-devel \
     ${KERNEL} \
     ${KERNEL}-headers \
     linux-firmware \
