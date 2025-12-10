@@ -475,8 +475,6 @@ replacement() {
         --expression='s/^#\(BUILDDIR\)/\1/' \
         --expression='s/^\(COMPRESSGZ=\)(gzip -c -f -n)/\1(pigz -c -f -n)/' \
         --expression='s/^\(COMPRESSBZ2=\)(bzip2 -c -f)/\1(lbzip2 -c -f)/' /etc/makepkg.conf
-    to_arch sed --in-place --expression='s/^#\(HandlePowerKey=\).*/\1reboot/' /etc/systemd/logind.conf
-    to_arch sed --in-place --expression='s/^#\(DefaultTimeoutStopSec=\).*/\110s/' /etc/systemd/system.conf
     to_arch sed --in-place --expression='s/^#\(Color\)/\1/' /etc/pacman.conf
     echo -e '\n--age 24' >> /mnt/etc/xdg/reflector/reflector.conf
     # echo "${environment}" >> /mnt/etc/environment
