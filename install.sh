@@ -111,6 +111,7 @@ packagelist="base \
     pipewire \
     pipewire-pulse \
     pipewire-alsa \
+    pipewire-jack \
     noto-fonts \
     noto-fonts-cjk \
     noto-fonts-emoji \
@@ -271,7 +272,8 @@ selection_arguments() {
                 gwenview \
                 spectacle \
                 konsole \
-                kate"
+                kwalletmanager \
+                ufw"
             ;;
     esac
 
@@ -416,9 +418,6 @@ IPv6PrivacyExtensions=yes"
 
             echo "${wired}" > /mnt/etc/systemd/network/20-wired.network
             ;;
-        *)
-            ln --symbolic --force /run/NetworkManager/no-stub-resolv.conf /mnt/etc/resolv.conf
-            ;;
     esac
 }
 
@@ -429,26 +428,26 @@ create_user() {
 }
 
 replacement() {
-#     case "${GPU}" in
-#         'nvidia')
-#             local -r environment="GTK_IM_MODULE='fcitx5'
-# QT_IM_MODULE='fcitx5'
-# XMODIFIERS='@im=fcitx5'
-# GLFW_IM_MODULE='ibus'
+    #     case "${GPU}" in
+    #         'nvidia')
+    #             local -r environment="GTK_IM_MODULE='fcitx5'
+    # QT_IM_MODULE='fcitx5'
+    # XMODIFIERS='@im=fcitx5'
+    # GLFW_IM_MODULE='ibus'
 
-# LIBVA_DRIVER_NAME='vdpau'
-# VDPAU_DRIVER='nvidia'"
-#             ;;
-#         'amd')
-#             local -r environment="GTK_IM_MODULE='fcitx5'
-# QT_IM_MODULE='fcitx5'
-# XMODIFIERS='@im=fcitx5'
-# GLFW_IM_MODULE='ibus'
+    # LIBVA_DRIVER_NAME='vdpau'
+    # VDPAU_DRIVER='nvidia'"
+    #             ;;
+    #         'amd')
+    #             local -r environment="GTK_IM_MODULE='fcitx5'
+    # QT_IM_MODULE='fcitx5'
+    # XMODIFIERS='@im=fcitx5'
+    # GLFW_IM_MODULE='ibus'
 
-# LIBVA_DRIVER_NAME='radeonsi'
-# VDPAU_DRIVER='radeonsi'"
-#             ;;
-#     esac
+    # LIBVA_DRIVER_NAME='radeonsi'
+    # VDPAU_DRIVER='radeonsi'"
+    #             ;;
+    #     esac
 
     to_arch cp /etc/systemd/timesyncd.conf{,.org}
     to_arch sed --in-place \
@@ -538,7 +537,8 @@ options root=PARTUUID=${root_partuuid} ${amd_params} debug"
 }
 
 enable_services() {
-    to_arch systemctl enable {iptables,systemd-boot-update}.service {fstrim,reflector}.timer
+    # to_arch systemctl enable {iptables,systemd-boot-update}.service {fstrim,reflector}.timer
+    to_arch systemctl enable systemd-boot-update.service {fstrim,reflector}.timer
 
     case "${DE}" in
         'i3')
