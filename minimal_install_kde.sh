@@ -178,7 +178,6 @@ main() {
     partitioning
     installation
     configuration
-    networking
     create_user
     replacement
     boot_loader
