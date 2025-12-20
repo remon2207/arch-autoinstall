@@ -169,7 +169,7 @@ options root=PARTUUID=${root_partuuid} ${kernel_params} debug"
 }
 
 enable_services() {
-    to_arch systemctl enable systemd-{boot-update,sddm,NetworkManager}.service reflector.timer
+    to_arch systemctl enable {systemd-boot-update,sddm,NetworkManager}.service reflector.timer
 }
 
 main() {
