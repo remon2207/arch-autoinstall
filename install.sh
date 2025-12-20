@@ -280,7 +280,7 @@ selection_arguments() {
     case "${GPU}" in
         'nvidia')
             # packagelist="${packagelist} nvidia-dkms nvidia-settings libva-vdpau-driver"
-            packagelist="${packagelist} nvidia-dkms nvidia-settings"
+            packagelist="${packagelist} nvidia-open-dkms"
             ;;
         'amd')
             packagelist="${packagelist} xf86-video-amdgpu libva-mesa-driver mesa-vdpau"
