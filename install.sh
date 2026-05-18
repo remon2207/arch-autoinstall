@@ -98,7 +98,6 @@ packagelist="base \
     ${KERNEL} \
     ${KERNEL}-headers \
     linux-firmware \
-    vi \
     neovim \
     sudo \
     zsh \
