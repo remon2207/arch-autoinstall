@@ -505,29 +505,54 @@ boot_loader() {
     local -r amd_params='rw panic=180'
     local -r entries='/mnt/boot/loader/entries'
 
-    local -r loader_conf='timeout 15
+    local -r loader_conf='default arch-zen.conf
+timeout 15
 console-mode max
 editor no'
 
-    local -r nvidia_conf="title Arch Linux
+    local -r nvidia_zen_conf="title Arch Linux (zen)
 linux /${vmlinuz}
 initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${nvidia_params} loglevel=3"
 
-    local -r nvidia_fallback_conf="title Arch Linux (fallback initramfs)
+    local -r nvidia_zen_fallback_conf="title Arch Linux (zen fallback)
 linux /${vmlinuz}
 initrd /${ucode}
 initrd /${initramfs_fallback}
 options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
 
-    local -r amd_conf="title Arch Linux
+    local -r nvidia_lts_conf="title Arch Linux (LTS)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs}
+options root=PARTUUID=${root_partuuid} ${nvidia_params} loglevel=3"
+
+    local -r nvidia_lts_fallback_conf="title Arch Linux (LTS fallback)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${nvidia_params} debug"
+
+    local -r amd_zen_conf="title Arch Linux (zen)
 linux /${vmlinuz}
 initrd /${ucode}
 initrd /${initramfs}
 options root=PARTUUID=${root_partuuid} ${amd_params} loglevel=3"
 
-    local -r amd_fallback_conf="title Arch Linux (fallback initramfs)
+    local -r amd_zen_fallback_conf="title Arch Linux (zen fallback)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs_fallback}
+options root=PARTUUID=${root_partuuid} ${amd_params} debug"
+
+    local -r amd_lts_conf="title Arch Linux (LTS)
+linux /${vmlinuz}
+initrd /${ucode}
+initrd /${initramfs}
+options root=PARTUUID=${root_partuuid} ${amd_params} loglevel=3"
+
+    local -r amd_lts_fallback_conf="title Arch Linux (LTS fallback)
 linux /${vmlinuz}
 initrd /${ucode}
 initrd /${initramfs_fallback}
@@ -537,12 +562,18 @@ options root=PARTUUID=${root_partuuid} ${amd_params} debug"
 
     case "${GPU}" in
         'nvidia')
-            echo "${nvidia_conf}" > "${entries}/arch.conf"
-            echo "${nvidia_fallback_conf}" > "${entries}/arch_fallback.conf"
+            echo "${nvidia_zen_conf}" > "${entries}/arch-zen.conf"
+            echo "${nvidia_zen_fallback_conf}" > "${entries}/arch-zen-fallback.conf"
+
+            echo "${nvidia_lts_conf}" > "${entries}/arch-lts.conf"
+            echo "${nvidia_lts_fallback_conf}" > "${entries}/arch-lts-fallback.conf"
             ;;
         'amd')
-            echo "${amd_conf}" > "${entries}/arch.conf"
-            echo "${amd_fallback_conf}" > "${entries}/arch_fallback.conf"
+            echo "${amd_zen_conf}" > "${entries}/arch-zen.conf"
+            echo "${amd_zen_fallback_conf}" > "${entries}/arch-zen-fallback.conf"
+
+            echo "${amd_lts_conf}" > "${entries}/arch-lts.conf"
+            echo "${amd_lts_fallback_conf}" > "${entries}/arch-lts-fallback.conf"
             ;;
     esac
 }
