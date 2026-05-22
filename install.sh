@@ -97,6 +97,8 @@ readonly CPU_INFO
 packagelist="base \
     ${KERNEL} \
     ${KERNEL}-headers \
+    linux-lts \
+    linux-headers \
     linux-firmware \
     neovim \
     sudo \
@@ -119,12 +121,22 @@ packagelist="base \
     fcitx5 \
     fcitx5-mozc \
     github-cli \
+    git-delta \
     reflector \
     starship \
     lsd \
     profile-sync-daemon \
     pigz \
-    lbzip2"
+    lbzip2 \
+    ripgrep \
+    bat \
+    fd \
+    fzf \
+    ghq \
+    nvm \
+    virtualbox \
+    virtualbox-host-dkms \
+    virtualbox-guest-iso"
 
 while getopts 'd:e:g:u:r:p:s:h' opt; do
     case "${opt}" in
